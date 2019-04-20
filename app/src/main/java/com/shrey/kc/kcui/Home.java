@@ -14,8 +14,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.shrey.kc.kcui.adaptors.ServerCaller;
 import com.shrey.kc.kcui.entities.User;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutor;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
@@ -25,6 +27,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import javax.inject.Provider;
+
 
 public class Home extends AppCompatActivity {
 
@@ -88,7 +93,7 @@ public class Home extends AppCompatActivity {
 
         });
 
-        CommunicationFactory.getInstance().register("FIND", new GetKnowledgeExecutor());
+        CommunicationFactory.getInstance().register("FIND", new GetKnowledgeExecutor(new ServerCaller()));
     }
 
     @Override
@@ -96,7 +101,12 @@ public class Home extends AppCompatActivity {
         super.onStart();
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         // if account is null, need to sign in
-
+        if(account == null) {
+            SignInButton sib = findViewById(R.id.sign_in_button);
+            sib.setVisibility(View.VISIBLE);
+        } else {
+            startLoggedInActivity(account);
+        }
     }
 
     @Override
@@ -117,12 +127,7 @@ public class Home extends AppCompatActivity {
         // task contains info about signed in user
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-            // Signed in successfully, show authenticated UI.
-            //updateUI(account);
-            Log.i("SIGNIN", "sign in done for: " + account.getEmail());
-            CurrentUserInfo.getUserInfo().setUser(new User(account.getId(), account));
-            loadRealUI();
+            startLoggedInActivity(account);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -131,26 +136,14 @@ public class Home extends AppCompatActivity {
         }
     }
 
-    private void loadRealUI() {
-        findViewById(R.id.sign_in_button).setEnabled(false);
-        findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-        setContentView(R.layout.activity_dashboard);
-        findViewById(R.id.find_tag_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HashMap<String, Object> req = new HashMap<>();
-                req.put("keywordList", Arrays.asList("neo"));
-                req.put("userKey","shrey");
-                req.put("userId",1);
-                req.put("passKey","dummy");
-                try {
-                    // network on main thread bad bad bad TODO
-                    Map<String, Object> resp = CommunicationFactory.getInstance().getExecutor("FIND").executeRequest(req);
-                    Log.i("comm", resp.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    private void startLoggedInActivity(GoogleSignInAccount account) {
+        // Signed in successfully, show authenticated UI.
+        //updateUI(account);
+        Log.i("SIGNIN", "sign in done for: " + account.getEmail());
+        CurrentUserInfo.getUserInfo().setUser(new User(account.getId(), account));
+        //loadRealUI();
+        Intent loggedIntent = new Intent(this, LoggedInHome.class);
+        startActivity(loggedIntent);
     }
+
 }
