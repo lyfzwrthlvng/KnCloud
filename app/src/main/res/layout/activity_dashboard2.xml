@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoggedInHome"
-    android:id="@+id/constraint_root">
+    android:id="@+id/constraint_root"
+    android:background="#ffffff">
 
     <include
         android:id="@+id/root_vertical_container_in_dashboard"
@@ -26,6 +27,7 @@
         android:textAlignment="center"
         android:textSize="20sp"
         android:alpha="0.8"
+        android:textColor="@color/textWhite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
