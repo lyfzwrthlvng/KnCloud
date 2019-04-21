@@ -2,6 +2,7 @@ package com.shrey.kc.kcui;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.IdRes;
 import android.support.constraint.ConstraintLayout;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.google.gson.internal.LinkedTreeMap;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
+import com.shrey.kc.kcui.objects.RuntimeConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -133,7 +135,8 @@ public class LoggedInHome extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // start add tag/knowledge activity
-
+                Intent initiateAddKnowledgeIntent = new Intent(LoggedInHome.this, LoggedInAddKnowledge.class);
+                startActivityForResult(initiateAddKnowledgeIntent, RuntimeConstants.INSTANCE.START_ACTIVITY_FOR_KNOWLEDGE);
             }
         });
 

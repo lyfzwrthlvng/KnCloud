@@ -23,7 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoggedInHome"></activity>
+        <activity android:name=".LoggedInHome" />
+        <activity android:name=".LoggedInAddKnowledge" />
+        <activity android:name=".LoggedInAddKnowledgeAddTags"></activity>
     </application>
 
 </manifest>
