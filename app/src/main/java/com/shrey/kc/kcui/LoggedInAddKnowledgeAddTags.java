@@ -27,7 +27,7 @@ public class LoggedInAddKnowledgeAddTags extends AppCompatActivity {
     }
 
     private void setListeners() {
-        EditText et = findViewById(R.id.add_tag_text_tags_text);
+        final EditText et = findViewById(R.id.add_tag_text_tags_text);
         et.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -36,7 +36,7 @@ public class LoggedInAddKnowledgeAddTags extends AppCompatActivity {
                     // return this result to previous activity
                     // put result in intent and finish!
                     String tagsGlued = et.getText().toString();
-                    ArrayList<String> tags = (ArrayList<String>) Arrays.asList(tagsGlued.split(","));
+                    ArrayList<String> tags = new ArrayList<>(Arrays.asList(tagsGlued.split(",")));
                     Intent resultIntent = new Intent();
                     resultIntent.putStringArrayListExtra("tagsForKnowledge", tags);
                     //setResult(2,intent);
@@ -44,6 +44,22 @@ public class LoggedInAddKnowledgeAddTags extends AppCompatActivity {
                     finish();
                 }
                 return true;
+            }
+        });
+
+        et.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) {
+                    et.setText(null);
+                }
+            }
+        });
+
+        et.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                et.setText(null);
             }
         });
     }
