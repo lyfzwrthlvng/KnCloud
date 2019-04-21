@@ -30,7 +30,7 @@ public class GetKnowledgeExecutor implements GenericExecutor {
 
     @Override
     public Map<String, Object> executeRequest(Map<String, Object> request) throws IOException, ExecutionException, InterruptedException {
-        URL backend = new URL("http://10.0.2.2:9090/search/query");
+        URL backend = new URL("http://192.168.0.3:9090/search/query");
         return serverCaller.nonBlockingServerCall(backend, "POST", request);
     }
 }

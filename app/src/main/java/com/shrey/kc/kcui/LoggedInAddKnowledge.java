@@ -32,7 +32,7 @@ public class LoggedInAddKnowledge extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        Log.d(LoggedInAddKnowledge.class.getName(), item.getTitle().toString());
+        Log.d(LoggedInAddKnowledge.class.getName(), "back");
         // finish without anything
         //Intent knowledgeResultIntent = new Intent();
         setResult(RuntimeConstants.INSTANCE.STARTED_ACTIVITY_RESULT_NOOP);
