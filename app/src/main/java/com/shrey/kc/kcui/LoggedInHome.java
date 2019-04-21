@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -80,6 +81,7 @@ public class LoggedInHome extends AppCompatActivity {
                     Log.d("apicall", resp.toString());
                     ArrayList<LinkedTreeMap> knows = (ArrayList<LinkedTreeMap>) resp.get("Knowledge");
                     LinearLayout ll = findViewById(R.id.root_vertical_container);
+                    ll.removeAllViews();
                     for(LinkedTreeMap param: knows) {
                         Log.d("asd", param.get("cloud").toString());
                     CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.knowledge_card,null);
@@ -122,6 +124,16 @@ public class LoggedInHome extends AppCompatActivity {
                 if(hasFocus) {
                     et.setText(null);
                 }
+            }
+        });
+
+        // ---- listeners for the add button
+        Button addButton = findViewById(R.id.add_button);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // start add tag/knowledge activity
+
             }
         });
 

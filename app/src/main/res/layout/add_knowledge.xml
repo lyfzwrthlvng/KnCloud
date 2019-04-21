@@ -1,41 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoggedInHome"
-    android:id="@+id/constraint_root">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <include
-        android:id="@+id/root_vertical_container_in_dashboard"
-        layout="@layout/vertical_scroll_for_knowledge"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
 
     <EditText
-        android:id="@+id/textTag"
+        android:id="@+id/add_tag_text"
         android:layout_width="360dp"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
+        android:minHeight="40dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="544dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/rounded_corners"
-        android:imeOptions="actionDone"
-        android:text="search"
+        android:layout_marginTop="16dp"
+        android:ems="10"
         android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.473"
+        android:inputType="textPersonName"
+        android:text="enter text here"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/add_button"
+        android:id="@+id/add_tag_text_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="544dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_corners"
         android:gravity="center_vertical|center_horizontal|center"
         android:text="+"
