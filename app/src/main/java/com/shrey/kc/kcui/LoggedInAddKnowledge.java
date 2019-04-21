@@ -66,7 +66,8 @@ public class LoggedInAddKnowledge extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RuntimeConstants.INSTANCE.START_ACTIVITY_FOR_TAGS && resultCode == 0) {
+        if(requestCode == RuntimeConstants.INSTANCE.START_ACTIVITY_FOR_TAGS &&
+                resultCode == RuntimeConstants.INSTANCE.STARTED_ACTIVITY_RESULT_GOOD) {
             final EditText kt = findViewById(R.id.add_tag_text);
             Intent knowledgeResultIntent = new Intent(data);
             Log.d("knowLedgeAdd", knowledgeResultIntent.getStringArrayListExtra("tagsForKnowledge").get(0));

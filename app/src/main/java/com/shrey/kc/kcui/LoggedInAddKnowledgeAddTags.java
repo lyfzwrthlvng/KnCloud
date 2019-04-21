@@ -7,6 +7,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 
+import com.shrey.kc.kcui.objects.RuntimeConstants;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -40,7 +42,7 @@ public class LoggedInAddKnowledgeAddTags extends AppCompatActivity {
                     Intent resultIntent = new Intent();
                     resultIntent.putStringArrayListExtra("tagsForKnowledge", tags);
                     //setResult(2,intent);
-                    setResult(0,resultIntent);
+                    setResult(RuntimeConstants.INSTANCE.STARTED_ACTIVITY_RESULT_GOOD,resultIntent);
                     finish();
                 }
                 return true;

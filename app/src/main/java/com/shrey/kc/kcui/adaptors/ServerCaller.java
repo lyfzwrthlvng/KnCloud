@@ -20,6 +20,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.inject.Singleton;
 
+import static java.lang.Math.floor;
+
 @Singleton
 public class ServerCaller {
 
@@ -51,6 +53,10 @@ public class ServerCaller {
                 osw.close();
                 os.close();
                 int resp = connection.getResponseCode();
+                if(floor(resp / 100) != 2) {
+                    // FAILURE!!!
+                    throw new ExecutionException("bad mojo!", null);
+                }
                 InputStream is = connection.getInputStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 StringBuilder outputBuilder = new StringBuilder();

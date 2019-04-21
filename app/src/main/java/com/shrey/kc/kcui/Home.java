@@ -19,6 +19,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.shrey.kc.kcui.adaptors.ServerCaller;
 import com.shrey.kc.kcui.entities.User;
+import com.shrey.kc.kcui.executors.AddKnowledgeExecutor;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutor;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
@@ -94,6 +95,7 @@ public class Home extends AppCompatActivity {
         });
 
         CommunicationFactory.getInstance().register("FIND", new GetKnowledgeExecutor(new ServerCaller()));
+        CommunicationFactory.getInstance().register("ADD", new AddKnowledgeExecutor(new ServerCaller()));
     }
 
     @Override
