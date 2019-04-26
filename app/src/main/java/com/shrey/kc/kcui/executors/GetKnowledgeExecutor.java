@@ -1,5 +1,6 @@
 package com.shrey.kc.kcui.executors;
 
+import com.shrey.kc.kcui.R;
 import com.shrey.kc.kcui.adaptors.ServerCaller;
 import com.shrey.kc.kcui.adaptors.ServerCallerProvider;
 
@@ -13,10 +14,12 @@ import javax.inject.Inject;
 public class GetKnowledgeExecutor implements GenericExecutor {
 
     private ServerCaller serverCaller;
+    private String endpoint;
 
     @Inject
-    public GetKnowledgeExecutor(ServerCaller serverCaller) {
+    public GetKnowledgeExecutor(ServerCaller serverCaller, String endpoint) {
         this.serverCaller = serverCaller;
+        this.endpoint = endpoint;
     }
 
     public ServerCaller getServerCaller() {
@@ -30,7 +33,7 @@ public class GetKnowledgeExecutor implements GenericExecutor {
 
     @Override
     public Map<String, Object> executeRequest(Map<String, Object> request) throws IOException, ExecutionException, InterruptedException {
-        URL backend = new URL("http://192.168.0.3:9090/search/query");
+        URL backend = new URL(endpoint);
         return serverCaller.nonBlockingServerCall(backend, "POST", request);
     }
 }

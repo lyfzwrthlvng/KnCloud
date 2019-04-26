@@ -94,8 +94,10 @@ public class Home extends AppCompatActivity {
 
         });
 
-        CommunicationFactory.getInstance().register("FIND", new GetKnowledgeExecutor(new ServerCaller()));
-        CommunicationFactory.getInstance().register("ADD", new AddKnowledgeExecutor(new ServerCaller()));
+        CommunicationFactory.getInstance().register("FIND",
+                new GetKnowledgeExecutor(new ServerCaller(), getString(R.string.serverEndpointGet)));
+        CommunicationFactory.getInstance().register("ADD",
+                new AddKnowledgeExecutor(new ServerCaller(), getString(R.string.serverEndpointAdd)));
     }
 
     @Override
