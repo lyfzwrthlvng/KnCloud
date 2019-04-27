@@ -23,6 +23,7 @@ import com.shrey.kc.kcui.executors.AddKnowledgeExecutor;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutor;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
+import com.shrey.kc.kcui.objects.RuntimeConstants;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -94,10 +95,19 @@ public class Home extends AppCompatActivity {
 
         });
 
+        String serverIp = null;
+        if(RuntimeConstants.INSTANCE.IS_EMULATOR){
+            serverIp = getString(R.string.serverIpQEMU);
+        } else {
+            serverIp = getString(R.string.serverIpPrivate);
+        }
         CommunicationFactory.getInstance().register("FIND",
-                new GetKnowledgeExecutor(new ServerCaller(), getString(R.string.serverEndpointGet)));
+                new GetKnowledgeExecutor(new ServerCaller(),
+                        serverIp + getString(R.string.serverEndpointGet) ));
         CommunicationFactory.getInstance().register("ADD",
-                new AddKnowledgeExecutor(new ServerCaller(), getString(R.string.serverEndpointAdd)));
+                new AddKnowledgeExecutor(new ServerCaller(),
+                        serverIp + getString(R.string.serverEndpointAdd)));
+        Log.i(this.getClass().getName(), "server-ip: " + serverIp);
     }
 
     @Override
