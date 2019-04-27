@@ -8,4 +8,5 @@
     <color name="textWhite">#ffffff</color>
     <color name="colorAccentGradient">#FFE7B3BA</color>
     <color name="colorPrimaryGradient">#FFBFC6D2</color>
+    <color name="transparent">#0000</color>
 </resources>

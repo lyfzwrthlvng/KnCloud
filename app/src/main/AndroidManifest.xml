@@ -29,7 +29,9 @@
 
         <service
             android:name=".workerActivities.FetchTagKnowledge"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".KnowledgeDetails"></activity>
     </application>
 
 </manifest>

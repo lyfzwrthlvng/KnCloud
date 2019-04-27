@@ -72,7 +72,7 @@ public class LoggedInAddKnowledge extends AppCompatActivity {
             Intent knowledgeResultIntent = new Intent(data);
             Log.d("knowLedgeAdd", knowledgeResultIntent.getStringArrayListExtra("tagsForKnowledge").get(0));
             knowledgeResultIntent.putExtra("knowledge",kt.getText().toString());
-            setResult(resultCode,data);
+            setResult(resultCode,knowledgeResultIntent);
             finish();
         }
     }

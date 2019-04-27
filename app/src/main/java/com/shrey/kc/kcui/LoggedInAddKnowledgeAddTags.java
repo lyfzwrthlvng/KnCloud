@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static android.view.KeyEvent.KEYCODE_ENTER;
+import static android.view.KeyEvent.KEYCODE_SPACE;
 
 public class LoggedInAddKnowledgeAddTags extends AppCompatActivity {
 
@@ -38,12 +39,15 @@ public class LoggedInAddKnowledgeAddTags extends AppCompatActivity {
                     // return this result to previous activity
                     // put result in intent and finish!
                     String tagsGlued = et.getText().toString();
-                    ArrayList<String> tags = new ArrayList<>(Arrays.asList(tagsGlued.split(",")));
+                    ArrayList<String> tags = new ArrayList<>(Arrays.asList(tagsGlued.split(" ")));
                     Intent resultIntent = new Intent();
                     resultIntent.putStringArrayListExtra("tagsForKnowledge", tags);
                     //setResult(2,intent);
                     setResult(RuntimeConstants.INSTANCE.STARTED_ACTIVITY_RESULT_GOOD,resultIntent);
                     finish();
+                } else if(keyCode == KEYCODE_SPACE && event.getAction() == KeyEvent.ACTION_UP) {
+                    // add this to list of tags
+
                 }
                 return true;
             }

@@ -3,6 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="serverEndpointGet">http://192.168.0.3:9090/search/query</string>
-    <string name="serverEndpointAdd">http://192.168.0.3:9090/write/kc</string>
+    <string name="serverEndpointGet">http://10.0.2.2:9090/search/query</string>
+    <string name="serverEndpointAdd">http://10.0.2.2:9090/write/kc</string>
 </resources>

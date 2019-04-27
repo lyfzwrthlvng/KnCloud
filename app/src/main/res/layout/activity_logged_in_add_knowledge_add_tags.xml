@@ -17,7 +17,7 @@
         android:ems="10"
         android:textAlignment="center"
         android:inputType="textPersonName"
-        android:text="tags here, comma separated will do"
+        android:text="tags here, space separated will do"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

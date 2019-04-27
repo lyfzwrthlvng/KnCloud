@@ -127,7 +127,7 @@ public class LoggedInHome extends AppCompatActivity {
                 writeRequest.put("keyword", tag);
                 writeRequest.put("value", knowledge);
                 writeRequest.put("userKey", CurrentUserInfo.getUserInfo().getUser().getAccountInfo().getEmail());
-                writeRequest.put("userId", 1);
+                writeRequest.put("userId", CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
                 writeRequest.put("passKey","dummy");
                 Log.d(LoggedInHome.class.getName(), writeRequest.toString());
 
@@ -151,11 +151,11 @@ public class LoggedInHome extends AppCompatActivity {
         //editText.setBackgroundResource(R.drawable.rounded_corners_activity);
 
         HashMap<String, Object> req = new HashMap<>();
-        String userKey = CurrentUserInfo.getUserInfo().getUser().getUniqueId();
+        String userKey = CurrentUserInfo.getUserInfo().getUser().getAccountInfo().getEmail();
         String keyword = editText.getText().toString();
         req.put("keywordList", Arrays.asList(keyword));
         req.put("userKey",userKey);
-        req.put("userId",1);
+        req.put("userId",CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
         req.put("passKey","dummy");
         try {
             Map<String, Object> resp = null;
@@ -172,14 +172,18 @@ public class LoggedInHome extends AppCompatActivity {
                 CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.knowledge_card,null);
                 int ids = 78;
                 cardView.setId(ids);
-                cardView.setCardElevation(10);
-                cardView.setRadius(10);
-                CardView.LayoutParams lp = new CardView.LayoutParams(1000, 300);
-                lp.setMargins(20,16,20,20);
-                cardView.setLayoutParams(lp);
-                TextView tv = cardView.findViewById(R.id.textView);
+                TextView tv = cardView.findViewById(R.id.text_view_in_card);
                 tv.setText(param.get("cloud").toString());
                 ll.addView(cardView);
+                tv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TextView thisTv = (TextView)v;
+                        Intent detailsOfKnowledge = new Intent(LoggedInHome.this, KnowledgeDetails.class);
+                        detailsOfKnowledge.putExtra("knowledge", thisTv.getText());
+                        startActivity(detailsOfKnowledge);
+                    }
+                });
 
             }
             editText.setBackground(getDrawable(R.drawable.rounded_corners));
