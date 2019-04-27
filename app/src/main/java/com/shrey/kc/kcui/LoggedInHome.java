@@ -100,6 +100,7 @@ public class LoggedInHome extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // start add tag/knowledge activity
+                v.requestFocus();
                 Intent initiateAddKnowledgeIntent = new Intent(LoggedInHome.this, LoggedInAddKnowledge.class);
                 startActivityForResult(initiateAddKnowledgeIntent, RuntimeConstants.INSTANCE.START_ACTIVITY_FOR_KNOWLEDGE);
             }
@@ -114,6 +115,7 @@ public class LoggedInHome extends AppCompatActivity {
                 int refWidth = (int)(getResources().getDimension(R.dimen.round_button_radius));
                 if(et.getWidth() == refWidth) {
                     et.setLayoutParams(findViewById(R.id.text_search_reference).getLayoutParams());
+                    et.requestFocus();
                 } else {
                     performSearchAction(findViewById(R.id.text_search));
                 }
@@ -209,6 +211,8 @@ class ServiceBcastReceiver extends BroadcastReceiver {
         EditText et = activityRef.findViewById(R.id.text_search);
         et.setBackground(activityRef.getDrawable(R.drawable.rounded_corners));
         et.setAlpha(1);
+        et.setText(null);
+        et.setLayoutParams(activityRef.findViewById(R.id.text_search_reference_tiny).getLayoutParams());
         LinearLayout ll = activityRef.findViewById(R.id.root_vertical_container);
         ll.removeAllViews();
         for(LinkedHashMap param: knows) {
