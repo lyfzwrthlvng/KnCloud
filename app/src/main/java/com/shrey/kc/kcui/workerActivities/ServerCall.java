@@ -68,19 +68,20 @@ public class ServerCall extends IntentService {
      * @param readRequest
      */
     private void handleActionFind(KCReadRequest readRequest) {
+        NodeResult result = null;
         try {
-            NodeResult result = CommunicationFactory.getInstance().getExecutor("FIND").executeRequest(readRequest);
-            Intent intent = new Intent();
-            intent.setAction(ACTION_READ);
-            intent.putExtra("result", result);
-            sendBroadcast(intent);
+            result = CommunicationFactory.getInstance().getExecutor("FIND").executeRequest(readRequest);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        Intent intent = new Intent();
+        intent.setAction(ACTION_READ);
+        intent.putExtra("result", result);
+        sendBroadcast(intent);
     }
 
     /**
@@ -88,18 +89,19 @@ public class ServerCall extends IntentService {
      * parameters.
      */
     private void handleActionAdd(KCWriteRequest writeRequest) {
+        NodeResult result = null;
         try {
-            NodeResult result = CommunicationFactory.getInstance().getExecutor("ADD").executeRequest(writeRequest);
-            Intent intent = new Intent();
-            intent.setAction(ACTION_ADD);
-            intent.putExtra("result", result);
-            sendBroadcast(intent);
+            result = CommunicationFactory.getInstance().getExecutor("ADD").executeRequest(writeRequest);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        Intent intent = new Intent();
+        intent.setAction(ACTION_ADD);
+        intent.putExtra("result", result);
+        sendBroadcast(intent);
     }
 }

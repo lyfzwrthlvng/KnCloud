@@ -19,6 +19,7 @@
         android:ems="10"
         android:textAlignment="gravity"
         android:gravity="left"
+        android:textColor="@color/colorActivityBg"
         android:inputType="textMultiLine"
         android:text="enter text here"
         app:layout_constraintTop_toTopOf="parent"

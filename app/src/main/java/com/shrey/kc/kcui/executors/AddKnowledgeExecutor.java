@@ -7,6 +7,7 @@ import com.shrey.kc.kcui.entities.NodeResult;
 import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
@@ -22,7 +23,7 @@ public class AddKnowledgeExecutor implements GenericExecutor {
     }
 
     @Override
-    public NodeResult executeRequest(KCAccessRequest request) throws IOException, ExecutionException, InterruptedException {
+    public NodeResult executeRequest(KCAccessRequest request) throws IOException, ExecutionException, InterruptedException, TimeoutException {
         URL url = new URL(endpoint);
         return serverCaller.nonBlockingServerCall(url, "POST", request);
     }

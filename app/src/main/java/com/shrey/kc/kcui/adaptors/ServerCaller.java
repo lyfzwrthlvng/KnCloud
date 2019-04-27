@@ -23,6 +23,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import javax.inject.Singleton;
 
 import static java.lang.Math.floor;
@@ -47,11 +50,10 @@ public class ServerCaller {
     @SuppressWarnings("unchecked")
     public NodeResult nonBlockingServerCall(final URL backend, final String method,
                                                      final KCAccessRequest request)
-            throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException, TimeoutException {
         Future<NodeResult> future = threadPoolExecutor.submit(new Callable<NodeResult>() {
             @Override
             public NodeResult call() throws Exception {
-                try {
                     HttpURLConnection connection = (HttpURLConnection) backend.openConnection();
 
                     connection.setRequestMethod(method);
@@ -78,14 +80,9 @@ public class ServerCaller {
                     NodeResult result = new NodeResult();
                     result.setResult((HashMap<String, Object>) new Gson().fromJson(outputBuilder.toString(), tt));
                     return result;
-                } catch (Exception e) {
-                    //callbackHelper.callbackWithResult(null);
-                    e.printStackTrace();
-                }
-                return null;
             }
         });
 
-        return future.get();
+        return future.get(10, TimeUnit.SECONDS);
     }
 }

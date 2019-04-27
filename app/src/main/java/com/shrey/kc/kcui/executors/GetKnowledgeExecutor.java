@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
@@ -35,7 +36,7 @@ public class GetKnowledgeExecutor implements GenericExecutor {
     }
 
     @Override
-    public NodeResult executeRequest(KCAccessRequest request) throws IOException, ExecutionException, InterruptedException {
+    public NodeResult executeRequest(KCAccessRequest request) throws IOException, ExecutionException, InterruptedException, TimeoutException {
         URL backend = new URL(endpoint);
         return serverCaller.nonBlockingServerCall(backend, "POST", request);
     }

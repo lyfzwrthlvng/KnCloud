@@ -18,6 +18,7 @@
         android:textAlignment="center"
         android:inputType="textPersonName"
         android:text="tags here, space separated will do"
+        android:textColor="@color/colorActivityBg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

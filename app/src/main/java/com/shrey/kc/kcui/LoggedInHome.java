@@ -11,7 +11,6 @@ import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -125,9 +124,6 @@ public class LoggedInHome extends AppCompatActivity {
     }
 
     private void loadRealUI() {
-        //findViewById(R.id.sign_in_button).setEnabled(false);
-        //findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-        //setContentView(R.layout.activity_dashboard);
         findViewById(R.id.text_search).setEnabled(true);
     }
 
@@ -195,24 +191,26 @@ class ServiceBcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        fillUpKnowledgeCards((NodeResult) intent.getSerializableExtra("result"));
+        if(action == ServerCall.ACTION_READ) {
+            fillUpKnowledgeCards((NodeResult) intent.getSerializableExtra("result"));
+        } else if(action == ServerCall.ACTION_ADD && intent.getSerializableExtra("result") == null) {
+            makeToastOfFailure();
+        }
     }
 
     private void fillUpKnowledgeCards(NodeResult result) {
-        HashMap<String, Object> resp = result.getResult();
-        if(resp == null) {
-            Toast toast = Toast.makeText(activityRef.getApplicationContext(),
-                    "Com breakdown with server :( \nTry in a little while maybe?",
-                    Toast.LENGTH_SHORT);
-            return;
-        }
-        Log.d("apicall", resp.toString());
-        ArrayList<LinkedHashMap> knows = (ArrayList<LinkedHashMap>) resp.get("Knowledge");
         EditText et = activityRef.findViewById(R.id.text_search);
         et.setBackground(activityRef.getDrawable(R.drawable.rounded_corners));
         et.setAlpha(1);
         et.setText(null);
         et.setLayoutParams(activityRef.findViewById(R.id.text_search_reference_tiny).getLayoutParams());
+        if(result == null || result.getResult() == null) {
+            makeToastOfFailure();
+            return;
+        }
+        HashMap<String, Object> resp = result.getResult();
+        Log.d("apicall", resp.toString());
+        ArrayList<LinkedHashMap> knows = (ArrayList<LinkedHashMap>) resp.get("Knowledge");
         LinearLayout ll = activityRef.findViewById(R.id.root_vertical_container);
         ll.removeAllViews();
         for(LinkedHashMap param: knows) {
@@ -237,10 +235,17 @@ class ServiceBcastReceiver extends BroadcastReceiver {
             });
 
         }
-        //editText.setBackground(getDrawable(R.drawable.rounded_corners));
         InputMethodManager inputManager = (InputMethodManager) activityRef.getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.toggleSoftInput(0, 0);
         ll.setFocusable(true);
         ll.requestFocus();
+    }
+
+    private void makeToastOfFailure() {
+        Toast toast = Toast.makeText(activityRef.getApplicationContext(),
+                "Com breakdown with server :( \nTry in a little while maybe?",
+                Toast.LENGTH_SHORT);
+        toast.show();
+        Log.e("ServiceBroadcastListener", "FAILED COM WITH SERVER!");
     }
 }
