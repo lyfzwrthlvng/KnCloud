@@ -6,22 +6,24 @@
     android:layout_marginStart="@dimen/activity_vertical_marginby2"
     android:layout_marginEnd="@dimen/activity_vertical_marginby2"
     android:elevation="2dp"
-    app:cardCornerRadius="10dp"
-    android:focusable="true">
+    app:cardCornerRadius="4dp"
+    android:focusable="true"
+    android:clipChildren="true"
+    android:layout_gravity="fill">
 
     <TextView
         android:id="@+id/text_view_in_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/activity_vertical_marginby2"
         android:layout_marginLeft="@dimen/activity_horizontal_marginby2"
         android:layout_marginRight="@dimen/activity_horizontal_marginby2"
-        android:layout_marginBottom="@dimen/activity_vertical_marginby2"
-        android:layout_marginTop="@dimen/activity_vertical_marginby2"
         android:textAlignment="gravity"
         android:textSize="40sp"
+        android:textColor="@color/colorActivityBgJustLighter"
         android:maxHeight="100dp"
         android:paddingLeft="@dimen/activity_horizontal_marginby2"
-        android:background="@drawable/not_rounded_corners"
+        android:background="@drawable/not_so_rounded_corners"
         android:layout_gravity="left"
         android:text="TextView" />
 </android.support.v7.widget.CardView>

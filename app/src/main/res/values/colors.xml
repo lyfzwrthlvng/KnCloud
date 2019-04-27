@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#FF1F4581</color>
     <color name="colorAccent">#FFEE4C63</color>
     <color name="colorActivityBg">#FFF08A6F</color>
+    <color name="colorActivityBgJustLighter">#FFF4aAcF</color>
     <color name="colorAppThemCyan">#12c4e0</color>
     <color name="textWhite">#ffffff</color>
     <color name="colorAccentGradient">#FFE7B3BA</color>

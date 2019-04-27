@@ -16,7 +16,7 @@
         android:textAlignment="gravity"
         android:gravity="center"
         android:background="@drawable/not_rounded_corners"
-        android:textColor="@color/colorPrimaryGradient"
+        android:textColor="@color/colorActivityBgJustLighter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

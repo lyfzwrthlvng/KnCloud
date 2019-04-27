@@ -213,14 +213,15 @@ class ServiceBcastReceiver extends BroadcastReceiver {
         ArrayList<LinkedHashMap> knows = (ArrayList<LinkedHashMap>) resp.get("Knowledge");
         LinearLayout ll = activityRef.findViewById(R.id.root_vertical_container);
         ll.removeAllViews();
+        int id = 999;
         for(LinkedHashMap param: knows) {
             if(param.get("cloud") == null) {
                 continue;
             }
             Log.d("asd", param.get("cloud").toString());
             CardView cardView = (CardView) activityRef.getLayoutInflater().inflate(R.layout.knowledge_card,null);
-            int ids = 78;
-            cardView.setId(ids);
+            id += 1;
+            cardView.setId(id);
             TextView tv = cardView.findViewById(R.id.text_view_in_card);
             tv.setText(param.get("cloud").toString());
             ll.addView(cardView);
