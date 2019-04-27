@@ -6,7 +6,7 @@
     android:layout_marginStart="@dimen/activity_vertical_marginby2"
     android:layout_marginEnd="@dimen/activity_vertical_marginby2"
     android:elevation="2dp"
-    app:cardCornerRadius="8dp">
+    app:cardCornerRadius="10dp">
 
     <TextView
         android:id="@+id/text_view_in_card"
@@ -19,6 +19,7 @@
         android:textAlignment="gravity"
         android:textSize="40sp"
         android:maxHeight="100dp"
+        android:paddingLeft="@dimen/activity_horizontal_marginby2"
         android:background="@drawable/not_rounded_corners"
         android:layout_gravity="left"
         android:text="TextView" />

@@ -3,6 +3,9 @@ package com.shrey.kc.kcui.executors;
 import com.shrey.kc.kcui.R;
 import com.shrey.kc.kcui.adaptors.ServerCaller;
 import com.shrey.kc.kcui.adaptors.ServerCallerProvider;
+import com.shrey.kc.kcui.entities.KCAccessRequest;
+import com.shrey.kc.kcui.entities.NodeResult;
+import com.shrey.kc.kcui.workerActivities.GenericCallbackHelper;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +35,7 @@ public class GetKnowledgeExecutor implements GenericExecutor {
     }
 
     @Override
-    public Map<String, Object> executeRequest(Map<String, Object> request) throws IOException, ExecutionException, InterruptedException {
+    public NodeResult executeRequest(KCAccessRequest request) throws IOException, ExecutionException, InterruptedException {
         URL backend = new URL(endpoint);
         return serverCaller.nonBlockingServerCall(backend, "POST", request);
     }

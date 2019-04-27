@@ -1,10 +1,12 @@
 package com.shrey.kc.kcui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -14,27 +16,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.gson.internal.LinkedTreeMap;
-import com.shrey.kc.kcui.objects.CommunicationFactory;
+import com.shrey.kc.kcui.entities.KCReadRequest;
+import com.shrey.kc.kcui.entities.KCWriteRequest;
+import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
+import com.shrey.kc.kcui.workerActivities.ServerCall;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
-import static android.view.KeyEvent.*;
+import static android.view.KeyEvent.KEYCODE_ENTER;
+import static android.view.KeyEvent.KEYCODE_ESCAPE;
 
 public class LoggedInHome extends AppCompatActivity {
+
+    ServiceBcastReceiver serviceBcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard2);
+        setContentView(R.layout.activity_logged_in_home);
         setupListeners();
         loadRealUI();
     }
@@ -78,7 +84,7 @@ public class LoggedInHome extends AppCompatActivity {
                 if(hasFocus) {
                     et.setText(null);
                 } else {
-                    et.setAlpha(0.8f);
+                    et.setAlpha(1);
                 }
             }
         });
@@ -118,107 +124,108 @@ public class LoggedInHome extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        serviceBcastReceiver = new ServiceBcastReceiver(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ServerCall.ACTION_ADD);
+        intentFilter.addAction(ServerCall.ACTION_READ);
+        registerReceiver(serviceBcastReceiver, intentFilter);
+        super.onStart();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == RuntimeConstants.INSTANCE.START_ACTIVITY_FOR_KNOWLEDGE &&
                 resultCode == RuntimeConstants.INSTANCE.STARTED_ACTIVITY_RESULT_GOOD) {
             String knowledge = data.getStringExtra("knowledge");
             for(String tag: data.getStringArrayListExtra("tagsForKnowledge")) {
-                HashMap<String, Object> writeRequest = new HashMap<>();
-                writeRequest.put("keyword", tag);
-                writeRequest.put("value", knowledge);
-                writeRequest.put("userKey", CurrentUserInfo.getUserInfo().getUser().getAccountInfo().getEmail());
-                writeRequest.put("userId", CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
-                writeRequest.put("passKey","dummy");
-                Log.d(LoggedInHome.class.getName(), writeRequest.toString());
-
+                KCWriteRequest request = new KCWriteRequest();
+                request.setKeyword(tag);
+                request.setValue(knowledge);
+                request.setUserId(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
+                request.setPassKey("dummy");
+                request.setUserkey(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().getEmail());
                 // send request to server
-                try {
-                    CommunicationFactory.getInstance().getExecutor("ADD").executeRequest(writeRequest);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                ServerCall.startActionAdd(getApplicationContext(), request);
             }
         }
     }
 
     private void performSearchAction(View v) {
         final EditText editText = (EditText) v;
-        editText.setBackground(getResources().getDrawable(R.drawable.rounded_corners_activity));
+        editText.setBackground(getDrawable(R.drawable.rounded_corners_activity));
         //editText.setBackgroundResource(R.drawable.rounded_corners_activity);
 
-        HashMap<String, Object> req = new HashMap<>();
         String userKey = CurrentUserInfo.getUserInfo().getUser().getAccountInfo().getEmail();
         String keyword = editText.getText().toString();
-        req.put("keywordList", Arrays.asList(keyword));
-        req.put("userKey",userKey);
-        req.put("userId",CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
-        req.put("passKey","dummy");
-        try {
-            Map<String, Object> resp = null;
-            resp = CommunicationFactory.getInstance().getExecutor("FIND").executeRequest(req);
-            Log.d("apicall", resp.toString());
-            ArrayList<LinkedTreeMap> knows = (ArrayList<LinkedTreeMap>) resp.get("Knowledge");
-            LinearLayout ll = findViewById(R.id.root_vertical_container);
-            ll.removeAllViews();
-            for(LinkedTreeMap param: knows) {
-                if(param.get("cloud") == null) {
-                    continue;
-                }
-                Log.d("asd", param.get("cloud").toString());
-                CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.knowledge_card,null);
-                int ids = 78;
-                cardView.setId(ids);
-                TextView tv = cardView.findViewById(R.id.text_view_in_card);
-                tv.setText(param.get("cloud").toString());
-                ll.addView(cardView);
-                tv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        TextView thisTv = (TextView)v;
-                        Intent detailsOfKnowledge = new Intent(LoggedInHome.this, KnowledgeDetails.class);
-                        detailsOfKnowledge.putExtra("knowledge", thisTv.getText());
-                        startActivity(detailsOfKnowledge);
-                    }
-                });
 
-            }
-            editText.setBackground(getDrawable(R.drawable.rounded_corners));
-            InputMethodManager inputManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.toggleSoftInput(0, 0);
-            ll.setFocusable(true);
-            ll.requestFocus();
-
-            //CardView cardView = findViewById(R.id.card_view_for_knowledge);
-            //lv.setBackgroundColor(Color.BLACK);
-            //lv.addView(getLayoutInflater().inflate(R.layout.knowledge_card, null));
-
-        } catch (IOException | ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            editText.setBackground(getDrawable(R.drawable.rounded_corners));
-        } finally {
-            //editText.setBackground(getDrawable(R.drawable.rounded_corners));
-        }
+        KCReadRequest request = new KCReadRequest();
+        ArrayList<String> keywords = new ArrayList<>();
+        keywords.add(keyword);
+        request.setKeywordList(keywords);
+        request.setUserkey(userKey);
+        request.setPassKey("dummy");
+        request.setUserId(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
+        ServerCall.startActionRead(getApplicationContext(), request);
     }
 
-    /*
+}
+
+class ServiceBcastReceiver extends BroadcastReceiver {
+
+    LoggedInHome activityRef;
+
+    public ServiceBcastReceiver(LoggedInHome activityRef) {
+        this.activityRef = activityRef;
+    }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        super.dispatchKeyEvent(event);
-        boolean someAction = false;
-        if(event.getKeyCode() == KEYCODE_ESCAPE && event.getAction() == KeyEvent.ACTION_UP) {
-            InputMethodManager inputManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.toggleSoftInput(0, 0);
-            LinearLayout ll = findViewById(R.id.root_vertical_container);
-            ll.setFocusable(true);
-            ll.requestFocus();
-            someAction = true;
-        }
-        return someAction;
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        fillUpKnowledgeCards((NodeResult) intent.getSerializableExtra("result"));
     }
-    */
+
+    private void fillUpKnowledgeCards(NodeResult result) {
+        HashMap<String, Object> resp = result.getResult();
+        if(resp == null) {
+            Toast toast = Toast.makeText(activityRef.getApplicationContext(),
+                    "Com breakdown with server :( \nTry in a little while maybe?",
+                    Toast.LENGTH_SHORT);
+            return;
+        }
+        Log.d("apicall", resp.toString());
+        ArrayList<LinkedHashMap> knows = (ArrayList<LinkedHashMap>) resp.get("Knowledge");
+        EditText et = activityRef.findViewById(R.id.textTag);
+        et.setBackground(activityRef.getDrawable(R.drawable.rounded_corners));
+        et.setAlpha(1);
+        LinearLayout ll = activityRef.findViewById(R.id.root_vertical_container);
+        ll.removeAllViews();
+        for(LinkedHashMap param: knows) {
+            if(param.get("cloud") == null) {
+                continue;
+            }
+            Log.d("asd", param.get("cloud").toString());
+            CardView cardView = (CardView) activityRef.getLayoutInflater().inflate(R.layout.knowledge_card,null);
+            int ids = 78;
+            cardView.setId(ids);
+            TextView tv = cardView.findViewById(R.id.text_view_in_card);
+            tv.setText(param.get("cloud").toString());
+            ll.addView(cardView);
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TextView thisTv = (TextView)v;
+                    Intent detailsOfKnowledge = new Intent(activityRef, KnowledgeDetails.class);
+                    detailsOfKnowledge.putExtra("knowledge", thisTv.getText());
+                    activityRef.startActivity(detailsOfKnowledge);
+                }
+            });
+
+        }
+        //editText.setBackground(getDrawable(R.drawable.rounded_corners));
+        InputMethodManager inputManager = (InputMethodManager) activityRef.getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.toggleSoftInput(0, 0);
+        ll.setFocusable(true);
+        ll.requestFocus();
+    }
 }

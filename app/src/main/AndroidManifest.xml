@@ -31,7 +31,13 @@
             android:name=".workerActivities.FetchTagKnowledge"
             android:exported="false" />
 
-        <activity android:name=".KnowledgeDetails"></activity>
+        <activity
+            android:name=".KnowledgeDetails"
+            android:windowSoftInputMode="adjustResize" />
+
+        <service
+            android:name=".workerActivities.ServerCall"
+            android:exported="false"></service>
     </application>
 
 </manifest>
