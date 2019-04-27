@@ -11,6 +11,7 @@ import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,7 +60,7 @@ public class LoggedInHome extends AppCompatActivity {
             }
         });
 
-        final EditText et = findViewById(R.id.textTag);
+        final EditText et = findViewById(R.id.text_search);
 
         et.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -75,7 +76,7 @@ public class LoggedInHome extends AppCompatActivity {
             public void onClick(View v) {
                 EditText et = (EditText)v;
                 et.setText(null);
-                et.setAlpha(1);
+                //et.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
             }
         });
         et.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -83,8 +84,12 @@ public class LoggedInHome extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus) {
                     et.setText(null);
+                    et.setLayoutParams(findViewById(R.id.text_search_reference).getLayoutParams());
+                    //et.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
                 } else {
-                    et.setAlpha(1);
+                    et.setText(null);
+                    et.setLayoutParams(findViewById(R.id.text_search_reference_tiny).getLayoutParams());
+                    //et.setWidth(R.dimen.round_button_radius);
                 }
             }
         });
@@ -101,11 +106,17 @@ public class LoggedInHome extends AppCompatActivity {
         });
 
         // ---- button search
-        Button searchButton = findViewById(R.id.button_seach);
+        Button searchButton = findViewById(R.id.button_search);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                performSearchAction(findViewById(R.id.textTag));
+                EditText et = findViewById(R.id.text_search);
+                int refWidth = (int)(getResources().getDimension(R.dimen.round_button_radius));
+                if(et.getWidth() == refWidth) {
+                    et.setLayoutParams(findViewById(R.id.text_search_reference).getLayoutParams());
+                } else {
+                    performSearchAction(findViewById(R.id.text_search));
+                }
             }
         });
 
@@ -115,7 +126,7 @@ public class LoggedInHome extends AppCompatActivity {
         //findViewById(R.id.sign_in_button).setEnabled(false);
         //findViewById(R.id.sign_in_button).setVisibility(View.GONE);
         //setContentView(R.layout.activity_dashboard);
-        findViewById(R.id.textTag).setEnabled(true);
+        findViewById(R.id.text_search).setEnabled(true);
     }
 
     protected void fillUpCards(Map<String, Object> response) {
@@ -195,7 +206,7 @@ class ServiceBcastReceiver extends BroadcastReceiver {
         }
         Log.d("apicall", resp.toString());
         ArrayList<LinkedHashMap> knows = (ArrayList<LinkedHashMap>) resp.get("Knowledge");
-        EditText et = activityRef.findViewById(R.id.textTag);
+        EditText et = activityRef.findViewById(R.id.text_search);
         et.setBackground(activityRef.getDrawable(R.drawable.rounded_corners));
         et.setAlpha(1);
         LinearLayout ll = activityRef.findViewById(R.id.root_vertical_container);
