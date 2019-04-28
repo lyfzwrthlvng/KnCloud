@@ -8,6 +8,14 @@
     tools:context=".Home"
     android:background="@color/colorPrimary">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foreground="@mipmap/ic_launcher_foreground"
+        android:foregroundGravity="center"
+        android:background="@color/colorAccent"
+        />
+
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="110dp"
@@ -16,14 +24,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:foreground="@mipmap/ic_launcher_foreground"
-        android:foregroundGravity="center"
-        android:background="@color/colorAccent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/activity_vertical_marginx10"/>
 
 </android.support.constraint.ConstraintLayout>
