@@ -16,7 +16,9 @@ import com.google.android.gms.tasks.Task;
 import com.shrey.kc.kcui.adaptors.ServerCaller;
 import com.shrey.kc.kcui.entities.User;
 import com.shrey.kc.kcui.executors.AddKnowledgeExecutor;
+import com.shrey.kc.kcui.executors.AddKnowledgeExecutorLocal;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutor;
+import com.shrey.kc.kcui.executors.GetKnowledgeExecutorLocal;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
@@ -60,6 +62,7 @@ public class Home extends AppCompatActivity {
 
         });
 
+        /*
         String serverIp = null;
         if(RuntimeConstants.INSTANCE.IS_EMULATOR){
             serverIp = getString(R.string.serverIpQEMU);
@@ -73,6 +76,9 @@ public class Home extends AppCompatActivity {
                 new AddKnowledgeExecutor(new ServerCaller(),
                         serverIp + getString(R.string.serverEndpointAdd)));
         Log.i(this.getClass().getName(), "server-ip: " + serverIp);
+        */
+        CommunicationFactory.getInstance().register("FIND", new GetKnowledgeExecutorLocal());
+        CommunicationFactory.getInstance().register("ADD", new AddKnowledgeExecutorLocal());
     }
 
     @Override
