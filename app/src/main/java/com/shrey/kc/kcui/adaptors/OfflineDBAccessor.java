@@ -1,5 +1,6 @@
 package com.shrey.kc.kcui.adaptors;
 
+import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
@@ -59,6 +60,15 @@ public class OfflineDBAccessor {
             resultInside.put("cloud", knowledge);
             ((ArrayList<Object>)result.getResult().get("Knowledge")).add(resultInside);
         }
+        return result;
+    }
+
+    public static NodeResult getAllTags(KCAccessRequest readRequest) {
+        ApplicationLocalDB localDB = LocalDBHolder.INSTANCE.getLocalDB();
+        String[] tags = localDB.tagDao().findTags();
+        NodeResult result = new NodeResult();
+        result.setResult(new HashMap<String, Object>());
+        result.getResult().put("Tags", tags);
         return result;
     }
 }

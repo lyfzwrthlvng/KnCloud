@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ClipDrawable;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,8 @@ import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
 import com.shrey.kc.kcui.workerActivities.ServerCall;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,15 +66,6 @@ public class LoggedInHome extends AppCompatActivity {
 
         final EditText et = findViewById(R.id.text_search);
 
-        et.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode == KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
-                    performSearchAction(v);
-                }
-                return true;
-            }
-        });
         et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,17 +74,13 @@ public class LoggedInHome extends AppCompatActivity {
                 //et.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
             }
         });
+
         et.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus) {
                     et.setText(null);
-                    et.setLayoutParams(findViewById(R.id.text_search_reference).getLayoutParams());
-                    //et.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
-                } else {
-                    et.setText(null);
-                    et.setLayoutParams(findViewById(R.id.text_search_reference_tiny).getLayoutParams());
-                    //et.setWidth(R.dimen.round_button_radius);
                 }
             }
         });
@@ -113,13 +103,7 @@ public class LoggedInHome extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditText et = findViewById(R.id.text_search);
-                int refWidth = (int)(getResources().getDimension(R.dimen.round_button_radius));
-                if(et.getWidth() == refWidth) {
-                    et.setLayoutParams(findViewById(R.id.text_search_reference).getLayoutParams());
-                    et.requestFocus();
-                } else {
-                    performSearchAction(findViewById(R.id.text_search));
-                }
+                performSearchAction(findViewById(R.id.text_search));
             }
         });
 
@@ -127,6 +111,11 @@ public class LoggedInHome extends AppCompatActivity {
 
     private void loadRealUI() {
         findViewById(R.id.text_search).setEnabled(true);
+
+    }
+
+    private void fillbackgroundWithTags() {
+        //TextView tv = findViewById(R.id.text_view_tags_background);
     }
 
     protected void fillUpCards(Map<String, Object> response) {
@@ -163,8 +152,9 @@ public class LoggedInHome extends AppCompatActivity {
     }
 
     private void performSearchAction(View v) {
+        Log.i(LoggedInHome.class.getName(), "Performing search action");
         final EditText editText = (EditText) v;
-        editText.setBackground(getDrawable(R.drawable.rounded_corners_activity));
+        //editText.setBackground(getDrawable(R.drawable.rounded_corners_activity));
         //editText.setBackgroundResource(R.drawable.rounded_corners_activity);
 
         String userKey = CurrentUserInfo.getUserInfo().getUser().getAccountInfo().getEmail();
@@ -180,6 +170,12 @@ public class LoggedInHome extends AppCompatActivity {
         ServerCall.startActionRead(getApplicationContext(), request);
     }
 
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        Log.i("QQQ", "hey staryting new activity!!!");
+        super.startActivityForResult(intent, requestCode);
+    }
+
 }
 
 class ServiceBcastReceiver extends BroadcastReceiver {
@@ -193,7 +189,8 @@ class ServiceBcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        if(action == ServerCall.ACTION_READ) {
+        if(action == ServerCall.ACTION_READ && !ViewKnowledge.isActive) {
+            ViewKnowledge.isActive = true;
             fillUpKnowledgeCards((NodeResult) intent.getSerializableExtra("result"));
         } else if(action == ServerCall.ACTION_ADD && intent.getSerializableExtra("result") == null) {
             makeToastOfFailure();
@@ -201,11 +198,6 @@ class ServiceBcastReceiver extends BroadcastReceiver {
     }
 
     private void fillUpKnowledgeCards(NodeResult result) {
-        EditText et = activityRef.findViewById(R.id.text_search);
-        et.setBackground(activityRef.getDrawable(R.drawable.rounded_corners));
-        et.setAlpha(1);
-        et.setText(null);
-        et.setLayoutParams(activityRef.findViewById(R.id.text_search_reference_tiny).getLayoutParams());
         if(result == null || result.getResult() == null) {
             makeToastOfFailure();
             return;
@@ -213,35 +205,20 @@ class ServiceBcastReceiver extends BroadcastReceiver {
         HashMap<String, Object> resp = result.getResult();
         Log.d("apicall", resp.toString());
         ArrayList<LinkedHashMap> knows = (ArrayList<LinkedHashMap>) resp.get("Knowledge");
-        LinearLayout ll = activityRef.findViewById(R.id.root_vertical_container);
-        ll.removeAllViews();
         int id = 999;
+        ArrayList<String> knowledges = new ArrayList<>();
         for(LinkedHashMap param: knows) {
             if(param.get("cloud") == null) {
                 continue;
             }
-            Log.d("asd", param.get("cloud").toString());
-            CardView cardView = (CardView) activityRef.getLayoutInflater().inflate(R.layout.knowledge_card,null);
-            id += 1;
-            cardView.setId(id);
-            TextView tv = cardView.findViewById(R.id.text_view_in_card);
-            tv.setText(param.get("cloud").toString());
-            ll.addView(cardView);
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TextView thisTv = (TextView)v;
-                    Intent detailsOfKnowledge = new Intent(activityRef, KnowledgeDetails.class);
-                    detailsOfKnowledge.putExtra("knowledge", thisTv.getText());
-                    activityRef.startActivity(detailsOfKnowledge);
-                }
-            });
-
+            knowledges.add(param.get("cloud").toString());
         }
         InputMethodManager inputManager = (InputMethodManager) activityRef.getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.toggleSoftInput(0, 0);
-        ll.setFocusable(true);
-        ll.requestFocus();
+        Intent showKnowledgeIntent = new Intent(activityRef, ViewKnowledge.class);
+        showKnowledgeIntent.putStringArrayListExtra("knowledges", knowledges);
+        activityRef.startActivityForResult(showKnowledgeIntent, 0);
+        return;
     }
 
     private void makeToastOfFailure() {

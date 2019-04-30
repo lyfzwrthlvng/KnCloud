@@ -5,8 +5,8 @@
 
     <solid android:color="@color/colorAccent" />
     <gradient
-        android:startColor="@color/colorAccent"
-        android:endColor="@color/colorActivityBg"
+        android:startColor="@color/colorPrimary"
+        android:endColor="@color/colorAccent"
         android:angle="0"/>
     <padding
         android:left="1dp"
@@ -15,7 +15,7 @@
         android:top="1dp" />
 
     <corners android:radius="25dp" />
-</shape>rounded_corners.xml
+</shape>
     </item>
     <item>
         <shape>

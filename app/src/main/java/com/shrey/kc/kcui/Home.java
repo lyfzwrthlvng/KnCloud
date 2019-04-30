@@ -17,6 +17,7 @@ import com.shrey.kc.kcui.adaptors.ServerCaller;
 import com.shrey.kc.kcui.entities.User;
 import com.shrey.kc.kcui.executors.AddKnowledgeExecutor;
 import com.shrey.kc.kcui.executors.AddKnowledgeExecutorLocal;
+import com.shrey.kc.kcui.executors.GetAllTagsExecutorLocal;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutor;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutorLocal;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
@@ -79,6 +80,7 @@ public class Home extends AppCompatActivity {
         */
         CommunicationFactory.getInstance().register("FIND", new GetKnowledgeExecutorLocal());
         CommunicationFactory.getInstance().register("ADD", new AddKnowledgeExecutorLocal());
+        CommunicationFactory.getInstance().register("USER_TAGS", new GetAllTagsExecutorLocal());
     }
 
     @Override

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,21 +10,52 @@
     app:cardCornerRadius="4dp"
     android:focusable="true"
     android:clipChildren="true"
-    android:layout_gravity="fill">
+    android:layout_gravity="fill"
+    android:background="@color/colorActivityBg">
 
-    <TextView
-        android:id="@+id/text_view_in_card"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="100dp"
         android:layout_marginTop="@dimen/activity_vertical_marginby2"
-        android:layout_marginLeft="@dimen/activity_horizontal_marginby2"
-        android:layout_marginRight="@dimen/activity_horizontal_marginby2"
-        android:textAlignment="gravity"
-        android:textSize="40sp"
-        android:textColor="@color/colorActivityBgJustLighter"
-        android:maxHeight="100dp"
-        android:paddingLeft="@dimen/activity_horizontal_marginby2"
-        android:background="@drawable/not_so_rounded_corners"
-        android:layout_gravity="left"
-        android:text="TextView" />
+        android:layout_marginStart="@dimen/activity_horizontal_marginby2"
+        android:layout_marginEnd="@dimen/activity_horizontal_marginby2"
+        android:background="@drawable/not_so_rounded_corners">
+
+        <TextView
+            android:id="@+id/text_view_in_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="0dp"
+            android:background="@color/transparent"
+            android:maxHeight="100dp"
+            android:paddingLeft="@dimen/activity_horizontal_marginby2"
+            android:text="TextView"
+            android:textAlignment="gravity"
+            android:textColor="@color/textWhite"
+            android:textSize="38sp"
+            android:drawableTint="@color/colorAccent"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/text_view_in_card_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="0dp"
+            android:background="@color/transparent"
+            android:maxHeight="100dp"
+            android:paddingLeft="@dimen/activity_horizontal_marginby2"
+            android:text="TextView"
+            android:textAlignment="gravity"
+            android:textColor="@color/textWhite"
+            android:textSize="38sp"
+            android:visibility="gone"
+            android:drawableEnd="@android:drawable/status_bar_item_app_background"
+            android:drawableTint="@color/colorAccent"
+            tools:text="@tools:sample/full_names" />
+
+
+    </RelativeLayout>
+
 </android.support.v7.widget.CardView>
