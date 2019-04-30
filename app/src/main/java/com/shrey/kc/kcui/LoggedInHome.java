@@ -192,9 +192,14 @@ class ServiceBcastReceiver extends BroadcastReceiver {
         if(action == ServerCall.ACTION_READ && !ViewKnowledge.isActive) {
             ViewKnowledge.isActive = true;
             fillUpKnowledgeCards((NodeResult) intent.getSerializableExtra("result"));
-        } else if(action == ServerCall.ACTION_ADD && intent.getSerializableExtra("result") == null) {
-            makeToastOfFailure();
+        } else if(action == ServerCall.ACTION_ADD) {
+            if(intent.getSerializableExtra("result") == null) {
+                makeToastOfFailure();
+            } else {
+                makeToastOfSuccess();
+            }
         }
+        activityRef.findViewById(R.id.add_button).requestFocus();
     }
 
     private void fillUpKnowledgeCards(NodeResult result) {
@@ -227,5 +232,12 @@ class ServiceBcastReceiver extends BroadcastReceiver {
                 Toast.LENGTH_SHORT);
         toast.show();
         Log.e("ServiceBroadcastListener", "FAILED COM WITH SERVER!");
+    }
+
+    private void makeToastOfSuccess() {
+        Toast toast = Toast.makeText(activityRef.getApplicationContext(),
+                "note saved",
+                Toast.LENGTH_SHORT);
+        toast.show();
     }
 }
