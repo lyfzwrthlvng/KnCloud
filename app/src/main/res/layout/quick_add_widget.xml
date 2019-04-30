@@ -4,23 +4,13 @@
     android:background="#09C"
     android:padding="@dimen/widget_margin">
 
-    <EditText
-        android:id="@+id/text_quick_knowledge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:ems="10"
-        android:inputType="textMultiLine"
-        android:text="" />
-
-    <EditText
-        android:id="@+id/text_quick_tags"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="363dp"
-        android:layout_marginBottom="148dp"
-        android:inputType="textShortMessage" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:id="@+id/button_add_quick"/>
 
 </RelativeLayout>
