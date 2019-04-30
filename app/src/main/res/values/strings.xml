@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Knowledge Cloud</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_dashboard">Knowledge Cloud</string>
     <string name="title_notifications">Notifications</string>
     <string name="serverEndpointGet">/search/query</string>
     <string name="serverEndpointAdd">/write/kc</string>
@@ -10,4 +10,6 @@
     <string name="serverIpPublic">X.Y.z.Q</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="title_add_knowledge">Add Note</string>
+    <string name="title_assign_tags">Add Tags</string>
 </resources>

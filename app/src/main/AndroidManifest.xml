@@ -27,8 +27,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoggedInHome" />
-        <activity android:name=".LoggedInAddKnowledge" />
-        <activity android:name=".LoggedInAddKnowledgeAddTags" />
+        <activity android:name=".LoggedInAddKnowledge"
+            android:label="@string/title_add_knowledge"
+            />
+        <activity android:name=".LoggedInAddKnowledgeAddTags"
+            android:label="@string/title_assign_tags"
+            />
 
         <service
             android:name=".workerActivities.FetchTagKnowledge"
