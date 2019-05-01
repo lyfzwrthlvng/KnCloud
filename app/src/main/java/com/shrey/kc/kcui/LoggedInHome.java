@@ -48,6 +48,9 @@ public class LoggedInHome extends AppCompatActivity {
         LocalDBHolder.INSTANCE.getSetLocalDB(getApplicationContext());
         setupListeners();
         loadRealUI();
+
+        // handle if we were tasked with something in particular
+        handleIntentRequest();
     }
 
     private void setupListeners() {
@@ -131,6 +134,7 @@ public class LoggedInHome extends AppCompatActivity {
         intentFilter.addAction(ServerCall.ACTION_READ);
         registerReceiver(serviceBcastReceiver, intentFilter);
         super.onStart();
+        Log.i("LOGGED_IN_HOME", getApplicationContext().getPackageName());
     }
 
     @Override
@@ -174,6 +178,16 @@ public class LoggedInHome extends AppCompatActivity {
     public void startActivityForResult(Intent intent, int requestCode) {
         Log.i("QQQ", "hey staryting new activity!!!");
         super.startActivityForResult(intent, requestCode);
+    }
+
+    private void handleIntentRequest() {
+        Intent requestIntent = getIntent();
+        if(requestIntent.getIntExtra("requestCode",-1) == RuntimeConstants.INSTANCE.START_FROM_WIDGET_FOR_ADD) {
+            // better get going with adding a new knowledge + tags
+            Intent initiateAddKnowledgeIntent = new Intent(LoggedInHome.this, LoggedInAddKnowledge.class);
+            startActivityForResult(initiateAddKnowledgeIntent, RuntimeConstants.INSTANCE.START_ACTIVITY_FOR_KNOWLEDGE);
+        }
+
     }
 
 }

@@ -1,16 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09C"
+    android:background="@drawable/not_so_rounded_corners"
     android:padding="@dimen/widget_margin">
 
     <Button
+        android:id="@+id/button_add_quick"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary"
         android:layout_centerHorizontal="true"
-        android:text=""
-        android:id="@+id/button_add_quick"/>
+        android:background="@color/transparent"
+        android:foreground="@drawable/widget_drawable"
+        android:foregroundGravity="center"
+        android:text="[+]"
+        android:textColor="@color/textWhite"
+        android:textSize="40sp" />
 
 </RelativeLayout>

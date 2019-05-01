@@ -1,5 +1,6 @@
 package com.shrey.kc.kcui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -86,6 +87,7 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Log.i("HOME", getApplicationContext().getPackageName());
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         // if account is null, need to sign in
         if(account == null) {
