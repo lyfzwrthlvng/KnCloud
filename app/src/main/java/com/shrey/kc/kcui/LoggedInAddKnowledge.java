@@ -11,7 +11,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.shrey.kc.kcui.entities.KCWriteRequest;
+import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
+import com.shrey.kc.kcui.workerActivities.AsyncCall;
 
 import javax.inject.Inject;
 
@@ -47,6 +50,13 @@ public class LoggedInAddKnowledge extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("AddKnowledge", kt.getText().toString());
+                // Send it to tag suggestions, we'll receive broadcast on next activity
+                KCWriteRequest writeRequest = new KCWriteRequest();
+                writeRequest.setUserkey(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().getEmail());
+                writeRequest.setPassKey("dummy");
+                writeRequest.setUserId(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
+                AsyncCall.startActionFetchTags(getApplicationContext(),
+                        KCWriteRequest.constructRequest(kt.getText().toString(), ""));
                 // start an activity to tags for this knowledge
                 Intent collectTagsIntent = new Intent(LoggedInAddKnowledge.this, LoggedInAddKnowledgeAddTags.class);
                 startActivityForResult(collectTagsIntent, RuntimeConstants.INSTANCE.START_ACTIVITY_FOR_TAGS);

@@ -10,6 +10,7 @@
     <dimen name="activity_vertical_marginx10">160dp</dimen>
     <dimen name="round_button_radius">50dp</dimen>
     <dimen name="text_size_1to5_2">20dp</dimen>
+    <dimen name="text_size_1to5_3">30dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information

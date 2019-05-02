@@ -18,6 +18,7 @@ import com.shrey.kc.kcui.adaptors.ServerCaller;
 import com.shrey.kc.kcui.entities.User;
 import com.shrey.kc.kcui.executors.AddKnowledgeExecutor;
 import com.shrey.kc.kcui.executors.AddKnowledgeExecutorLocal;
+import com.shrey.kc.kcui.executors.FetchSuggestedTagsExecutor;
 import com.shrey.kc.kcui.executors.GetAllTagsExecutorLocal;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutor;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutorLocal;
@@ -64,24 +65,28 @@ public class Home extends AppCompatActivity {
 
         });
 
-        /*
+
         String serverIp = null;
         if(RuntimeConstants.INSTANCE.IS_EMULATOR){
             serverIp = getString(R.string.serverIpQEMU);
         } else {
             serverIp = getString(R.string.serverIpPrivate);
         }
+        /*
         CommunicationFactory.getInstance().register("FIND",
                 new GetKnowledgeExecutor(new ServerCaller(),
                         serverIp + getString(R.string.serverEndpointGet) ));
         CommunicationFactory.getInstance().register("ADD",
                 new AddKnowledgeExecutor(new ServerCaller(),
                         serverIp + getString(R.string.serverEndpointAdd)));
+                        */
         Log.i(this.getClass().getName(), "server-ip: " + serverIp);
-        */
         CommunicationFactory.getInstance().register("FIND", new GetKnowledgeExecutorLocal());
         CommunicationFactory.getInstance().register("ADD", new AddKnowledgeExecutorLocal());
         CommunicationFactory.getInstance().register("USER_TAGS", new GetAllTagsExecutorLocal());
+        CommunicationFactory.getInstance().register("FETCH_TAGS",
+                new FetchSuggestedTagsExecutor(new ServerCaller(),
+                        serverIp + getString(R.string.serverEndpointTags)));
     }
 
     @Override

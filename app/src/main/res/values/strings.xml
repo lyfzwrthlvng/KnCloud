@@ -5,6 +5,7 @@
     <string name="title_notifications">Notifications</string>
     <string name="serverEndpointGet">/search/query</string>
     <string name="serverEndpointAdd">/write/kc</string>
+    <string name="serverEndpointTags">/write/extractTags</string>
     <string name="serverIpPrivate">http://192.168.0.5:9090</string>
     <string name="serverIpQEMU">http://10.0.2.2:9090</string>
     <string name="serverIpPublic">X.Y.z.Q</string>

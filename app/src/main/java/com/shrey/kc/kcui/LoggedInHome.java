@@ -1,40 +1,28 @@
 package com.shrey.kc.kcui;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.ClipDrawable;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
-import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
-import com.shrey.kc.kcui.workerActivities.ServerCall;
-
-import org.w3c.dom.Text;
+import com.shrey.kc.kcui.workerActivities.AsyncCall;
+import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static android.view.KeyEvent.KEYCODE_ENTER;
 import static android.view.KeyEvent.KEYCODE_ESCAPE;
 
 public class LoggedInHome extends AppCompatActivity {
@@ -130,8 +118,8 @@ public class LoggedInHome extends AppCompatActivity {
     protected void onStart() {
         serviceBcastReceiver = new ServiceBcastReceiver(this);
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ServerCall.ACTION_ADD);
-        intentFilter.addAction(ServerCall.ACTION_READ);
+        intentFilter.addAction(AsyncCall.ACTION_ADD);
+        intentFilter.addAction(AsyncCall.ACTION_READ);
         registerReceiver(serviceBcastReceiver, intentFilter);
         super.onStart();
         Log.i("LOGGED_IN_HOME", getApplicationContext().getPackageName());
@@ -150,7 +138,7 @@ public class LoggedInHome extends AppCompatActivity {
                 request.setPassKey("dummy");
                 request.setUserkey(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().getEmail());
                 // send request to server
-                ServerCall.startActionAdd(getApplicationContext(), request);
+                AsyncCall.startActionAdd(getApplicationContext(), request);
             }
         }
     }
@@ -171,7 +159,7 @@ public class LoggedInHome extends AppCompatActivity {
         request.setUserkey(userKey);
         request.setPassKey("dummy");
         request.setUserId(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
-        ServerCall.startActionRead(getApplicationContext(), request);
+        AsyncCall.startActionRead(getApplicationContext(), request);
     }
 
     @Override
@@ -190,68 +178,4 @@ public class LoggedInHome extends AppCompatActivity {
 
     }
 
-}
-
-class ServiceBcastReceiver extends BroadcastReceiver {
-
-    LoggedInHome activityRef;
-
-    public ServiceBcastReceiver(LoggedInHome activityRef) {
-        this.activityRef = activityRef;
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        if(action == ServerCall.ACTION_READ && !ViewKnowledge.isActive) {
-            ViewKnowledge.isActive = true;
-            fillUpKnowledgeCards((NodeResult) intent.getSerializableExtra("result"));
-        } else if(action == ServerCall.ACTION_ADD) {
-            if(intent.getSerializableExtra("result") == null) {
-                makeToastOfFailure();
-            } else {
-                makeToastOfSuccess();
-            }
-        }
-        activityRef.findViewById(R.id.add_button).requestFocus();
-    }
-
-    private void fillUpKnowledgeCards(NodeResult result) {
-        if(result == null || result.getResult() == null) {
-            makeToastOfFailure();
-            return;
-        }
-        HashMap<String, Object> resp = result.getResult();
-        Log.d("apicall", resp.toString());
-        ArrayList<LinkedHashMap> knows = (ArrayList<LinkedHashMap>) resp.get("Knowledge");
-        int id = 999;
-        ArrayList<String> knowledges = new ArrayList<>();
-        for(LinkedHashMap param: knows) {
-            if(param.get("cloud") == null) {
-                continue;
-            }
-            knowledges.add(param.get("cloud").toString());
-        }
-        InputMethodManager inputManager = (InputMethodManager) activityRef.getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.toggleSoftInput(0, 0);
-        Intent showKnowledgeIntent = new Intent(activityRef, ViewKnowledge.class);
-        showKnowledgeIntent.putStringArrayListExtra("knowledges", knowledges);
-        activityRef.startActivityForResult(showKnowledgeIntent, 0);
-        return;
-    }
-
-    private void makeToastOfFailure() {
-        Toast toast = Toast.makeText(activityRef.getApplicationContext(),
-                "Com breakdown with server :( \nTry in a little while maybe?",
-                Toast.LENGTH_SHORT);
-        toast.show();
-        Log.e("ServiceBroadcastListener", "FAILED COM WITH SERVER!");
-    }
-
-    private void makeToastOfSuccess() {
-        Toast toast = Toast.makeText(activityRef.getApplicationContext(),
-                "note saved",
-                Toast.LENGTH_SHORT);
-        toast.show();
-    }
 }

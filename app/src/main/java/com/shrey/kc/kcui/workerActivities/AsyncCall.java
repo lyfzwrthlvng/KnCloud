@@ -1,7 +1,6 @@
 package com.shrey.kc.kcui.workerActivities;
 
 import android.app.IntentService;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.Context;
 
@@ -13,38 +12,35 @@ import com.shrey.kc.kcui.objects.CommunicationFactory;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
-public class ServerCall extends IntentService {
+public class AsyncCall extends IntentService {
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_READ = "com.shrey.kc.kcui.workerActivities.action.READ";
     public static final String ACTION_ADD = "com.shrey.kc.kcui.workerActivities.action.ADD";
+    public static final String ACTION_FETCH_TAGS = "com.shrey.kc.kcui.workerActivities.action.FETCH_TAGS";
 
-    public ServerCall() {
-        super("ServerCall");
+    public AsyncCall() {
+        super("AsyncCall");
     }
 
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
     public static void startActionRead(Context context, KCReadRequest readRequest) {
-        Intent intent = new Intent(context, ServerCall.class);
+        Intent intent = new Intent(context, AsyncCall.class);
         intent.setAction(ACTION_READ);
         intent.putExtra("request", readRequest);
         context.startService(intent);
     }
 
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
     public static void startActionAdd(Context context, KCWriteRequest writeRequest) {
-        Intent intent = new Intent(context, ServerCall.class);
+        Intent intent = new Intent(context, AsyncCall.class);
         intent.setAction(ACTION_ADD);
+        intent.putExtra("request", writeRequest);
+        context.startService(intent);
+    }
+
+    public static void startActionFetchTags(Context context, KCWriteRequest writeRequest) {
+        Intent intent = new Intent(context, AsyncCall.class);
+        intent.setAction(ACTION_FETCH_TAGS);
         intent.putExtra("request", writeRequest);
         context.startService(intent);
     }
@@ -54,19 +50,22 @@ public class ServerCall extends IntentService {
         KCAccessRequest request = (KCAccessRequest)intent.getSerializableExtra("request");
         if (intent != null) {
             final String action = intent.getAction();
-            if (ACTION_READ.equals(action)) {
-                handleActionFind((KCReadRequest)request);
-            } else if (ACTION_ADD.equals(action)) {
-                handleActionAdd((KCWriteRequest)request);
+            switch (action) {
+                case ACTION_READ:
+                    handleActionFind((KCReadRequest)request);
+                    break;
+                case ACTION_ADD:
+                    handleActionAdd((KCWriteRequest)request);
+                    break;
+                case ACTION_FETCH_TAGS:
+                    handleActionFetchTags((KCWriteRequest)request);
+                    break;
+                    default:
+                        break;
             }
         }
     }
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     * @param readRequest
-     */
     private void handleActionFind(KCReadRequest readRequest) {
         NodeResult result = null;
         try {
@@ -99,8 +98,28 @@ public class ServerCall extends IntentService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        broadcastResult(ACTION_ADD, result);
+    }
+
+    private void handleActionFetchTags(KCWriteRequest writeRequest) {
+        NodeResult result = null;
+        try {
+            result = CommunicationFactory.getInstance().getExecutor("FETCH_TAGS").executeRequest(writeRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        broadcastResult(ACTION_FETCH_TAGS, result);
+    }
+
+    private void broadcastResult(String action, NodeResult result) {
         Intent intent = new Intent();
-        intent.setAction(ACTION_ADD);
+        intent.setAction(action);
         intent.putExtra("result", result);
         sendBroadcast(intent);
     }

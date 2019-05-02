@@ -1,6 +1,7 @@
 package com.shrey.kc.kcui;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.shrey.kc.kcui.objects.RuntimeConstants;
+import com.shrey.kc.kcui.workerActivities.AsyncCall;
+import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +20,8 @@ import static android.view.KeyEvent.KEYCODE_SPACE;
 
 public class LoggedInAddKnowledgeAddTags extends AppCompatActivity {
 
+    ServiceBcastReceiver serviceBcastReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +30,10 @@ public class LoggedInAddKnowledgeAddTags extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        serviceBcastReceiver = new ServiceBcastReceiver(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(AsyncCall.ACTION_FETCH_TAGS);
+        registerReceiver(serviceBcastReceiver, intentFilter);
         super.onStart();
         setListeners();
     }

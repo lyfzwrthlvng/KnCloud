@@ -11,6 +11,10 @@ public enum RuntimeConstants {
     public final int STARTED_ACTIVITY_RESULT_NOOP = 68;
     public final int STARTED_ACTIVITY_RESULT_GOOD = 69;
 
+    public static final String ACTION_READ = "com.shrey.kc.kcui.workerActivities.action.READ";
+    public static final String ACTION_ADD = "com.shrey.kc.kcui.workerActivities.action.ADD";
+    public static final String ACTION_FETCH_TAGS = "com.shrey.kc.kcui.workerActivities.action.FETCH_TAGS";
+
     public final boolean IS_EMULATOR = Build.FINGERPRINT.startsWith("generic")
                 || Build.FINGERPRINT.startsWith("unknown")
                 || Build.MODEL.contains("google_sdk")
