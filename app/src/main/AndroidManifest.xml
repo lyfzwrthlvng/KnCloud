@@ -27,12 +27,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoggedInHome" />
-        <activity android:name=".LoggedInAddKnowledge"
-            android:label="@string/title_add_knowledge"
-            />
-        <activity android:name=".LoggedInAddKnowledgeAddTags"
-            android:label="@string/title_assign_tags"
-            />
+        <activity
+            android:name=".LoggedInAddKnowledge"
+            android:label="@string/title_add_knowledge" />
+        <activity
+            android:name=".LoggedInAddKnowledgeAddTags"
+            android:label="@string/title_assign_tags" />
 
         <service
             android:name=".workerActivities.FetchTagKnowledge"
@@ -56,7 +56,13 @@
                 android:resource="@xml/quick_add_widget_info" />
         </receiver>
 
-        <activity android:name=".ViewKnowledge"></activity>
+        <activity android:name=".ViewKnowledge" />
+        <activity
+            android:name=".LoggedInHomeFull"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_logged_in_home_full"
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name=".LoggedInHomeNew"></activity>
     </application>
 
 </manifest>
