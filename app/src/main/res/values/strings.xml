@@ -13,4 +13,5 @@
     <string name="add_widget">Add widget</string>
     <string name="title_add_knowledge">Add Note</string>
     <string name="title_assign_tags">Add Tags</string>
+    <string name="tags_here_space_separated_will_do">tags here, space separated will do</string>
 </resources>

@@ -5,7 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shrey.kc.kcui.R;
@@ -13,6 +18,7 @@ import com.shrey.kc.kcui.ViewKnowledge;
 import com.shrey.kc.kcui.entities.NodeResult;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,8 +49,8 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
         } else if(action == AsyncCall.ACTION_FETCH_TAGS) {
             //Log.i("SERVICE: ", intent.getSerializableExtra("result").toString());
             NodeResult result = (NodeResult)intent.getSerializableExtra("result");
-            Log.i(ServiceBcastReceiver.class.getName(), result.getResult().get("Tags").toString());
-
+            //Log.i(ServiceBcastReceiver.class.getName(), result.getResult().get("Tags").toString());
+            suggestTags(result);
         }
 
     }
@@ -90,6 +96,28 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
     }
 
     private void suggestTags(NodeResult result) {
-        //result.getResult().get("Tags")
+        LinkedHashMap<String, String> resultHash = (LinkedHashMap<String, String>) result.getResult().get("Tags");
+        LinearLayout ll = activityRef.findViewById(R.id.layout_for_tag_suggestions);
+        int id = 786;
+        for(String tag: resultHash.keySet()) {
+            RelativeLayout irl = (RelativeLayout) activityRef.getLayoutInflater().inflate(R.layout.tag_suggestion, null);
+            irl.setId(id++);
+            TextView tv = irl.findViewById(R.id.text_view_suggestion_sample);
+            tv.setText("#" + tag);
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EditText et = activityRef.findViewById(R.id.add_tag_text_tags_text);
+                    TextView tvIn = (TextView) v;
+                    String existing = et.getText().toString();
+                    if(existing.equalsIgnoreCase(activityRef.getString(R.string.tags_here_space_separated_will_do))) {
+                        existing = "";
+                    }
+                    existing += tvIn.getText().toString().replace("#"," ");
+                    et.setText(existing);
+                }
+            });
+            ll.addView(irl);
+        }
     }
 }

@@ -78,4 +78,10 @@ public class LoggedInAddKnowledgeAddTags extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(serviceBcastReceiver);
+        super.onStop();
+    }
 }

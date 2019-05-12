@@ -84,9 +84,11 @@ public class Home extends AppCompatActivity {
         CommunicationFactory.getInstance().register("FIND", new GetKnowledgeExecutorLocal());
         CommunicationFactory.getInstance().register("ADD", new AddKnowledgeExecutorLocal());
         CommunicationFactory.getInstance().register("USER_TAGS", new GetAllTagsExecutorLocal());
+        /*
         CommunicationFactory.getInstance().register("FETCH_TAGS",
                 new FetchSuggestedTagsExecutor(new ServerCaller(),
                         serverIp + getString(R.string.serverEndpointTags)));
+                        */
     }
 
     @Override
