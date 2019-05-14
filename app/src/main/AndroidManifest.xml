@@ -62,7 +62,8 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_logged_in_home_full"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name=".LoggedInHomeNew"></activity>
+        <activity android:name=".LoggedInHomeNew" />
+        <activity android:name=".ViewTags"></activity>
     </application>
 
 </manifest>

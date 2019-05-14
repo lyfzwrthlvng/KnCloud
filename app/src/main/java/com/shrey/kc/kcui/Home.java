@@ -138,7 +138,7 @@ public class Home extends AppCompatActivity {
         Log.i("SIGNIN", "sign in done for: " + account.getEmail());
         CurrentUserInfo.getUserInfo().setUser(new User(account.getId(), account));
         //loadRealUI();
-        Intent loggedIntent = new Intent(this, LoggedInHomeNew.class);
+        Intent loggedIntent = new Intent(this, LoggedInHome.class);
         startActivity(loggedIntent);
     }
 

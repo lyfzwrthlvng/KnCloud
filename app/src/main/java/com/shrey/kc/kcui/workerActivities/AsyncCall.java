@@ -38,10 +38,10 @@ public class AsyncCall extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionFetchTags(Context context, KCWriteRequest writeRequest) {
+    public static void startActionFetchTags(Context context, KCAccessRequest request) {
         Intent intent = new Intent(context, AsyncCall.class);
         intent.setAction(ACTION_FETCH_TAGS);
-        intent.putExtra("request", writeRequest);
+        intent.putExtra("request", request);
         context.startService(intent);
     }
 
@@ -102,9 +102,10 @@ public class AsyncCall extends IntentService {
     }
 
     private void handleActionFetchTags(KCWriteRequest writeRequest) {
+
         NodeResult result = null;
         try {
-            result = CommunicationFactory.getInstance().getExecutor("FETCH_TAGS").executeRequest(writeRequest);
+            result = CommunicationFactory.getInstance().getExecutor("USER_TAGS").executeRequest(writeRequest);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

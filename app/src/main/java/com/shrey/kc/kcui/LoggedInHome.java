@@ -11,7 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
@@ -98,6 +100,15 @@ public class LoggedInHome extends AppCompatActivity {
             }
         });
 
+        final Button listButton = findViewById(R.id.button_list);
+        listButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // start a new activity that lists all the tags
+                performFetchAllTags(v);
+            }
+        });
+
     }
 
     private void loadRealUI() {
@@ -160,6 +171,15 @@ public class LoggedInHome extends AppCompatActivity {
         request.setPassKey("dummy");
         request.setUserId(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
         AsyncCall.startActionRead(getApplicationContext(), request);
+    }
+
+    private void performFetchAllTags(View v) {
+        Log.i(LoggedInHome.class.getName(), "Fetching all tags for user");
+        final EditText editText = (EditText) v;
+        ArrayList<String> keywords = new ArrayList<>();
+        keywords.add(editText.getText().toString());
+        KCAccessRequest accessRequest = KCAccessRequest.constructRequest();
+        AsyncCall.startActionFetchTags(getApplicationContext(), accessRequest);
     }
 
     @Override

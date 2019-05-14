@@ -1,9 +1,18 @@
 package com.shrey.kc.kcui.entities;
 
 
+import com.shrey.kc.kcui.objects.CurrentUserInfo;
+
 import java.io.Serializable;
 
 public class KCAccessRequest implements Serializable {
+    public static KCAccessRequest constructRequest() {
+        KCAccessRequest req = new KCAccessRequest();
+        req.setUserId(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
+        req.setPassKey("dummy");
+        req.setUserkey(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().getEmail());
+        return req;
+    }
     String userKey;
 
     String passKey;

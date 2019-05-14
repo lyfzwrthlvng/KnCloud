@@ -55,8 +55,8 @@ public class LoggedInAddKnowledge extends AppCompatActivity {
                 writeRequest.setUserkey(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().getEmail());
                 writeRequest.setPassKey("dummy");
                 writeRequest.setUserId(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
-                AsyncCall.startActionFetchTags(getApplicationContext(),
-                        KCWriteRequest.constructRequest(kt.getText().toString(), ""));
+                //AsyncCall.startActionFetchTags(getApplicationContext(),
+                //        KCWriteRequest.constructRequest(kt.getText().toString(), ""));
                 // start an activity to tags for this knowledge
                 Intent collectTagsIntent = new Intent(LoggedInAddKnowledge.this, LoggedInAddKnowledgeAddTags.class);
                 startActivityForResult(collectTagsIntent, RuntimeConstants.INSTANCE.START_ACTIVITY_FOR_TAGS);

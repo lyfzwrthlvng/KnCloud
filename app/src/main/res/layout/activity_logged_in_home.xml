@@ -137,4 +137,19 @@
         app:layout_constraintVertical_bias="0.641"
         android:visibility="gone"/>
 
+    <Button
+        android:id="@+id/button_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/round_button_radius"
+        android:height="@dimen/app_small_button"
+        android:background="@color/colorActivityBg"
+        android:text="#"
+        android:textColor="@color/textWhite"
+        android:textSize="@dimen/text_size_1to5_3"
+        android:foregroundGravity="center"
+        android:foregroundTint="@color/common_google_signin_btn_text_dark_default" />
+
 </android.support.constraint.ConstraintLayout>
