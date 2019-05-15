@@ -52,7 +52,6 @@
         android:elevation="-2dp"
         android:focusable="false"
         android:gravity="center_vertical|center_horizontal|center"
-        android:hint="add a new note"
         android:inputType="textShortMessage"
         android:textAlignment="gravity"
         android:textColor="@color/colorAccentGradient"
@@ -129,7 +128,7 @@
         android:layout_marginEnd="84dp"
         android:layout_marginBottom="8dp"
         android:elevation="3dp"
-        android:text="add new note"
+
         android:textColor="@color/textWhite"
         app:layout_constraintBottom_toTopOf="@+id/button_search"
         app:layout_constraintEnd_toEndOf="@id/add_button"

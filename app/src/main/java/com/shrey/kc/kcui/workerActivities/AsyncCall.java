@@ -58,7 +58,7 @@ public class AsyncCall extends IntentService {
                     handleActionAdd((KCWriteRequest)request);
                     break;
                 case ACTION_FETCH_TAGS:
-                    handleActionFetchTags((KCWriteRequest)request);
+                    handleActionFetchTags((KCAccessRequest)request);
                     break;
                     default:
                         break;
@@ -101,7 +101,7 @@ public class AsyncCall extends IntentService {
         broadcastResult(ACTION_ADD, result);
     }
 
-    private void handleActionFetchTags(KCWriteRequest writeRequest) {
+    private void handleActionFetchTags(KCAccessRequest writeRequest) {
 
         NodeResult result = null;
         try {

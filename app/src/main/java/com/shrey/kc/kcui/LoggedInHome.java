@@ -131,6 +131,7 @@ public class LoggedInHome extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(AsyncCall.ACTION_ADD);
         intentFilter.addAction(AsyncCall.ACTION_READ);
+        intentFilter.addAction(AsyncCall.ACTION_FETCH_TAGS);
         registerReceiver(serviceBcastReceiver, intentFilter);
         super.onStart();
         Log.i("LOGGED_IN_HOME", getApplicationContext().getPackageName());
@@ -175,16 +176,13 @@ public class LoggedInHome extends AppCompatActivity {
 
     private void performFetchAllTags(View v) {
         Log.i(LoggedInHome.class.getName(), "Fetching all tags for user");
-        final EditText editText = (EditText) v;
-        ArrayList<String> keywords = new ArrayList<>();
-        keywords.add(editText.getText().toString());
         KCAccessRequest accessRequest = KCAccessRequest.constructRequest();
         AsyncCall.startActionFetchTags(getApplicationContext(), accessRequest);
     }
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
-        Log.i("QQQ", "hey staryting new activity!!!");
+        Log.i("QQQ", "hey starting new activity!!!");
         super.startActivityForResult(intent, requestCode);
     }
 
@@ -196,6 +194,12 @@ public class LoggedInHome extends AppCompatActivity {
             startActivityForResult(initiateAddKnowledgeIntent, RuntimeConstants.INSTANCE.START_ACTIVITY_FOR_KNOWLEDGE);
         }
 
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(serviceBcastReceiver);
+        super.onStop();
     }
 
 }

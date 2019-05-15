@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/not_so_rounded_corners"
     android:padding="@dimen/widget_margin">
 
     <Button
@@ -13,8 +13,11 @@
         android:background="@color/transparent"
         android:foreground="@drawable/widget_drawable"
         android:foregroundGravity="center"
+        android:foregroundTint="@color/colorPrimary"
+        android:foregroundTintMode="screen"
         android:text="[+]"
-        android:textColor="@color/textWhite"
-        android:textSize="40sp" />
+        android:textColor="@color/colorPrimary"
+        android:textSize="40sp"
+        tools:foregroundTintMode="screen" />
 
 </RelativeLayout>

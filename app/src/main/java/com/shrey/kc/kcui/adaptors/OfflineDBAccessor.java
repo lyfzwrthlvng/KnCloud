@@ -27,8 +27,11 @@ public class OfflineDBAccessor {
         Knowledge knowledge = new Knowledge();
         knowledge.setKnowledge(request.getValue());
 
-        // write these
-        long[] tagIds = localDB.tagDao().insertAll(new Tag[]{tag});
+        // check if tag is already there, if yes, just link to that's id
+        long[] tagIds = localDB.tagDao().findTagIds(new String[]{request.getKeyword()});
+        if(tagIds == null || tagIds.length == 0) {
+            tagIds = localDB.tagDao().insertAll(new Tag[]{tag});
+        }
 
         long[] knowledgeIds = localDB.knowledgeDao().insertAll(new Knowledge[]{knowledge});
 

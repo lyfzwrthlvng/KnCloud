@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.shrey.kc.kcui.R;
 import com.shrey.kc.kcui.ViewKnowledge;
+import com.shrey.kc.kcui.ViewTags;
 import com.shrey.kc.kcui.entities.NodeResult;
 
 import org.w3c.dom.Node;
@@ -38,7 +39,7 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
         if(action == AsyncCall.ACTION_READ && !ViewKnowledge.isActive) {
             ViewKnowledge.isActive = true;
             fillUpKnowledgeCards((NodeResult) intent.getSerializableExtra("result"));
-            activityRef.findViewById(R.id.add_button).requestFocus();
+            //activityRef.findViewById(R.id.add_button).requestFocus();
         } else if(action == AsyncCall.ACTION_ADD) {
             if(intent.getSerializableExtra("result") == null) {
                 makeToastOfFailure();
@@ -46,11 +47,12 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
                 makeToastOfSuccess();
             }
             activityRef.findViewById(R.id.add_button).requestFocus();
-        } else if(action == AsyncCall.ACTION_FETCH_TAGS) {
+        } else if(action == AsyncCall.ACTION_FETCH_TAGS && !ViewTags.isActive) {
             //Log.i("SERVICE: ", intent.getSerializableExtra("result").toString());
             NodeResult result = (NodeResult)intent.getSerializableExtra("result");
             //Log.i(ServiceBcastReceiver.class.getName(), result.getResult().get("Tags").toString());
-            suggestTags(result);
+            //suggestTags(result);
+            startActivityAndFillAllTags(result);
         }
 
     }
@@ -73,7 +75,7 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
             knowledges.add(param.get("cloud").toString());
         }
         InputMethodManager inputManager = (InputMethodManager) activityRef.getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.toggleSoftInput(0, 0);
+        //inputManager.toggleSoftInput(0, 0);
         Intent showKnowledgeIntent = new Intent(activityRef, ViewKnowledge.class);
         showKnowledgeIntent.putStringArrayListExtra("knowledges", knowledges);
         activityRef.startActivityForResult(showKnowledgeIntent, 0);
@@ -119,5 +121,23 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
             });
             ll.addView(irl);
         }
+    }
+
+    private void startActivityAndFillAllTags(NodeResult result) {
+        if(result == null || result.getResult() == null) {
+            makeToastOfFailure();
+            return;
+        }
+        HashMap<String, Object> resp = result.getResult();
+        Log.d("apicall", resp.toString());
+        String[] tags = (String[]) resp.get("Tags");
+        ArrayList<String> tagsArray = new ArrayList<>();
+        for(String tag: tags) {
+            tagsArray.add(tag);
+        }
+        Intent showAllTagsIntent = new Intent(activityRef, ViewTags.class);
+        showAllTagsIntent.putStringArrayListExtra("Tags", tagsArray);
+        activityRef.startActivityForResult(showAllTagsIntent, 0);
+        return;
     }
 }
