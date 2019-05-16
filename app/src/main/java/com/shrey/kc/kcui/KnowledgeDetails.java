@@ -7,9 +7,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.shrey.kc.kcui.activities.KCUIActivity;
+import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
 
-public class KnowledgeDetails extends AppCompatActivity {
+public class KnowledgeDetails extends KCUIActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,5 +36,10 @@ public class KnowledgeDetails extends AppCompatActivity {
         String knowledge = intent.getStringExtra("knowledge");
         TextView tv = findViewById(R.id.text_knowledge_details);
         tv.setText(knowledge);
+    }
+
+    @Override
+    public void handleBroadcastResult(NodeResult result) {
+
     }
 }

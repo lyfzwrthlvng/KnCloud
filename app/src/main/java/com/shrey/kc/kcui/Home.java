@@ -14,7 +14,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.shrey.kc.kcui.activities.KCUIActivity;
 import com.shrey.kc.kcui.adaptors.ServerCaller;
+import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.entities.User;
 import com.shrey.kc.kcui.executors.AddKnowledgeExecutor;
 import com.shrey.kc.kcui.executors.AddKnowledgeExecutorLocal;
@@ -27,7 +29,7 @@ import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
 
 
-public class Home extends AppCompatActivity {
+public class Home extends KCUIActivity {
 
     private final int RC_SIGN_IN = 9001;
 
@@ -142,4 +144,8 @@ public class Home extends AppCompatActivity {
         startActivity(loggedIntent);
     }
 
+    @Override
+    public void handleBroadcastResult(NodeResult result) {
+
+    }
 }

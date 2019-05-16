@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.shrey.kc.kcui.activities.KCUIActivity;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
@@ -21,7 +22,7 @@ import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
 
 import java.util.ArrayList;
 
-public class ViewTags extends AppCompatActivity {
+public class ViewTags extends KCUIActivity {
 
     // we sometimes get duplicate broadcasts, this to avoid starting the activity multiple times
     public static boolean isActive = false;
@@ -96,5 +97,10 @@ public class ViewTags extends AppCompatActivity {
         isActive = false;
         unregisterReceiver(serviceBcastReceiver);
         super.onStop();
+    }
+
+    @Override
+    public void handleBroadcastResult(NodeResult result) {
+
     }
 }

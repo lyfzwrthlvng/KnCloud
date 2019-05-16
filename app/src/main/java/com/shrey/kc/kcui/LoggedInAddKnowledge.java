@@ -11,7 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.shrey.kc.kcui.activities.KCUIActivity;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
+import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
 import com.shrey.kc.kcui.workerActivities.AsyncCall;
@@ -20,7 +22,7 @@ import javax.inject.Inject;
 
 import static android.view.KeyEvent.KEYCODE_ESCAPE;
 
-public class LoggedInAddKnowledge extends AppCompatActivity {
+public class LoggedInAddKnowledge extends KCUIActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,11 @@ public class LoggedInAddKnowledge extends AppCompatActivity {
     }
 
     private void finishActivityWithResult(int resultCode, Intent returnInfo) {
+
+    }
+
+    @Override
+    public void handleBroadcastResult(NodeResult result) {
 
     }
 

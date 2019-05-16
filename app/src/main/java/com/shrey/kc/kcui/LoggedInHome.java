@@ -13,9 +13,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.shrey.kc.kcui.activities.KCUIActivity;
 import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
+import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
@@ -27,7 +29,7 @@ import java.util.Map;
 
 import static android.view.KeyEvent.KEYCODE_ESCAPE;
 
-public class LoggedInHome extends AppCompatActivity {
+public class LoggedInHome extends KCUIActivity {
 
     ServiceBcastReceiver serviceBcastReceiver;
 
@@ -202,4 +204,8 @@ public class LoggedInHome extends AppCompatActivity {
         super.onStop();
     }
 
+    @Override
+    public void handleBroadcastResult(NodeResult result) {
+
+    }
 }

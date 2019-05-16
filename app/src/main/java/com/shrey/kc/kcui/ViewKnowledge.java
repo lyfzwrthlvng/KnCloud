@@ -13,12 +13,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.shrey.kc.kcui.activities.KCUIActivity;
+import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class ViewKnowledge extends AppCompatActivity {
+public class ViewKnowledge extends KCUIActivity {
 
     public static boolean isActive = false;
 
@@ -95,5 +97,10 @@ public class ViewKnowledge extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         isActive = false;
+    }
+
+    @Override
+    public void handleBroadcastResult(NodeResult result) {
+
     }
 }

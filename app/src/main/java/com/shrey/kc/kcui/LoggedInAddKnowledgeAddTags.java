@@ -8,6 +8,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 
+import com.shrey.kc.kcui.activities.KCUIActivity;
+import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
 import com.shrey.kc.kcui.workerActivities.AsyncCall;
 import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
@@ -18,7 +20,7 @@ import java.util.Arrays;
 import static android.view.KeyEvent.KEYCODE_ENTER;
 import static android.view.KeyEvent.KEYCODE_SPACE;
 
-public class LoggedInAddKnowledgeAddTags extends AppCompatActivity {
+public class LoggedInAddKnowledgeAddTags extends KCUIActivity {
 
     ServiceBcastReceiver serviceBcastReceiver;
 
@@ -83,5 +85,10 @@ public class LoggedInAddKnowledgeAddTags extends AppCompatActivity {
     protected void onStop() {
         unregisterReceiver(serviceBcastReceiver);
         super.onStop();
+    }
+
+    @Override
+    public void handleBroadcastResult(NodeResult result) {
+
     }
 }
