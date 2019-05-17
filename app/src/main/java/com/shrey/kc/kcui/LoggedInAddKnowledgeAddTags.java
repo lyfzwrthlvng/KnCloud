@@ -3,12 +3,19 @@ package com.shrey.kc.kcui;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
 import com.shrey.kc.kcui.activities.KCUIActivity;
+import com.shrey.kc.kcui.entities.KCAccessRequest;
+import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
+import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
 import com.shrey.kc.kcui.workerActivities.AsyncCall;
 import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
@@ -90,4 +97,11 @@ public class LoggedInAddKnowledgeAddTags extends KCUIActivity {
     public void handleBroadcastResult(NodeResult result, String action) {
 
     }
+
+    private void performFetchAllTags() {
+        Log.i(LoggedInHome.class.getName(), "Fetching all tags for user");
+        KCAccessRequest accessRequest = KCAccessRequest.constructRequest();
+        AsyncCall.startActionFetchTags(getApplicationContext(), accessRequest);
+    }
+
 }

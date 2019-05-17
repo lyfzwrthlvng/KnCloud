@@ -19,8 +19,7 @@
         <activity
             android:name=".Home"
             android:label="@string/app_name"
-            android:theme="@style/SplashTheme">
-        </activity>
+            android:theme="@style/SplashTheme" />
         <activity android:name=".LoggedInHome" />
         <activity
             android:name=".LoggedInAddKnowledge"
@@ -58,15 +57,22 @@
             android:label="@string/title_activity_logged_in_home_full"
             android:theme="@style/FullscreenTheme" />
         <activity android:name=".LoggedInHomeNew" />
-        <activity android:name=".ViewTags" />
+        <activity
+            android:name=".ViewTags"
+            android:label="@string/title_my_tags" />
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LoggedInHomeOne"
+            android:label="@string/title_activity_logged_in_home_one" />
+        <activity android:name=".SearchTags"></activity>
     </application>
 
 </manifest>

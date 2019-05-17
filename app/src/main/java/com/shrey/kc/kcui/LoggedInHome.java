@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.BottomNavigationView;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -49,6 +52,7 @@ public class LoggedInHome extends KCUIActivity {
     }
 
     private void setupListeners() {
+
         final ConstraintLayout cl = findViewById(R.id.constraint_root);
         cl.setOnKeyListener(new View.OnKeyListener() {
             @Override
