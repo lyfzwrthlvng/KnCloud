@@ -11,14 +11,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:foreground="@mipmap/ic_launcher_foreground"
         android:foregroundGravity="center"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/splash"
         />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="110dp"
+        android:layout_width="wrap_content"
         android:layout_height="53dp"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
