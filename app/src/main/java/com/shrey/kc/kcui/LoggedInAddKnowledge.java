@@ -2,10 +2,8 @@ package com.shrey.kc.kcui;
 
 import android.app.ActionBar;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -16,11 +14,6 @@ import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
-import com.shrey.kc.kcui.workerActivities.AsyncCall;
-
-import javax.inject.Inject;
-
-import static android.view.KeyEvent.KEYCODE_ESCAPE;
 
 public class LoggedInAddKnowledge extends KCUIActivity {
 
@@ -94,7 +87,7 @@ public class LoggedInAddKnowledge extends KCUIActivity {
     }
 
     @Override
-    public void handleBroadcastResult(NodeResult result) {
+    public void handleBroadcastResult(NodeResult result, String action) {
 
     }
 

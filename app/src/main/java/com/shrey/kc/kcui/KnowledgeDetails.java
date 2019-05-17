@@ -1,7 +1,6 @@
 package com.shrey.kc.kcui;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -39,7 +38,7 @@ public class KnowledgeDetails extends KCUIActivity {
     }
 
     @Override
-    public void handleBroadcastResult(NodeResult result) {
+    public void handleBroadcastResult(NodeResult result, String action) {
 
     }
 }

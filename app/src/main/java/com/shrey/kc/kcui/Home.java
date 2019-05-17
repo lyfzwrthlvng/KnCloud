@@ -1,9 +1,7 @@
 package com.shrey.kc.kcui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -15,14 +13,10 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.shrey.kc.kcui.activities.KCUIActivity;
-import com.shrey.kc.kcui.adaptors.ServerCaller;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.entities.User;
-import com.shrey.kc.kcui.executors.AddKnowledgeExecutor;
 import com.shrey.kc.kcui.executors.AddKnowledgeExecutorLocal;
-import com.shrey.kc.kcui.executors.FetchSuggestedTagsExecutor;
 import com.shrey.kc.kcui.executors.GetAllTagsExecutorLocal;
-import com.shrey.kc.kcui.executors.GetKnowledgeExecutor;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutorLocal;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
@@ -145,7 +139,7 @@ public class Home extends KCUIActivity {
     }
 
     @Override
-    public void handleBroadcastResult(NodeResult result) {
+    public void handleBroadcastResult(NodeResult result, String action) {
 
     }
 }

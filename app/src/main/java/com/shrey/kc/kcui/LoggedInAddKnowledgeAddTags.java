@@ -2,7 +2,6 @@ package com.shrey.kc.kcui;
 
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -88,7 +87,7 @@ public class LoggedInAddKnowledgeAddTags extends KCUIActivity {
     }
 
     @Override
-    public void handleBroadcastResult(NodeResult result) {
+    public void handleBroadcastResult(NodeResult result, String action) {
 
     }
 }

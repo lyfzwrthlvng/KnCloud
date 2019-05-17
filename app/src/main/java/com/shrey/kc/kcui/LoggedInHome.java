@@ -1,17 +1,18 @@
 package com.shrey.kc.kcui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shrey.kc.kcui.activities.KCUIActivity;
 import com.shrey.kc.kcui.entities.KCAccessRequest;
@@ -25,6 +26,8 @@ import com.shrey.kc.kcui.workerActivities.AsyncCall;
 import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static android.view.KeyEvent.KEYCODE_ESCAPE;
@@ -205,7 +208,77 @@ public class LoggedInHome extends KCUIActivity {
     }
 
     @Override
-    public void handleBroadcastResult(NodeResult result) {
+    public void handleBroadcastResult(NodeResult result, String action) {
+        if(action.equalsIgnoreCase(AsyncCall.ACTION_FETCH_TAGS)) {
+            startActivityAndFillAllTags(result);
+        } else if(action.equalsIgnoreCase(AsyncCall.ACTION_READ)) {
+            fillUpKnowledgeCards(result);
+        } else if(action.equalsIgnoreCase(AsyncCall.ACTION_ADD)) {
+            if(result == null) {
+                makeToastOfFailure();
+            } else {
+                makeToastOfSuccess();
+            }
+            findViewById(R.id.add_button).requestFocus();
+        }
 
+    }
+
+    public void startActivityAndFillAllTags(NodeResult result) {
+        if(result == null || result.getResult() == null) {
+            makeToastOfFailure();
+            return;
+        }
+        HashMap<String, Object> resp = result.getResult();
+        Log.d("apicall", resp.toString());
+        String[] tags = (String[]) resp.get("Tags");
+        ArrayList<String> tagsArray = new ArrayList<>();
+        for(String tag: tags) {
+            tagsArray.add(tag);
+        }
+        Intent showAllTagsIntent = new Intent(LoggedInHome.this, ViewTags.class);
+        showAllTagsIntent.putStringArrayListExtra("Tags", tagsArray);
+        startActivityForResult(showAllTagsIntent, 0);
+        return;
+    }
+
+    private void makeToastOfFailure() {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "Com breakdown with server :( \nTry in a little while maybe?",
+                Toast.LENGTH_SHORT);
+        toast.show();
+        Log.e("ServiceBroadcastListener", "FAILED COM WITH SERVER!");
+    }
+
+    private void makeToastOfSuccess() {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "note saved",
+                Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    private void fillUpKnowledgeCards(NodeResult result) {
+        //TODO: bad coding assuming activity, get this from activity itself
+        if(result == null || result.getResult() == null) {
+            makeToastOfFailure();
+            return;
+        }
+        HashMap<String, Object> resp = result.getResult();
+        Log.d("apicall", resp.toString());
+        ArrayList<LinkedHashMap> knows = (ArrayList<LinkedHashMap>) resp.get("Knowledge");
+        int id = 999;
+        ArrayList<String> knowledges = new ArrayList<>();
+        for(LinkedHashMap param: knows) {
+            if(param.get("cloud") == null) {
+                continue;
+            }
+            knowledges.add(param.get("cloud").toString());
+        }
+        InputMethodManager inputManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        //inputManager.toggleSoftInput(0, 0);
+        Intent showKnowledgeIntent = new Intent(LoggedInHome.this, ViewKnowledge.class);
+        showKnowledgeIntent.putStringArrayListExtra("knowledges", knowledges);
+        startActivityForResult(showKnowledgeIntent, 0);
+        return;
     }
 }

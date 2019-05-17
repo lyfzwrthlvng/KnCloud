@@ -39,6 +39,7 @@
         android:textColor="@color/colorActivityBg"
         app:layout_constraintTop_toBottomOf="@id/layout_for_tag_suggestions"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/layout_for_tag_suggestions" />
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
 </android.support.constraint.ConstraintLayout>
