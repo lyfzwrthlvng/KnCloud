@@ -246,21 +246,6 @@ public class LoggedInHome extends KCUIActivity {
         return;
     }
 
-    private void makeToastOfFailure() {
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "Com breakdown with server :( \nTry in a little while maybe?",
-                Toast.LENGTH_SHORT);
-        toast.show();
-        Log.e("ServiceBroadcastListener", "FAILED COM WITH SERVER!");
-    }
-
-    private void makeToastOfSuccess() {
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "note saved",
-                Toast.LENGTH_SHORT);
-        toast.show();
-    }
-
     private void fillUpKnowledgeCards(NodeResult result) {
         //TODO: bad coding assuming activity, get this from activity itself
         if(result == null || result.getResult() == null) {

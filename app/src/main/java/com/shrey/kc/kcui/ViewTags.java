@@ -130,19 +130,4 @@ public class ViewTags extends KCUIActivity {
         startActivityForResult(showKnowledgeIntent, 0);
         return;
     }
-
-    private void makeToastOfFailure() {
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "Com breakdown with server :( \nTry in a little while maybe?",
-                Toast.LENGTH_SHORT);
-        toast.show();
-        Log.e("ServiceBroadcastListener", "FAILED COM WITH SERVER!");
-    }
-
-    private void makeToastOfSuccess() {
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "note saved",
-                Toast.LENGTH_SHORT);
-        toast.show();
-    }
 }
