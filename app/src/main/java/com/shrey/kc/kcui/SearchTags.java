@@ -21,7 +21,7 @@ public class SearchTags extends AppCompatActivity {
     }
 
     private void performFetchAllTags(View v) {
-        Log.i(LoggedInHome.class.getName(), "Fetching all tags for user");
+        Log.i(SearchTags.class.getName(), "Fetching all tags for user");
         KCAccessRequest accessRequest = KCAccessRequest.constructRequest();
         AsyncCall.startActionFetchTags(getApplicationContext(), accessRequest);
     }
