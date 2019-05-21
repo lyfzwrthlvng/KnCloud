@@ -99,7 +99,7 @@ public class LoggedInAddKnowledgeAddTags extends KCUIActivity {
     }
 
     private void performFetchAllTags() {
-        Log.i(LoggedInHome.class.getName(), "Fetching all tags for user");
+        Log.i(LoggedInAddKnowledgeAddTags.class.getName(), "Fetching all tags for user");
         KCAccessRequest accessRequest = KCAccessRequest.constructRequest();
         AsyncCall.startActionFetchTags(getApplicationContext(), accessRequest);
     }

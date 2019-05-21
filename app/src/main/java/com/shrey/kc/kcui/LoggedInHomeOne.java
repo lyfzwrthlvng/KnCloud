@@ -321,7 +321,7 @@ public class LoggedInHomeOne extends KCUIActivity {
     }
 
     private void performSearchAction(View v) {
-        Log.i(LoggedInHome.class.getName(), "Performing search action");
+        Log.i(LoggedInHomeOne.class.getName(), "Performing search action");
         final EditText editText = (EditText) v;
         //editText.setBackground(getDrawable(R.drawable.rounded_corners_activity));
         //editText.setBackgroundResource(R.drawable.rounded_corners_activity);
