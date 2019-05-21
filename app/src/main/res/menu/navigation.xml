@@ -15,6 +15,6 @@
     <item
         android:id="@+id/navigation_search_tags"
         android:icon="@android:drawable/ic_menu_search"
-        android:title="@string/title_my_tags" />
+        android:title="@string/title_search_tags" />
 
 </menu>

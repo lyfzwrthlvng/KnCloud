@@ -26,7 +26,7 @@ public class QuickAddWidget extends AppWidgetProvider {
                                 int appWidgetId) {
 
         CharSequence widgetText = context.getString(R.string.appwidget_text);
-        Intent addKnowledgeIntent = new Intent(context, LoggedInHome.class);
+        Intent addKnowledgeIntent = new Intent(context, LoggedInHomeOne.class);
         addKnowledgeIntent.putExtra("requestCode", RuntimeConstants.INSTANCE.START_FROM_WIDGET_FOR_ADD);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, RuntimeConstants.INSTANCE.START_FROM_WIDGET_FOR_ADD, addKnowledgeIntent, 0);
         // Construct the RemoteViews object

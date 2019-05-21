@@ -73,6 +73,12 @@ public class LoggedInHomeOne extends KCUIActivity {
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation.getMenu().getItem(1).setChecked(true);
+
+        // by default
+        XmlResourceParser addLayout = getResources().getLayout(R.layout.activity_logged_in_add_knowledge);
+        inflateLayout(addLayout, AsyncCall.ACTION_ADD);
+
     }
 
     private boolean inflateLayout(XmlResourceParser layout, String action) {
@@ -120,6 +126,12 @@ public class LoggedInHomeOne extends KCUIActivity {
             fillViewsWithTags(tags);
         } else if(action.equalsIgnoreCase(AsyncCall.ACTION_READ) && action != null) {
             fillUpKnowledgeCards(result);
+        } else if(action.equalsIgnoreCase(AsyncCall.ACTION_ADD)) {
+            if(action == null) {
+                makeToastOfFailure();
+            } else {
+                makeToastOfSuccess();
+            }
         }
 
     }
