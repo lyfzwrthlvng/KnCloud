@@ -184,6 +184,9 @@ public class LoggedInHomeOne extends KCUIActivity {
             // had already done that
             return;
         }
+        // remove all for now and add again
+        // TODO: make it better
+        lv.removeAllViews();
         for (String tag : tags) {
             CardView cv = (CardView) getLayoutInflater().inflate(getResources().getLayout(R.layout.knowledge_card), null);
             TextView tv = cv.findViewById(R.id.text_view_in_card);
