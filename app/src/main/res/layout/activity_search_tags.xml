@@ -49,4 +49,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <Drawable
+        android:layout_width="368dp"
+        android:layout_height="429dp"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="74dp"
+        android:id="@+id/table_of_tags">
+    </Drawable>
+
 </android.support.constraint.ConstraintLayout>

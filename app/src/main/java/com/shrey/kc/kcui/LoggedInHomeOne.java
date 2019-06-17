@@ -27,10 +27,12 @@ import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
+import com.shrey.kc.kcui.objects.RuntimeDynamicDataHolder;
 import com.shrey.kc.kcui.workerActivities.AsyncCall;
 import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -124,6 +126,12 @@ public class LoggedInHomeOne extends KCUIActivity {
         if(action.equalsIgnoreCase(AsyncCall.ACTION_FETCH_TAGS) && action != null) {
             String[] tags = (String[]) result.getResult().get("Tags");
             fillViewsWithTags(tags);
+            // save them in memory as well
+            ArrayList<String> rtd = new ArrayList<>();
+            for(String tag: tags) {
+                rtd.add(tag);
+            }
+            RuntimeDynamicDataHolder.getRuntimeData().setUserTags(rtd);
         } else if(action.equalsIgnoreCase(AsyncCall.ACTION_READ) && action != null) {
             fillUpKnowledgeCards(result);
         } else if(action.equalsIgnoreCase(AsyncCall.ACTION_ADD)) {
@@ -173,6 +181,8 @@ public class LoggedInHomeOne extends KCUIActivity {
     }
 
     private void fillViewsWithTags(String[] tags) {
+        // Keep the tags somewhere in memory, for now, we might wanna load in parts later TODO
+
         Log.i(LoggedInHomeOne.class.getName(), "filling up with tags");
         if (tags == null) {
             // perhaps fillup a default card saying no result
@@ -273,6 +283,8 @@ public class LoggedInHomeOne extends KCUIActivity {
                     performSearchAction(findViewById(R.id.text_search));
                 }
             });
+            // display the cloud
+
         }
     }
 
@@ -340,5 +352,20 @@ public class LoggedInHomeOne extends KCUIActivity {
         request.setPassKey("dummy");
         request.setUserId(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
         AsyncCall.startActionRead(getApplicationContext(), request);
+    }
+
+    private void displayAsCloud(HashMap<String, Integer> cloudOfUse) {
+        int maxTextSize = 50;
+        Integer totalCount = 0;
+        for(Integer vv: cloudOfUse.values()) {
+            totalCount += vv;
+        }
+        HashMap<String, Double> ratios = new HashMap<>();
+        for(String cloudKey: cloudOfUse.keySet()) {
+            ratios.put(cloudKey, (cloudOfUse.get(cloudKey)*1.0) / (totalCount*1.0));
+        }
+
+
+
     }
 }
