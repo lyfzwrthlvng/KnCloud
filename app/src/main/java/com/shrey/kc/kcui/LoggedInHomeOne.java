@@ -1,5 +1,8 @@
 package com.shrey.kc.kcui;
 
+import android.arch.persistence.db.SupportSQLiteDatabase;
+import android.arch.persistence.room.Room;
+import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -24,6 +27,7 @@ import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
+import com.shrey.kc.kcui.objects.ApplicationLocalDB;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
@@ -125,13 +129,14 @@ public class LoggedInHomeOne extends KCUIActivity {
         // Add cards, inside a new cardLayout
         if(action.equalsIgnoreCase(AsyncCall.ACTION_FETCH_TAGS) && action != null) {
             String[] tags = (String[]) result.getResult().get("Tags");
-            fillViewsWithTags(tags);
+            //fillViewsWithTags(tags);
             // save them in memory as well
             ArrayList<String> rtd = new ArrayList<>();
             for(String tag: tags) {
                 rtd.add(tag);
             }
             RuntimeDynamicDataHolder.getRuntimeData().setUserTags(rtd);
+            fillViewsWithTags();
         } else if(action.equalsIgnoreCase(AsyncCall.ACTION_READ) && action != null) {
             fillUpKnowledgeCards(result);
         } else if(action.equalsIgnoreCase(AsyncCall.ACTION_ADD)) {
@@ -198,6 +203,47 @@ public class LoggedInHomeOne extends KCUIActivity {
         // TODO: make it better
         lv.removeAllViews();
         for (String tag : tags) {
+            CardView cv = (CardView) getLayoutInflater().inflate(getResources().getLayout(R.layout.knowledge_card), null);
+            TextView tv = cv.findViewById(R.id.text_view_in_card);
+            tv.setText(tag);
+
+            // add on click listener for the cardView
+            cv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CardView cv = (CardView) v;
+                    TextView tvIn = cv.findViewById(R.id.text_view_in_card);
+                    // search knowledge for this tag
+                    ArrayList<String> al = new ArrayList<String>();
+                    al.add(tvIn.getText().toString());
+                    KCReadRequest readRequest = KCReadRequest.constructRequest(al);
+                    AsyncCall.startActionRead(getApplicationContext(), readRequest);
+                }
+            });
+            // populate it in the container
+            lv.addView(cv);
+        }
+    }
+
+    private void fillViewsWithTags() {
+        ArrayList<String> allTheTags = RuntimeDynamicDataHolder.getRuntimeData().getUserTagsSorted();
+        // Keep the tags somewhere in memory, for now, we might wanna load in parts later TODO
+
+        Log.i(LoggedInHomeOne.class.getName(), "filling up with tags");
+        if (allTheTags == null) {
+            // perhaps fillup a default card saying no result
+            return;
+        }
+        ScrollView sv = findViewById(R.id.root_vertical_container_for_tags);
+        LinearLayout lv = sv.findViewById(R.id.root_vertical_container);
+        if(lv.getChildCount() == allTheTags.size()) {
+            // had already done that
+            return;
+        }
+        // remove all for now and add again
+        // TODO: make it better
+        lv.removeAllViews();
+        for (String tag : allTheTags) {
             CardView cv = (CardView) getLayoutInflater().inflate(getResources().getLayout(R.layout.knowledge_card), null);
             TextView tv = cv.findViewById(R.id.text_view_in_card);
             tv.setText(tag);

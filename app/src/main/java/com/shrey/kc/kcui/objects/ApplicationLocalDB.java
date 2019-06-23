@@ -13,7 +13,7 @@ import com.shrey.kc.kcui.localdb.TagDao;
 
 @Database(
         entities = {Tag.class, Knowledge.class, KnowledgeTagMapping.class},
-        version = 1
+        version = 2
 )
 public abstract class ApplicationLocalDB extends RoomDatabase {
 

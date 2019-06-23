@@ -6,7 +6,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity
-public class Knowledge {
+public class Knowledge extends DbEntity {
 
     public String getKnowledge() {
         return knowledge;

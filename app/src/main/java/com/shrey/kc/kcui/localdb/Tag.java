@@ -8,7 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(
         indices = @Index(name = "indexTag", value = {"tag"})
 )
-public class Tag {
+public class Tag extends DbEntity {
 
     public String getTag() {
         return tag;

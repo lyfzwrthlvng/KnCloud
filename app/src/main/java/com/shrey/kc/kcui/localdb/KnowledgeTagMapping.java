@@ -11,7 +11,7 @@ import android.arch.persistence.room.PrimaryKey;
                 @Index(name = "index_knowledgeId", value = {"knowledgeId"})
         }
 )
-public class KnowledgeTagMapping {
+public class KnowledgeTagMapping extends DbEntity {
     @PrimaryKey(autoGenerate = true)
     long uid;
 
