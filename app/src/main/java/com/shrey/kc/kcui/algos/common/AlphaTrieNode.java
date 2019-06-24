@@ -5,9 +5,10 @@ import java.util.HashMap;
 public class AlphaTrieNode {
     HashMap<String, AlphaTrieNode> branch = new HashMap<>();
     boolean endsHere = false; // does a word end here?!
+    String upto;
 
-    public AlphaTrieNode() {
-
+    public AlphaTrieNode(String upto) {
+        this.upto = upto;
     }
 
     public boolean markWord() {
