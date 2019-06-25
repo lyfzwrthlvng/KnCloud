@@ -75,8 +75,9 @@ public class AsyncCall extends IntentService {
                     break;
                 case ACTION_SUGGEST:
                     handleActionSuggest((String)request);
+                    break;
                 default:
-                        break;
+                    break;
             }
         }
     }
@@ -98,10 +99,6 @@ public class AsyncCall extends IntentService {
         sendBroadcast(intent);
     }
 
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
     private void handleActionAdd(KCWriteRequest writeRequest) {
         NodeResult result = null;
         try {

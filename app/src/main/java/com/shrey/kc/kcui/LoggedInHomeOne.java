@@ -1,5 +1,6 @@
 package com.shrey.kc.kcui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -9,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -123,6 +126,7 @@ public class LoggedInHomeOne extends KCUIActivity {
     @Override
     public void handleBroadcastResult(NodeResult result, String action) {
         // Add cards, inside a new cardLayout
+        Log.d(this.getClass().getName(), "handling action: " + action);
         if(action.equalsIgnoreCase(AsyncCall.ACTION_FETCH_TAGS) && action != null) {
             String[] tags = (String[]) result.getResult().get("Tags");
             //fillViewsWithTags(tags);
@@ -143,6 +147,15 @@ public class LoggedInHomeOne extends KCUIActivity {
             }
         } else if(action.equalsIgnoreCase(AsyncCall.ACTION_SUGGEST) && result != null) {
             Log.d("suggestion","Suggested words: " + result.getResult().get("suggestions").toString());
+            String[] tags = (String[]) result.getResult().get("Tags");
+            //fillViewsWithTags(tags);
+            // save them in memory as well
+            ArrayList<String> rtd = new ArrayList<>();
+            for(String tag: tags) {
+                rtd.add(tag);
+            }
+            //RuntimeDynamicDataHolder.getRuntimeData().setUserTags(rtd);
+            fillViewsWithTagsSuggested(tags);
         }
 
     }
@@ -185,6 +198,46 @@ public class LoggedInHomeOne extends KCUIActivity {
     }
 
     private void fillViewsWithTags(String[] tags) {
+        // Keep the tags somewhere in memory, for now, we might wanna load in parts later TODO
+
+        Log.i(LoggedInHomeOne.class.getName(), "filling up with tags");
+        if (tags == null) {
+            // perhaps fillup a default card saying no result
+            return;
+        }
+        ScrollView sv = findViewById(R.id.root_vertical_container_for_tags);
+        LinearLayout lv = sv.findViewById(R.id.root_vertical_container);
+        if(lv.getChildCount() == tags.length) {
+            // had already done that
+            return;
+        }
+        // remove all for now and add again
+        // TODO: make it better
+        lv.removeAllViews();
+        for (String tag : tags) {
+            CardView cv = (CardView) getLayoutInflater().inflate(getResources().getLayout(R.layout.knowledge_card), null);
+            TextView tv = cv.findViewById(R.id.text_view_in_card);
+            tv.setText(tag);
+
+            // add on click listener for the cardView
+            cv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CardView cv = (CardView) v;
+                    TextView tvIn = cv.findViewById(R.id.text_view_in_card);
+                    // search knowledge for this tag
+                    ArrayList<String> al = new ArrayList<String>();
+                    al.add(tvIn.getText().toString());
+                    KCReadRequest readRequest = KCReadRequest.constructRequest(al);
+                    AsyncCall.startActionRead(getApplicationContext(), readRequest);
+                }
+            });
+            // populate it in the container
+            lv.addView(cv);
+        }
+    }
+
+    private void fillViewsWithTagsSuggested(String[] tags) {
         // Keep the tags somewhere in memory, for now, we might wanna load in parts later TODO
 
         Log.i(LoggedInHomeOne.class.getName(), "filling up with tags");
@@ -319,13 +372,34 @@ public class LoggedInHomeOne extends KCUIActivity {
                 }
             });
 
+            /*
             et.setOnKeyListener(new View.OnKeyListener() {
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
                     EditText etf = (EditText) v;
                     String current = etf.getText().toString();
                     AsyncCall.startActionSuggest(getApplicationContext(), current);
-                    return true;
+                    return false;
+                }
+            });
+            */
+
+            et.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if(s.length() > 0) {
+                        AsyncCall.startActionSuggest(getApplicationContext(), s.toString());
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
                 }
             });
 
