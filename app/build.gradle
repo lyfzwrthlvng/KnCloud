@@ -6,8 +6,8 @@ android {
         applicationId "com.shrey.kc.kcui"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 5
-        versionName "1.3-single-activity"
+        versionCode 6
+        versionName "1.3-sorting-fastsearch"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
