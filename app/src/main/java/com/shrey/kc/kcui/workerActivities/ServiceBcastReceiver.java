@@ -44,6 +44,9 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
             //Log.i("SERVICE: ", intent.getSerializableExtra("result").toString());
             NodeResult result = (NodeResult)intent.getSerializableExtra("result");
             activityRef.handleBroadcastResult(result, AsyncCall.ACTION_FETCH_TAGS);
+        } else if(action == AsyncCall.ACTION_SUGGEST) {
+            NodeResult result = (NodeResult)intent.getSerializableExtra("result");
+            activityRef.handleBroadcastResult(result, AsyncCall.ACTION_SUGGEST);
         }
 
     }

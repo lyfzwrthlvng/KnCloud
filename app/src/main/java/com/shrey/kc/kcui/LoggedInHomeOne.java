@@ -146,16 +146,9 @@ public class LoggedInHomeOne extends KCUIActivity {
                 makeToastOfSuccess();
             }
         } else if(action.equalsIgnoreCase(AsyncCall.ACTION_SUGGEST) && result != null) {
-            Log.d("suggestion","Suggested words: " + result.getResult().get("suggestions").toString());
-            String[] tags = (String[]) result.getResult().get("Tags");
-            //fillViewsWithTags(tags);
-            // save them in memory as well
-            ArrayList<String> rtd = new ArrayList<>();
-            for(String tag: tags) {
-                rtd.add(tag);
-            }
-            //RuntimeDynamicDataHolder.getRuntimeData().setUserTags(rtd);
-            fillViewsWithTagsSuggested(tags);
+//            Log.d("suggestion","Suggested words: " + result.getResult().get("suggestions").toString());
+            ArrayList<String> rtd = (ArrayList<String>)result.getResult().get("suggestions");
+            fillViewsWithTagsSuggested(rtd);
         }
 
     }
@@ -237,17 +230,18 @@ public class LoggedInHomeOne extends KCUIActivity {
         }
     }
 
-    private void fillViewsWithTagsSuggested(String[] tags) {
+    private void fillViewsWithTagsSuggested(ArrayList<String> tags) {
         // Keep the tags somewhere in memory, for now, we might wanna load in parts later TODO
 
         Log.i(LoggedInHomeOne.class.getName(), "filling up with tags");
-        if (tags == null) {
-            // perhaps fillup a default card saying no result
-            return;
-        }
         ScrollView sv = findViewById(R.id.root_vertical_container_for_tags);
         LinearLayout lv = sv.findViewById(R.id.root_vertical_container);
-        if(lv.getChildCount() == tags.length) {
+        if (tags == null) {
+            // perhaps fillup a default card saying no result
+            lv.removeAllViews();
+            return;
+        }
+        if(lv.getChildCount() == tags.size()) {
             // had already done that
             return;
         }
