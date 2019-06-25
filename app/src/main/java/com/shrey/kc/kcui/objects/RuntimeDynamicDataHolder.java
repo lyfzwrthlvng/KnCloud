@@ -1,13 +1,15 @@
 package com.shrey.kc.kcui.objects;
 
+import com.shrey.kc.kcui.algos.TrieForSearch;
+
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 public enum RuntimeDynamicDataHolder {
     INSTANCE;
 
-    ArrayList<String> userTags = null;
+    ArrayList<String> userTags;
+    TrieForSearch trieForSearch = null;
 
     public static RuntimeDynamicDataHolder getRuntimeData() {
         return INSTANCE;
@@ -19,6 +21,10 @@ public enum RuntimeDynamicDataHolder {
 
     public void setUserTags(ArrayList<String> userTags) {
         this.userTags = userTags;
+        final ArrayList<String> utf = userTags;
+        // this perhaps should happen in bg
+        // TODO do it via workerActivity and bcast listener etc
+        this.trieForSearch = new TrieForSearch(userTags);
     }
 
     public ArrayList<String> getUserTagsSorted() {
@@ -28,6 +34,10 @@ public enum RuntimeDynamicDataHolder {
         *  */
         Collections.<String>sort(userTags);
         return userTags;
+    }
+
+    public ArrayList<String> getAutocompleteWords(String partial) {
+        return this.trieForSearch.suggest(partial);
     }
 
 }

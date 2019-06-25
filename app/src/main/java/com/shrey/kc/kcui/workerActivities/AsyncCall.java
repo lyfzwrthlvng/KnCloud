@@ -3,14 +3,19 @@ package com.shrey.kc.kcui.workerActivities;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
+import android.util.Log;
 
 import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
+import com.shrey.kc.kcui.objects.RuntimeDynamicDataHolder;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -19,6 +24,7 @@ public class AsyncCall extends IntentService {
     public static final String ACTION_READ = "com.shrey.kc.kcui.workerActivities.action.READ";
     public static final String ACTION_ADD = "com.shrey.kc.kcui.workerActivities.action.ADD";
     public static final String ACTION_FETCH_TAGS = "com.shrey.kc.kcui.workerActivities.action.FETCH_TAGS";
+    public static final String ACTION_SUGGEST = "com.shrey.kc.kcui.workerActivities.action.SUGGEST";
 
     public AsyncCall() {
         super("AsyncCall");
@@ -45,9 +51,16 @@ public class AsyncCall extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionSuggest(Context context, String partial) {
+        Intent intent = new Intent(context, AsyncCall.class);
+        intent.setAction(ACTION_SUGGEST);
+        intent.putExtra("request", partial);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
-        KCAccessRequest request = (KCAccessRequest)intent.getSerializableExtra("request");
+        Object request = intent.getSerializableExtra("request");
         if (intent != null) {
             final String action = intent.getAction();
             switch (action) {
@@ -60,7 +73,9 @@ public class AsyncCall extends IntentService {
                 case ACTION_FETCH_TAGS:
                     handleActionFetchTags((KCAccessRequest)request);
                     break;
-                    default:
+                case ACTION_SUGGEST:
+                    handleActionSuggest((String)request);
+                default:
                         break;
             }
         }
@@ -116,6 +131,40 @@ public class AsyncCall extends IntentService {
             e.printStackTrace();
         }
         broadcastResult(ACTION_FETCH_TAGS, result);
+    }
+
+    private void handleActionSuggest(String partial) {
+        NodeResult result = new NodeResult();
+        Log.d(this.getClass().getName(), "suggesting...");
+        if(RuntimeDynamicDataHolder.getRuntimeData().getUserTags() == null) {
+            // start activity to fetch tags
+
+            try {
+                NodeResult result2 = CommunicationFactory.getInstance().getExecutor("USER_TAGS").executeRequest(KCAccessRequest.constructRequest());
+                String[] tags = (String[]) result2.getResult().get("Tags");
+                //fillViewsWithTags(tags);
+                // save them in memory as well
+                ArrayList<String> rtd = new ArrayList<>();
+                for(String tag: tags) {
+                    rtd.add(tag);
+                }
+                RuntimeDynamicDataHolder.getRuntimeData().setUserTags(rtd);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
+        }
+        ArrayList<String> acw = RuntimeDynamicDataHolder.getRuntimeData().getAutocompleteWords(partial);
+        HashMap<String, Object> ir = new HashMap<String, Object>();
+        ir.put("suggestions", acw);
+        //Log.d(this.getClass().getName(), acw.toString());
+        result.setResult(ir);
+        broadcastResult(ACTION_SUGGEST, result);
     }
 
     private void broadcastResult(String action, NodeResult result) {

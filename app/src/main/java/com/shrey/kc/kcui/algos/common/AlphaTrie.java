@@ -28,7 +28,7 @@ public class AlphaTrie {
         return true;
     }
 
-    public String getWordsNextTo(String nextTo) {
+    public ArrayList<String> getWordsNextTo(String nextTo) {
         // first find this
         AlphaTrieNode searchNode = search(nextTo);
         if(searchNode == null) {
@@ -38,7 +38,28 @@ public class AlphaTrie {
         //for(searchNode.branch.keySet()) {
         //    String
         //}
-        return "";
+        return getWordsAtLevel(3, searchNode);
+    }
+
+    private ArrayList<String> getWordsAtLevel(int max, AlphaTrieNode theNode) {
+        ArrayList<String> words = new ArrayList<>();
+        // keep going deeper in a bf manner until we meet max or reach end
+        if(max == 0 || theNode == null) {
+            return words;
+        }
+        AlphaTrieNode currentNode = theNode;
+        ArrayList<AlphaTrieNode> bfsl = new ArrayList<>();
+        while(max > 0 && currentNode != null) {
+            if(currentNode.endsHere) {
+                words.add(currentNode.upto);
+                max--;
+            }
+            for(AlphaTrieNode nn: currentNode.branch.values()) {
+                bfsl.add(nn);
+            }
+            currentNode = bfsl.size() > 0 ? bfsl.remove(0) : null;
+        }
+        return words;
     }
 
     private AlphaTrieNode search(String searchThis) {
@@ -47,11 +68,12 @@ public class AlphaTrie {
         }
         AlphaTrieNode currentNode = theRoot;
         for(int pos=0; pos<searchThis.length(); pos++) {
-            if(!currentNode.branch.containsKey(searchThis.charAt(pos))) {
+            String sub = searchThis.substring(pos, pos+1);
+            if(!currentNode.branch.containsKey(sub)) {
                 // search stopped here, exit!!
                 return null;
             } else {
-                currentNode = currentNode.branch.get(searchThis.charAt(pos));
+                currentNode = currentNode.branch.get(sub);
             }
         }
         return currentNode;

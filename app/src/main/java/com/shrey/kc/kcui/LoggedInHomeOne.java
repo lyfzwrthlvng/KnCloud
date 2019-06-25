@@ -1,8 +1,5 @@
 package com.shrey.kc.kcui;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,6 +10,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -27,7 +25,6 @@ import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
-import com.shrey.kc.kcui.objects.ApplicationLocalDB;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
@@ -36,7 +33,6 @@ import com.shrey.kc.kcui.workerActivities.AsyncCall;
 import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -137,14 +133,16 @@ public class LoggedInHomeOne extends KCUIActivity {
             }
             RuntimeDynamicDataHolder.getRuntimeData().setUserTags(rtd);
             fillViewsWithTags();
-        } else if(action.equalsIgnoreCase(AsyncCall.ACTION_READ) && action != null) {
+        } else if(action.equalsIgnoreCase(AsyncCall.ACTION_READ)) {
             fillUpKnowledgeCards(result);
         } else if(action.equalsIgnoreCase(AsyncCall.ACTION_ADD)) {
-            if(action == null) {
+            if(result == null) {
                 makeToastOfFailure();
             } else {
                 makeToastOfSuccess();
             }
+        } else if(action.equalsIgnoreCase(AsyncCall.ACTION_SUGGEST) && result != null) {
+            Log.d("suggestion","Suggested words: " + result.getResult().get("suggestions").toString());
         }
 
     }
@@ -156,6 +154,7 @@ public class LoggedInHomeOne extends KCUIActivity {
         intentFilter.addAction(AsyncCall.ACTION_ADD);
         intentFilter.addAction(AsyncCall.ACTION_READ);
         intentFilter.addAction(AsyncCall.ACTION_FETCH_TAGS);
+        intentFilter.addAction(AsyncCall.ACTION_SUGGEST);
         registerReceiver(serviceBcastReceiver, intentFilter);
         super.onStart();
         Log.i("LOGGED_IN_HOME", getApplicationContext().getPackageName());
@@ -317,6 +316,16 @@ public class LoggedInHomeOne extends KCUIActivity {
                     if(hasFocus) {
                         et.setText(null);
                     }
+                }
+            });
+
+            et.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    EditText etf = (EditText) v;
+                    String current = etf.getText().toString();
+                    AsyncCall.startActionSuggest(getApplicationContext(), current);
+                    return true;
                 }
             });
 
