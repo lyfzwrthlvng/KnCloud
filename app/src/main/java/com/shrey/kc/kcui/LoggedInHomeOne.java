@@ -241,10 +241,6 @@ public class LoggedInHomeOne extends KCUIActivity {
             lv.removeAllViews();
             return;
         }
-        if(lv.getChildCount() == tags.size()) {
-            // had already done that
-            return;
-        }
         // remove all for now and add again
         // TODO: make it better
         lv.removeAllViews();
