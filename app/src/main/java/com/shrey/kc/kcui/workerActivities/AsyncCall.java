@@ -7,6 +7,7 @@ import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 
 import com.shrey.kc.kcui.entities.KCAccessRequest;
+import com.shrey.kc.kcui.entities.KCBackupRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
@@ -25,6 +26,7 @@ public class AsyncCall extends IntentService {
     public static final String ACTION_ADD = "com.shrey.kc.kcui.workerActivities.action.ADD";
     public static final String ACTION_FETCH_TAGS = "com.shrey.kc.kcui.workerActivities.action.FETCH_TAGS";
     public static final String ACTION_SUGGEST = "com.shrey.kc.kcui.workerActivities.action.SUGGEST";
+    public static final String ACTION_BACKUP = "com.shrey.kc.kcui.workerActivities.action.BACKUP";
 
     public AsyncCall() {
         super("AsyncCall");
@@ -58,6 +60,13 @@ public class AsyncCall extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionBackup(Context context, KCBackupRequest request) {
+        Intent intent = new Intent(context, AsyncCall.class);
+        intent.setAction(ACTION_BACKUP);
+        intent.putExtra("request", request);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         Object request = intent.getSerializableExtra("request");
@@ -75,6 +84,9 @@ public class AsyncCall extends IntentService {
                     break;
                 case ACTION_SUGGEST:
                     handleActionSuggest((String)request);
+                    break;
+                case ACTION_BACKUP:
+                    handleActionBackup((KCBackupRequest)request);
                     break;
                 default:
                     break;
@@ -163,6 +175,22 @@ public class AsyncCall extends IntentService {
         result.setResult(ir);
         broadcastResult(ACTION_SUGGEST, result);
     }
+
+    private void handleActionBackup(KCBackupRequest request) {
+        try {
+            CommunicationFactory.INSTANCE.getExecutor("BACKUP").executeRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //--------
 
     private void broadcastResult(String action, NodeResult result) {
         Intent intent = new Intent();

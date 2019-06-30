@@ -127,20 +127,13 @@ public class LoggedInHomeOne extends KCUIActivity {
                                     this, Collections.singleton(DriveScopes.DRIVE_FILE));
                     CurrentUserInfo.INSTANCE.setAuthAccount(credential);
                 }
+                if(!GoogleSignIn.hasPermissions(CurrentUserInfo.INSTANCE.getUserInfo().getUser().getAccountInfo(),
+                        new Scope(DriveScopes.DRIVE_FILE))) {
+                    Log.e(LoggedInHomeOne.class.getName(),"Still don't have permission :(");
+                }
                 // Execute
                 KCBackupRequest request = KCBackupRequest.getBackupRequest(getDatabasePath("local-kc-db"));
-                try {
-                    CommunicationFactory.getInstance().getExecutor("BACKUP").executeRequest(request);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (TimeoutException e) {
-                    e.printStackTrace();
-                }
-
+                AsyncCall.startActionBackup(getApplicationContext(), request);
                 break;
             // action with ID action_settings was selected
             case R.id.action_about:
