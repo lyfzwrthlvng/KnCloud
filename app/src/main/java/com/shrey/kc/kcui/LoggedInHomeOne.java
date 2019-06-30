@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.shrey.kc.kcui.activities.KCUIActivity;
 import com.shrey.kc.kcui.entities.KCAccessRequest;
@@ -80,6 +81,25 @@ public class LoggedInHomeOne extends KCUIActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.getMenu().getItem(1).setChecked(true);
+
+        android.support.v7.widget.Toolbar myToolbar = findViewById(R.id.the_toolbar);
+        //setSupportActionBar(myToolbar);
+        //getMenuInflater().inflate(R.id.the_toolbar,myToolbar);
+        //TODO figure out this hack
+        myToolbar.setSubtitle("KC");
+        myToolbar.inflateMenu(R.menu.actions);
+        myToolbar.setOnMenuItemClickListener(new android.support.v7.widget.Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if(menuItem.getItemId() == R.id.action_backup) {
+                    // get permission
+                    // set account
+                    // call executor
+                } else if(menuItem.getItemId() == R.id.action_about) {
+
+                }
+            }
+        });
 
         // by default
         XmlResourceParser addLayout = getResources().getLayout(R.layout.activity_logged_in_add_knowledge);
