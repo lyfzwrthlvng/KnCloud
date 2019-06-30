@@ -11,21 +11,29 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
 import com.shrey.kc.kcui.activities.KCUIActivity;
+import com.shrey.kc.kcui.adaptors.DriveBackup;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.entities.User;
 import com.shrey.kc.kcui.executors.AddKnowledgeExecutorLocal;
+import com.shrey.kc.kcui.executors.BackupDataExecutor;
 import com.shrey.kc.kcui.executors.GetAllTagsExecutorLocal;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutorLocal;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
 
+import java.util.Collections;
+
 
 public class Home extends KCUIActivity {
 
     private final int RC_SIGN_IN = 9001;
+    private final int RC_DRIVE_PERM = 9002;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +43,8 @@ public class Home extends KCUIActivity {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 //.requestIdToken(" 436356672313-2ckrm0rp57du8fh8il6ics8lq3rufqrf.apps.googleusercontent.com ")
                 .requestEmail()
+                // requesting to
+                .requestScopes(new Scope(DriveScopes.DRIVE))
                 //.requestServerAuthCode("436356672313-eaohphn8igpjvo3trjab35ulto79n7q5.apps.googleusercontent.com")
                 .build();
         final GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -80,6 +90,7 @@ public class Home extends KCUIActivity {
         CommunicationFactory.getInstance().register("FIND", new GetKnowledgeExecutorLocal());
         CommunicationFactory.getInstance().register("ADD", new AddKnowledgeExecutorLocal());
         CommunicationFactory.getInstance().register("USER_TAGS", new GetAllTagsExecutorLocal());
+        CommunicationFactory.getInstance().register("BACKUP", new BackupDataExecutor());
         /*
         CommunicationFactory.getInstance().register("FETCH_TAGS",
                 new FetchSuggestedTagsExecutor(new ServerCaller(),
@@ -97,7 +108,10 @@ public class Home extends KCUIActivity {
             SignInButton sib = findViewById(R.id.sign_in_button);
             sib.setVisibility(View.VISIBLE);
         } else {
+            // below works!!!
+            //GoogleSignIn.requestPermissions(Home.this, RC_DRIVE_PERM, account, new Scope(DriveScopes.DRIVE_FILE));
             startLoggedInActivity(account);
+
         }
     }
 

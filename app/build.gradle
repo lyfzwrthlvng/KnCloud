@@ -49,4 +49,13 @@ dependencies {
 
     // Test helpers
     testImplementation "android.arch.persistence.room:testing:$room_version"
+
+    // drive api
+
+    compile ('com.google.apis:google-api-services-drive:v3-rev110-1.23.0') {
+        exclude group: 'com.google.common'
+        exclude group: 'com.google.guava'
+    }
+
+    compile 'com.google.api-client:google-api-client-android:1.23.0'
 }

@@ -6,11 +6,14 @@ import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.io.File;
+
 
 public enum LocalDBHolder {
     INSTANCE;
 
     ApplicationLocalDB localDB;
+    File databasePath;
 
     public ApplicationLocalDB getSetLocalDB(Context applicationContext) {
         if(localDB == null) {
@@ -37,8 +40,16 @@ public enum LocalDBHolder {
         return localDB;
     }
 
+    public void setDatabasePath(File path) {
+        this.databasePath = path;
+    }
+
     public ApplicationLocalDB getLocalDB() {
         return localDB;
+    }
+
+    public File getDatabasePath() {
+        return databasePath;
     }
 
 }

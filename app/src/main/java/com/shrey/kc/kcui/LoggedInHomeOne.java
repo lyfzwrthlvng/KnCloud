@@ -75,6 +75,7 @@ public class LoggedInHomeOne extends KCUIActivity {
         setContentView(R.layout.activity_logged_in_home_one);
 
         LocalDBHolder.INSTANCE.getSetLocalDB(getApplicationContext());
+        LocalDBHolder.INSTANCE.setDatabasePath(getDatabasePath("local-kc-db"));
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
