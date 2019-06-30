@@ -22,11 +22,12 @@ public class DriveBackup {
             FileInputStream stream = new FileInputStream(localDb);
             File theHolyBackup = new File()
                     .setParents(Collections.singletonList("root"))
-                    .setName(remoteName);
+                    .setName(remoteName)
+                    .setMimeType("application/octet-stream");
             File onlineFile = mDriveService.files().create(theHolyBackup).execute();
             String fileId = onlineFile.getId();
             //AbstractInputStreamContent sc =
-            FileContent fc = new FileContent("notsure", localDb);
+            FileContent fc = new FileContent("application/octet-stream", localDb);
             mDriveService.files().update(fileId, theHolyBackup, fc);
             backedUp = true;
         } catch (IOException e) {

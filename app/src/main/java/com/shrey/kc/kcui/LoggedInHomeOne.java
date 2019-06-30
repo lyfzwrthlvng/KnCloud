@@ -118,19 +118,26 @@ public class LoggedInHomeOne extends KCUIActivity {
             // action with ID action_refresh was selected
             case R.id.action_backup:
                 if(!GoogleSignIn.hasPermissions(CurrentUserInfo.INSTANCE.getUserInfo().getUser().getAccountInfo(),
-                        new Scope(DriveScopes.DRIVE_FILE))) {
+                        new Scope(DriveScopes.DRIVE_FILE), new Scope(DriveScopes.DRIVE))) {
                     GoogleSignIn.requestPermissions(LoggedInHomeOne.this, RC_DRIVE_PERM,
                             CurrentUserInfo.getUserInfo().getUser().getAccountInfo(),
-                            new Scope(DriveScopes.DRIVE_FILE));
+                            new Scope(DriveScopes.DRIVE_FILE), new Scope(DriveScopes.DRIVE));
+                    return false;
+                    /*
                     GoogleAccountCredential credential =
                             GoogleAccountCredential.usingOAuth2(
                                     this, Collections.singleton(DriveScopes.DRIVE_FILE));
                     CurrentUserInfo.INSTANCE.setAuthAccount(credential);
+                    */
                 }
                 if(!GoogleSignIn.hasPermissions(CurrentUserInfo.INSTANCE.getUserInfo().getUser().getAccountInfo(),
                         new Scope(DriveScopes.DRIVE_FILE))) {
                     Log.e(LoggedInHomeOne.class.getName(),"Still don't have permission :(");
                 }
+                GoogleAccountCredential credential =
+                        GoogleAccountCredential.usingOAuth2(
+                                getApplicationContext(), Collections.singleton(DriveScopes.DRIVE_FILE));
+                CurrentUserInfo.INSTANCE.setAuthAccount(credential);
                 // Execute
                 KCBackupRequest request = KCBackupRequest.getBackupRequest(getDatabasePath("local-kc-db"));
                 AsyncCall.startActionBackup(getApplicationContext(), request);
@@ -485,6 +492,11 @@ public class LoggedInHomeOne extends KCUIActivity {
                 // send request to server
                 AsyncCall.startActionAdd(getApplicationContext(), request);
             }
+        } else if(requestCode == RC_DRIVE_PERM) {
+            GoogleAccountCredential credential =
+                    GoogleAccountCredential.usingOAuth2(
+                            getApplicationContext(), Collections.singleton(DriveScopes.DRIVE_FILE));
+            CurrentUserInfo.INSTANCE.setAuthAccount(credential);
         }
     }
 

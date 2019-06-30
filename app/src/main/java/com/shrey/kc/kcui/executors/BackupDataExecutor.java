@@ -37,13 +37,13 @@ public class BackupDataExecutor implements GenericExecutor {
                     GoogleAccountCredential.usingOAuth2(
                             this, Collections.singleton(DriveScopes.DRIVE_FILE));
                             */
-            Drive googleDriveService = new Drive(AndroidHttp.newCompatibleTransport(),
-            JacksonFactory.getDefaultInstance(),CurrentUserInfo.INSTANCE.getAuthAccount());
+            Drive googleDriveService = new Drive.Builder(AndroidHttp.newCompatibleTransport(),
+                    JacksonFactory.getDefaultInstance(),CurrentUserInfo.INSTANCE.getAuthAccount()).setApplicationName("knowledgeCloud").build();
             backupAdaptor = new DriveBackup(googleDriveService);
         }
         // expecting it to be set init
         java.io.File localDb = LocalDBHolder.INSTANCE.getDatabasePath();
-        String remoteName = "knowledgeCloud.backup";
+        String remoteName = "knowledgeCloud.sqlitedb";
         KCBackupRequest kcBackupRequest = (KCBackupRequest) request;
         boolean backupResult = backupAdaptor.createFileOnDrive(kcBackupRequest.getTheHolyBackup(), remoteName);
         NodeResult result = new NodeResult();
