@@ -33,7 +33,6 @@ import java.util.Collections;
 public class Home extends KCUIActivity {
 
     private final int RC_SIGN_IN = 9001;
-    private final int RC_DRIVE_PERM = 9002;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

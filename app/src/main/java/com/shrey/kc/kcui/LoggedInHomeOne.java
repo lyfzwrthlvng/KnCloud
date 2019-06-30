@@ -14,6 +14,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -24,11 +26,17 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.common.api.Scope;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.services.drive.DriveScopes;
 import com.shrey.kc.kcui.activities.KCUIActivity;
 import com.shrey.kc.kcui.entities.KCAccessRequest;
+import com.shrey.kc.kcui.entities.KCBackupRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
+import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
@@ -36,14 +44,20 @@ import com.shrey.kc.kcui.objects.RuntimeDynamicDataHolder;
 import com.shrey.kc.kcui.workerActivities.AsyncCall;
 import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class LoggedInHomeOne extends KCUIActivity {
 
     ServiceBcastReceiver serviceBcastReceiver;
     HashMap<String, View> inflatedRoots = new HashMap<>();
+
+    private final int RC_DRIVE_PERM = 9002;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -82,29 +96,60 @@ public class LoggedInHomeOne extends KCUIActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.getMenu().getItem(1).setChecked(true);
 
-        android.support.v7.widget.Toolbar myToolbar = findViewById(R.id.the_toolbar);
-        //setSupportActionBar(myToolbar);
-        //getMenuInflater().inflate(R.id.the_toolbar,myToolbar);
-        //TODO figure out this hack
-        myToolbar.setSubtitle("KC");
-        myToolbar.inflateMenu(R.menu.actions);
-        myToolbar.setOnMenuItemClickListener(new android.support.v7.widget.Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                if(menuItem.getItemId() == R.id.action_backup) {
-                    // get permission
-                    // set account
-                    // call executor
-                } else if(menuItem.getItemId() == R.id.action_about) {
+        //getSupportActionBar()
 
-                }
-            }
-        });
+
 
         // by default
         XmlResourceParser addLayout = getResources().getLayout(R.layout.activity_logged_in_add_knowledge);
         inflateLayout(addLayout, AsyncCall.ACTION_ADD);
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actions, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.action_backup:
+                if(!GoogleSignIn.hasPermissions(CurrentUserInfo.INSTANCE.getUserInfo().getUser().getAccountInfo(),
+                        new Scope(DriveScopes.DRIVE_FILE))) {
+                    GoogleSignIn.requestPermissions(LoggedInHomeOne.this, RC_DRIVE_PERM,
+                            CurrentUserInfo.getUserInfo().getUser().getAccountInfo(),
+                            new Scope(DriveScopes.DRIVE_FILE));
+                    GoogleAccountCredential credential =
+                            GoogleAccountCredential.usingOAuth2(
+                                    this, Collections.singleton(DriveScopes.DRIVE_FILE));
+                    CurrentUserInfo.INSTANCE.setAuthAccount(credential);
+                }
+                // Execute
+                KCBackupRequest request = KCBackupRequest.getBackupRequest(getDatabasePath("local-kc-db"));
+                try {
+                    CommunicationFactory.getInstance().getExecutor("BACKUP").executeRequest(request);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+
+                break;
+            // action with ID action_settings was selected
+            case R.id.action_about:
+                break;
+            default:
+                break;
+        }
+
+        return true;
     }
 
     private boolean inflateLayout(XmlResourceParser layout, String action) {

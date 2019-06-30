@@ -6,25 +6,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     >
-<android.support.v7.widget.Toolbar android:id="@+id/the_toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="?attr/colorPrimary"
-    android:elevation="4dp"
-    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" />
+
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/container_root"
         android:layout_width="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/activity_vertical_marginx2"
-        app:layout_constraintTop_toBottomOf="@+id/the_toolbar"
+        app:layout_constraintTop_toBottomOf="parent"
         tools:context=".LoggedInHomeOne">
 
     </android.support.constraint.ConstraintLayout>
