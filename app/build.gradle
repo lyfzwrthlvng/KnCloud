@@ -6,8 +6,8 @@ android {
         applicationId "com.shrey.kc.kcui"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 7
-        versionName "1.3-sorting-fastsearch-incr"
+        versionCode 9
+        versionName "1.3-backup-google-drive"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
