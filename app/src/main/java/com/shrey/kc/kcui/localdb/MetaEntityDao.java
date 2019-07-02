@@ -7,8 +7,8 @@ import android.arch.persistence.room.Update;
 
 @Dao
 public interface MetaEntityDao {
-    @Query("select updated from MetaEntity")
-    public long[] getLatest();
+    @Query("select * from MetaEntity")
+    public MetaEntity[] getLatest();
 
     @Insert
     public long[] insertAll(MetaEntity... entity);
