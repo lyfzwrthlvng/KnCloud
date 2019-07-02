@@ -9,10 +9,10 @@ public class DbEntity {
         updated = created;
     }
 
-    @ColumnInfo(name = "created")
+    @ColumnInfo(name = "created", index = true)
     Long created;
 
-    @ColumnInfo(name = "updated")
+    @ColumnInfo(name = "updated", index = true)
     Long updated;
 
     public Long getCreated() {

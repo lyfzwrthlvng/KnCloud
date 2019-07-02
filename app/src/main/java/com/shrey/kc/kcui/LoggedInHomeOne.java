@@ -118,10 +118,10 @@ public class LoggedInHomeOne extends KCUIActivity {
             // action with ID action_refresh was selected
             case R.id.action_backup:
                 if(!GoogleSignIn.hasPermissions(CurrentUserInfo.INSTANCE.getUserInfo().getUser().getAccountInfo(),
-                        new Scope(DriveScopes.DRIVE_FILE), new Scope(DriveScopes.DRIVE))) {
+                        new Scope(DriveScopes.DRIVE_FILE))) {
                     GoogleSignIn.requestPermissions(LoggedInHomeOne.this, RC_DRIVE_PERM,
                             CurrentUserInfo.getUserInfo().getUser().getAccountInfo(),
-                            new Scope(DriveScopes.DRIVE_FILE), new Scope(DriveScopes.DRIVE));
+                            new Scope(DriveScopes.DRIVE_FILE));
                     return false;
                     /*
                     GoogleAccountCredential credential =
@@ -141,9 +141,6 @@ public class LoggedInHomeOne extends KCUIActivity {
                 // Execute
                 KCBackupRequest request = KCBackupRequest.getBackupRequest(getDatabasePath("local-kc-db"));
                 AsyncCall.startActionBackup(getApplicationContext(), request);
-                break;
-            // action with ID action_settings was selected
-            case R.id.action_about:
                 break;
             default:
                 break;
@@ -209,12 +206,22 @@ public class LoggedInHomeOne extends KCUIActivity {
             if(result == null) {
                 makeToastOfFailure();
             } else {
-                makeToastOfSuccess();
+                makeToastOfSuccess("Note saved!");
             }
         } else if(action.equalsIgnoreCase(AsyncCall.ACTION_SUGGEST) && result != null) {
 //            Log.d("suggestion","Suggested words: " + result.getResult().get("suggestions").toString());
             ArrayList<String> rtd = (ArrayList<String>)result.getResult().get("suggestions");
             fillViewsWithTagsSuggested(rtd);
+        } else if(action.equalsIgnoreCase(AsyncCall.ACTION_BACKUP)) {
+            if(result == null || !result.getResult().get("backupResult").equals("true")) {
+                if(result.getResult().get("backupResult").equals("noop")) {
+                    makeToastOfSuccess("Nothing to backup!");
+                } else {
+                    makeToastOfFailure();
+                }
+            } else {
+                makeToastOfSuccess("Data backed up to your google drive!");
+            }
         }
 
     }
@@ -227,6 +234,7 @@ public class LoggedInHomeOne extends KCUIActivity {
         intentFilter.addAction(AsyncCall.ACTION_READ);
         intentFilter.addAction(AsyncCall.ACTION_FETCH_TAGS);
         intentFilter.addAction(AsyncCall.ACTION_SUGGEST);
+        intentFilter.addAction(AsyncCall.ACTION_BACKUP);
         registerReceiver(serviceBcastReceiver, intentFilter);
         super.onStart();
         Log.i("LOGGED_IN_HOME", getApplicationContext().getPackageName());

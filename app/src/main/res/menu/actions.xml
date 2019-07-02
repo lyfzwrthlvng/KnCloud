@@ -4,12 +4,8 @@
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
         android:id="@+id/action_backup"
+        android:icon="@android:drawable/stat_sys_upload"
         android:title="backup"
-        app:showAsAction="ifRoom"/>
-
-    <!-- Settings, should always be in the overflow -->
-    <item android:id="@+id/action_about"
-        android:title="about"
-        app:showAsAction="never"/>
+        app:showAsAction="ifRoom" />
 
 </menu>

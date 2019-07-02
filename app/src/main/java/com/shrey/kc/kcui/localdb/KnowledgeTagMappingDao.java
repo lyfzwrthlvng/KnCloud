@@ -14,6 +14,9 @@ public interface KnowledgeTagMappingDao {
     @Query("select knowledgeId from KnowledgeTagMapping where tagId in (:tagIds)")
     public long[] findKnowledgesForTag(long[] tagIds);
 
+    @Query("select updated from KnowledgeTagMapping order by uid desc limit 1")
+    public long[] findLatestUpdate();
+
     @Insert
     public long[] insertAll(KnowledgeTagMapping... mappings);
 

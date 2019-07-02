@@ -19,9 +19,9 @@ public abstract class KCUIActivity extends AppCompatActivity {
         Log.e("ServiceBroadcastListener", "FAILED COM WITH SERVER!");
     }
 
-    protected void makeToastOfSuccess() {
+    protected void makeToastOfSuccess(String message) {
         Toast toast = Toast.makeText(getApplicationContext(),
-                "note saved",
+                message,
                 Toast.LENGTH_SHORT);
         toast.show();
     }

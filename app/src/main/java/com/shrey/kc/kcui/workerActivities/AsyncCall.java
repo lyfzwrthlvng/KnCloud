@@ -178,8 +178,9 @@ public class AsyncCall extends IntentService {
 
     private void handleActionBackup(KCBackupRequest request) {
         Log.d(AsyncCall.class.getName(), "starting backup...");
+        NodeResult result = null;
         try {
-            CommunicationFactory.INSTANCE.getExecutor("BACKUP").executeRequest(request);
+            result = CommunicationFactory.INSTANCE.getExecutor("BACKUP").executeRequest(request);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -189,6 +190,7 @@ public class AsyncCall extends IntentService {
         } catch (TimeoutException e) {
             e.printStackTrace();
         }
+        broadcastResult(ACTION_BACKUP, result);
     }
 
     //--------
