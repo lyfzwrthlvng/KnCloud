@@ -118,6 +118,7 @@ public class DriveBackup {
                 });
                 File uploadedFile = request.execute();
             }else {
+                uploadStatus.add(false);
                 Log.i(DriveBackup.class.getName(), "latest file already uploaded!");
             }
 
