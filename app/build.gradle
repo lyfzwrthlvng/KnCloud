@@ -6,8 +6,8 @@ android {
         applicationId "com.shrey.kc.kcui"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 11
-        versionName "1.4t a-backup-google-drive"
+        versionCode 12
+        versionName "1.5-backup-google-drive-ui"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
