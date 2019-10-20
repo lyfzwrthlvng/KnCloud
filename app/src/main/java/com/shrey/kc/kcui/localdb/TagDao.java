@@ -13,6 +13,9 @@ public interface TagDao {
     @Query("select tag from Tag")
     public String[] findTags();
 
+    @Query("select tag from Tag where uid in (:uids)")
+    public String[] findTagsForIds(long[] uids);
+
     @Insert
     public long[] insertAll(Tag... tags);
 }

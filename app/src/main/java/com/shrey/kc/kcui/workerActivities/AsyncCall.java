@@ -27,6 +27,7 @@ public class AsyncCall extends IntentService {
     public static final String ACTION_FETCH_TAGS = "com.shrey.kc.kcui.workerActivities.action.FETCH_TAGS";
     public static final String ACTION_SUGGEST = "com.shrey.kc.kcui.workerActivities.action.SUGGEST";
     public static final String ACTION_BACKUP = "com.shrey.kc.kcui.workerActivities.action.BACKUP";
+    public static final String ACTION_FETCH_GRAPH = "com.shrey.kc.kcui.workerActivities.action.FETCH_GRAPH";
 
     public AsyncCall() {
         super("AsyncCall");
@@ -67,6 +68,13 @@ public class AsyncCall extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionFetchTagsGraph(Context context, KCAccessRequest request) {
+        Intent intent = new Intent(context, AsyncCall.class);
+        intent.setAction(ACTION_FETCH_GRAPH);
+        intent.putExtra("request", request);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         Object request = intent.getSerializableExtra("request");
@@ -87,6 +95,9 @@ public class AsyncCall extends IntentService {
                     break;
                 case ACTION_BACKUP:
                     handleActionBackup((KCBackupRequest)request);
+                    break;
+                case ACTION_FETCH_GRAPH:
+                    handleActionFetchGraph((KCAccessRequest)request);
                     break;
                 default:
                     break;
@@ -140,6 +151,23 @@ public class AsyncCall extends IntentService {
             e.printStackTrace();
         }
         broadcastResult(ACTION_FETCH_TAGS, result);
+    }
+
+    private void handleActionFetchGraph(KCAccessRequest writeRequest) {
+
+        NodeResult result = null;
+        try {
+            result = CommunicationFactory.getInstance().getExecutor("USER_TAGS_GRAPH").executeRequest(writeRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        broadcastResult(ACTION_FETCH_GRAPH, result);
     }
 
     private void handleActionSuggest(String partial) {

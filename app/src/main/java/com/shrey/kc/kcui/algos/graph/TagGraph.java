@@ -2,7 +2,9 @@ package com.shrey.kc.kcui.algos.graph;
 
 import java.util.ArrayList;
 
-public class TagGraph {
+import de.blox.graphview.Graph;
+
+public class TagGraph extends Graph {
 
     int numVertices;
     ArrayList<ArrayList<Integer>> adjMatrix = new ArrayList<>();

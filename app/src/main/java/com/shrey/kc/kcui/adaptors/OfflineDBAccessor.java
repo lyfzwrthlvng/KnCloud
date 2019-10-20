@@ -1,5 +1,6 @@
 package com.shrey.kc.kcui.adaptors;
 
+import com.shrey.kc.kcui.algos.graph.TagGraphM;
 import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
@@ -14,8 +15,14 @@ import org.w3c.dom.Node;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import de.blox.graphview.Graph;
 
 public class OfflineDBAccessor {
     public static boolean addNewKnowledge(KCWriteRequest request) {
@@ -72,6 +79,35 @@ public class OfflineDBAccessor {
         NodeResult result = new NodeResult();
         result.setResult(new HashMap<String, Object>());
         result.getResult().put("Tags", tags);
+        return result;
+    }
+
+    public static NodeResult getAllTagsGraph(KCAccessRequest readRequest) {
+        ApplicationLocalDB localDB = LocalDBHolder.INSTANCE.getLocalDB();
+        String[] tags = localDB.tagDao().findTags();
+        long[] tagIds = localDB.tagDao().findTagIds(tags);
+        ArrayList<Integer> tagIdsAll = new ArrayList<>();
+        Map<String, ArrayList<String>> relatedTagsMap = new HashMap<>();
+        for(long tagId: tagIds) {
+            long[] knowledgeIds = localDB.knowledgeTagMappingDao().findKnowledgesForTag(new long[]{tagId});
+            long[] dependentTagIds = localDB.knowledgeTagMappingDao().findTagsForKnowledge(knowledgeIds);
+            String[] dependentTags = localDB.tagDao().findTagsForIds(dependentTagIds);
+            String tagString = localDB.tagDao().findTagsForIds(new long[]{tagId})[0];
+            relatedTagsMap.put(tagString, new ArrayList<String>());
+            for(String dt: dependentTags) {
+                if(!dt.equals(tagString)) {
+                    relatedTagsMap.get(tagString).add(dt);
+                }
+            }
+        }
+        TagGraphM graph = new TagGraphM();
+        for(Map.Entry<String, ArrayList<String>> relationEntry: relatedTagsMap.entrySet()) {
+            graph.addNode(relationEntry.getKey(), relationEntry.getValue());
+        }
+        NodeResult result = new NodeResult();
+        HashMap<String, Object> resultGraph = new HashMap<>();
+        resultGraph.put("Graph",graph);
+        result.setResult(resultGraph);
         return result;
     }
 }
