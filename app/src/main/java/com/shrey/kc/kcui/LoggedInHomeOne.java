@@ -77,7 +77,7 @@ public class LoggedInHomeOne extends KCUIActivity {
                 case R.id.navigation_view_all_tags:
                     //XmlResourceParser allTagsLayout = getResources().getLayout(R.layout.activity_view_tags);
                     XmlResourceParser allTagsLayout = getResources().getLayout(ViewConfigHolder.INSTANCE.getLayoutForMenu(R.id.navigation_view_all_tags));
-                    String action = ViewConfigHolder.INSTANCE.getActionFgorMenu(R.id.navigation_view_all_tags);
+                    String action = ViewConfigHolder.INSTANCE.getActionForMenu(R.id.navigation_view_all_tags);
                     inflateLayout(allTagsLayout, action);
                     // now add stuff to this layout! can do it only if anything has changed, do everytime for now
                     AsyncCall.startActionFetchTags(getApplicationContext(), KCAccessRequest.constructRequest());
