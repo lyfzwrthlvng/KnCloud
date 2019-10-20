@@ -14,10 +14,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,6 +54,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+
+import de.blox.graphview.BaseGraphAdapter;
+import de.blox.graphview.Graph;
+import de.blox.graphview.GraphView;
+import de.blox.graphview.ViewHolder;
+import de.blox.graphview.tree.BuchheimWalkerAlgorithm;
+import de.blox.graphview.tree.BuchheimWalkerConfiguration;
 
 public class LoggedInHomeOne extends KCUIActivity {
 
@@ -224,6 +233,12 @@ public class LoggedInHomeOne extends KCUIActivity {
                 }
             } else {
                 makeToastOfSuccess("Data backed up to your google drive!");
+            }
+        } else if(action.equalsIgnoreCase(AsyncCall.ACTION_FETCH_GRAPH)) {
+            if(result == null || result.getResult().get("Graph") != null) {
+                RuntimeDynamicDataHolder.getRuntimeData().setGraph((Graph)result.getResult().get("Graph"));
+                XmlResourceParser allTagsLayout = getResources().getLayout(ViewConfigHolder.INSTANCE.getLayoutForMenu(R.id.navigation_view_all_tags));
+                inflateLayout(allTagsLayout, action);
             }
         }
 
@@ -481,6 +496,30 @@ public class LoggedInHomeOne extends KCUIActivity {
             });
             // display the cloud
 
+        } else if(action.equals(AsyncCall.ACTION_FETCH_GRAPH)) {
+            GraphView graphView = root.findViewById(R.id.graph);
+            final BaseGraphAdapter<ViewHolder> adapter = new BaseGraphAdapter<ViewHolder>(RuntimeDynamicDataHolder.INSTANCE.getGraph()) {
+
+                @NonNull
+                @Override
+                public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                    final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.graph_node, parent, false);
+                    return new SimpleViewHolder(view);
+                }
+
+                @Override
+                public void onBindViewHolder(ViewHolder viewHolder, Object data, int position) {
+                    ((SimpleViewHolder)viewHolder).textView.setText(data.toString());
+                }
+            };
+            graphView.setAdapter(adapter);
+            final BuchheimWalkerConfiguration configuration = new BuchheimWalkerConfiguration.Builder()
+                    .setSiblingSeparation(100)
+                    .setLevelSeparation(300)
+                    .setSubtreeSeparation(300)
+                    .setOrientation(BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM)
+                    .build();
+            adapter.setAlgorithm(new BuchheimWalkerAlgorithm(configuration));
         }
     }
 

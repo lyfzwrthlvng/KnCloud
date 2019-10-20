@@ -5,11 +5,14 @@ import com.shrey.kc.kcui.algos.TrieForSearch;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import de.blox.graphview.Graph;
+
 public enum RuntimeDynamicDataHolder {
     INSTANCE;
 
     ArrayList<String> userTags;
     TrieForSearch trieForSearch = null;
+    Graph graph = null;
 
     public static RuntimeDynamicDataHolder getRuntimeData() {
         return INSTANCE;
@@ -38,6 +41,14 @@ public enum RuntimeDynamicDataHolder {
 
     public ArrayList<String> getAutocompleteWords(String partial) {
         return this.trieForSearch.suggest(partial);
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    public void setGraph(Graph graph) {
+        this.graph = graph;
     }
 
 }
