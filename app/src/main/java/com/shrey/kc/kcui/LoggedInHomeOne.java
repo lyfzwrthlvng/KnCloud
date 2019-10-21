@@ -115,6 +115,8 @@ public class LoggedInHomeOne extends KCUIActivity {
         // by default
         XmlResourceParser addLayout = getResources().getLayout(R.layout.activity_logged_in_add_knowledge);
         inflateLayout(addLayout, AsyncCall.ACTION_ADD);
+        ViewConfigHolder.INSTANCE.setLayoutForMenu(R.id.navigation_view_all_tags, R.layout.activity_view_tags);
+        ViewConfigHolder.INSTANCE.setActionForMenu(R.id.navigation_view_all_tags, AsyncCall.ACTION_FETCH_TAGS);
     }
 
     @Override
