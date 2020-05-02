@@ -1,8 +1,24 @@
 <resources>
     <string name="app_name">Knowledge Cloud</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_dashboard">Knowledge Cloud</string>
     <string name="title_notifications">Notifications</string>
-    <string name="serverEndpointGet">http://192.168.0.3:9090/search/query</string>
-    <string name="serverEndpointAdd">http://192.168.0.3:9090/write/kc</string>
+    <string name="serverEndpointGet">/search/query</string>
+    <string name="serverEndpointAdd">/write/kc</string>
+    <string name="serverEndpointTags">/write/extractTags</string>
+    <string name="serverIpPrivate">http://192.168.0.5:9090</string>
+    <string name="serverIpQEMU">http://10.0.2.2:9090</string>
+    <string name="serverIpPublic">X.Y.z.Q</string>
+    <string name="appwidget_text">Quick Note</string>
+    <string name="add_widget">Add widget</string>
+    <string name="title_add_knowledge">new note</string>
+    <string name="title_assign_tags">tags</string>
+    <string name="title_my_tags">#tags</string>
+    <string name="title_search_tags">search</string>
+    <string name="tags_here_space_separated_will_do">tags here, space separated will do</string>
+
+    <string name="title_activity_logged_in_home_full">LoggedInHomeFull</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_logged_in_home_one">KC</string>
 </resources>

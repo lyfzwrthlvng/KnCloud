@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoggedInHomeNew">
+
+        <Button
+            android:id="@+id/button_add"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/button_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color2g3"
+            android:foreground="@android:drawable/ic_input_add"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/common_google_signin_btn_text_dark_default" />
+
+        <Button
+            android:id="@+id/button_list"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/app_small_button"
+            android:height="@dimen/app_small_button"
+            android:background="@color/color1v3"
+            android:foreground="@android:drawable/ic_menu_sort_by_size"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/common_google_signin_btn_text_dark_default" />
+
+        <Button
+            android:id="@+id/button_search"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/app_small_button"
+            android:height="@dimen/app_small_button"
+            android:background="@color/color3y3"
+            android:foreground="@android:drawable/ic_menu_search"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/common_google_signin_btn_text_dark_default"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

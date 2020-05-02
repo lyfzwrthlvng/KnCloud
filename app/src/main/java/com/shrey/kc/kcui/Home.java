@@ -2,13 +2,8 @@ package com.shrey.kc.kcui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -16,58 +11,40 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
-import com.shrey.kc.kcui.adaptors.ServerCaller;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
+import com.shrey.kc.kcui.activities.KCUIActivity;
+import com.shrey.kc.kcui.adaptors.DriveBackup;
+import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.entities.User;
-import com.shrey.kc.kcui.executors.AddKnowledgeExecutor;
-import com.shrey.kc.kcui.executors.GetKnowledgeExecutor;
+import com.shrey.kc.kcui.executors.AddKnowledgeExecutorLocal;
+import com.shrey.kc.kcui.executors.BackupDataExecutor;
+import com.shrey.kc.kcui.executors.GetAllTagsExecutorLocal;
+import com.shrey.kc.kcui.executors.GetAllTagsGraphExecutorLocal;
+import com.shrey.kc.kcui.executors.GetKnowledgeExecutorLocal;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
+import com.shrey.kc.kcui.objects.RuntimeConstants;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import javax.inject.Provider;
+import java.util.Collections;
 
 
-public class Home extends AppCompatActivity {
+public class Home extends KCUIActivity {
 
-    private TextView mTextMessage;
     private final int RC_SIGN_IN = 9001;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
-            }
-            return false;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 //.requestIdToken(" 436356672313-2ckrm0rp57du8fh8il6ics8lq3rufqrf.apps.googleusercontent.com ")
                 .requestEmail()
+                // requesting to
+                .requestScopes(new Scope(DriveScopes.DRIVE))
                 //.requestServerAuthCode("436356672313-eaohphn8igpjvo3trjab35ulto79n7q5.apps.googleusercontent.com")
                 .build();
         final GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -94,22 +71,48 @@ public class Home extends AppCompatActivity {
 
         });
 
+
+        String serverIp = null;
+        if(RuntimeConstants.INSTANCE.IS_EMULATOR){
+            serverIp = getString(R.string.serverIpQEMU);
+        } else {
+            serverIp = getString(R.string.serverIpPrivate);
+        }
+        /*
         CommunicationFactory.getInstance().register("FIND",
-                new GetKnowledgeExecutor(new ServerCaller(), getString(R.string.serverEndpointGet)));
+                new GetKnowledgeExecutor(new ServerCaller(),
+                        serverIp + getString(R.string.serverEndpointGet) ));
         CommunicationFactory.getInstance().register("ADD",
-                new AddKnowledgeExecutor(new ServerCaller(), getString(R.string.serverEndpointAdd)));
+                new AddKnowledgeExecutor(new ServerCaller(),
+                        serverIp + getString(R.string.serverEndpointAdd)));
+                        */
+        Log.i(this.getClass().getName(), "server-ip: " + serverIp);
+        CommunicationFactory.getInstance().register("FIND", new GetKnowledgeExecutorLocal());
+        CommunicationFactory.getInstance().register("ADD", new AddKnowledgeExecutorLocal());
+        CommunicationFactory.getInstance().register("USER_TAGS", new GetAllTagsExecutorLocal());
+        CommunicationFactory.getInstance().register("BACKUP", new BackupDataExecutor());
+        CommunicationFactory.getInstance().register("USER_TAGS_GRAPH", new GetAllTagsGraphExecutorLocal());
+        /*
+        CommunicationFactory.getInstance().register("FETCH_TAGS",
+                new FetchSuggestedTagsExecutor(new ServerCaller(),
+                        serverIp + getString(R.string.serverEndpointTags)));
+                        */
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Log.i("HOME", getApplicationContext().getPackageName());
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         // if account is null, need to sign in
         if(account == null) {
             SignInButton sib = findViewById(R.id.sign_in_button);
             sib.setVisibility(View.VISIBLE);
         } else {
+            // below works!!!
+            //GoogleSignIn.requestPermissions(Home.this, RC_DRIVE_PERM, account, new Scope(DriveScopes.DRIVE_FILE));
             startLoggedInActivity(account);
+
         }
     }
 
@@ -146,8 +149,12 @@ public class Home extends AppCompatActivity {
         Log.i("SIGNIN", "sign in done for: " + account.getEmail());
         CurrentUserInfo.getUserInfo().setUser(new User(account.getId(), account));
         //loadRealUI();
-        Intent loggedIntent = new Intent(this, LoggedInHome.class);
+        Intent loggedIntent = new Intent(this, LoggedInHomeOne.class);
         startActivity(loggedIntent);
     }
 
+    @Override
+    public void handleBroadcastResult(NodeResult result, String action) {
+
+    }
 }

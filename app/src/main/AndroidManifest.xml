@@ -4,6 +4,8 @@
     package="com.shrey.kc.kcui">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -16,20 +18,53 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".Home"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".LoggedInAddKnowledge"
+            android:label="@string/title_add_knowledge" />
+        <activity
+            android:name=".LoggedInAddKnowledgeAddTags"
+            android:label="@string/title_assign_tags" />
+
+        <service
+            android:name=".workerActivities.FetchTagKnowledge"
+            android:exported="false" />
+
+        <activity
+            android:name=".KnowledgeDetails"
+            android:windowSoftInputMode="adjustResize" />
+
+        <service
+            android:name=".workerActivities.AsyncCall"
+            android:exported="false" />
+
+        <receiver android:name=".QuickAddWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quick_add_widget_info" />
+        </receiver>
+
+        <activity android:name=".ViewKnowledge" />
+        <activity
+            android:name=".ViewTags"
+            android:label="@string/title_my_tags" />
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoggedInHome" />
-        <activity android:name=".LoggedInAddKnowledge" />
-        <activity android:name=".LoggedInAddKnowledgeAddTags" />
-
-        <service
-            android:name=".workerActivities.FetchTagKnowledge"
-            android:exported="false"></service>
+        <activity
+            android:name=".LoggedInHomeOne"
+            android:label="@string/title_activity_logged_in_home_one" />
     </application>
 
 </manifest>

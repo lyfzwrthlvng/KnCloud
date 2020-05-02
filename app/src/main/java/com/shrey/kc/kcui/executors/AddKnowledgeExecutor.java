@@ -1,11 +1,13 @@
 package com.shrey.kc.kcui.executors;
 
 import com.shrey.kc.kcui.adaptors.ServerCaller;
+import com.shrey.kc.kcui.entities.KCAccessRequest;
+import com.shrey.kc.kcui.entities.NodeResult;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
@@ -21,10 +23,8 @@ public class AddKnowledgeExecutor implements GenericExecutor {
     }
 
     @Override
-    public Map<String, Object> executeRequest(Map<String, Object> request) throws IOException, ExecutionException, InterruptedException {
+    public NodeResult executeRequest(KCAccessRequest request) throws IOException, ExecutionException, InterruptedException, TimeoutException {
         URL url = new URL(endpoint);
-        Map<String, Object> response = serverCaller.nonBlockingServerCall(url, "POST", request);
-        // if above works, we've written!
-        return null;
+        return serverCaller.nonBlockingServerCall(url, "POST", request);
     }
 }

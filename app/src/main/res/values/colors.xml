@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FF3470CF</color>
-    <color name="colorPrimaryDark">#FF1F4581</color>
-    <color name="colorAccent">#FFEE4C63</color>
-    <color name="colorActivityBg">#FFF08A6F</color>
+    <color name="colorPrimary">#FFfe6779</color>
+    <color name="colorPrimaryDark">#FFed5668</color>
+    <color name="colorAccent">#ffa285</color>
+    <color name="colorActivityBg">#428ae0</color>
+    <color name="colorActivityBgJustLighter">#FFF4aAcF</color>
     <color name="colorAppThemCyan">#12c4e0</color>
     <color name="textWhite">#ffffff</color>
-    <color name="colorAccentGradient">#FFE7B3BA</color>
-    <color name="colorPrimaryGradient">#FFBFC6D2</color>
+    <color name="colorAccentGradient">#22e7b3ba</color>
+    <color name="colorPrimaryGradient">#bfc6d2</color>
+    <color name="transparent">#0000</color>
+    <color name="textPrimaryOff">#223470CF</color>
+    <color name="color1v3">#428ae0</color>
+    <color name="color2g3">#3179c9</color>
+    <color name="color3y3">#2068b8</color>
+    <color name="color1m4">#539bf1</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

@@ -4,20 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoggedInAddKnowledge">
+    tools:context=".LoggedInAddKnowledge"
+    android:fitsSystemWindows="true"
+    android:id="@+id/cl">
 
 
     <EditText
         android:id="@+id/add_tag_text"
-        android:layout_width="360dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="40dp"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:ems="10"
-        android:textAlignment="center"
-        android:inputType="textPersonName"
+        android:textAlignment="gravity"
+        android:gravity="left"
+        android:textSize="@dimen/text_size_1to5_3"
+        android:textColor="@color/colorAccent"
+        android:inputType="textMultiLine"
+        android:backgroundTint="@color/colorAccent"
         android:text="enter text here"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +34,7 @@
         android:layout_width="@dimen/round_button_radius"
         android:layout_height="@dimen/round_button_radius"
         android:layout_marginEnd="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:background="@drawable/rounded_corners"
         android:foreground="@android:drawable/ic_media_play"
         android:foregroundGravity="center"
@@ -36,7 +42,7 @@
         android:gravity="center_vertical|center_horizontal|center"
         android:textSize="30sp"
         android:typeface="monospace"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/add_tag_text"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

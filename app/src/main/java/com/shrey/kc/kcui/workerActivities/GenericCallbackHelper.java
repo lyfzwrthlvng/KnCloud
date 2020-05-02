@@ -5,6 +5,6 @@ import android.view.View;
 
 import java.util.HashMap;
 
-public interface CallbackHelper {
-    public void callbackWithResult(HashMap<String, Object> result, View viewToUpdate);
+public interface GenericCallbackHelper {
+    public void callbackWithResult(HashMap<String, Object> result);
 }
