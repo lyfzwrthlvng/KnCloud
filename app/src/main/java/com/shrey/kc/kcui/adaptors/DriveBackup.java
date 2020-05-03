@@ -60,10 +60,12 @@ public class DriveBackup {
         List<RemoteFileInfo> infos = new ArrayList<>();
         try {
             FileList checkFile = mDriveService.files().list()
-                    .setFields("files(id,name,modifiedTime)")
+                    .setFields("files(id,name,modifiedTime,size,createdTime)")
                     .execute();
 
-            File remoteFile = null;
+            if(checkFile==null|| checkFile.getFiles()==null || checkFile.getFiles().size()==0){
+                return infos;
+            }
             for (File dfile : checkFile.getFiles()) {
                 if(dfile.getName().equalsIgnoreCase(remoteName)) {
                     infos.add(new RemoteFileInfo(dfile.getName(), dfile.getCreatedTime().toString(), dfile.getSize().toString(), dfile.getId()));
@@ -78,10 +80,13 @@ public class DriveBackup {
     public void overwriteLocally(String id, java.io.File localFile) {
         try {
             InputStream stream = mDriveService.files().get(id).executeMediaAsInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             OutputStream os = new FileOutputStream(localFile);
-            OutputStreamWriter osw = new OutputStreamWriter(os);
-            osw.write(reader.read());
+
+            int inputRead;
+            while((inputRead = stream.read()) != -1) {
+                os.write(inputRead);
+            }
+            os.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

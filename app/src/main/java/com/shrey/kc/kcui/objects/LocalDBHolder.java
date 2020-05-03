@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.shrey.kc.kcui.adaptors.DriveBackup;
 import com.shrey.kc.kcui.executors.DownloadDriveBackupExecutor;
@@ -18,8 +19,8 @@ public enum LocalDBHolder {
     ApplicationLocalDB localDB;
     File databasePath;
 
-    public ApplicationLocalDB getSetLocalDB(Context applicationContext) {
-        if(localDB == null) {
+    public ApplicationLocalDB getSetLocalDB(Context applicationContext, boolean update) {
+        if(localDB == null || update==true) {
             /*
             localDB = Room.databaseBuilder(applicationContext, ApplicationLocalDB.class,
                     "local-kc-db").build();
@@ -59,6 +60,11 @@ public enum LocalDBHolder {
                             "metaInf TEXT)");
                 }
             };
+
+            if(update==true) {
+                Log.d(LocalDBHolder.class.getName(), "updating...");
+                localDB.close();
+            }
             localDB = Room.databaseBuilder(applicationContext,ApplicationLocalDB.class,"local-kc-db").addMigrations(roomMigration, roomMigration23).build();
 
             //new DownloadDriveBackupExecutor().executeRequest();

@@ -149,6 +149,7 @@ public class Home extends KCUIActivity {
         // Signed in successfully, show authenticated UI.
         //updateUI(account);
         Log.i("SIGNIN", "sign in done for: " + account.getEmail());
+        Log.i("SIGNIN", "instance " + CurrentUserInfo.getUserInfo());
         CurrentUserInfo.getUserInfo().setUser(new User(account.getId(), account));
         //loadRealUI();
         Intent loggedIntent = new Intent(this, LoggedInHomeOne.class);

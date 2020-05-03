@@ -1,5 +1,7 @@
 package com.shrey.kc.kcui.entities;
 
+import android.util.Log;
+
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 
 import java.io.File;
@@ -30,6 +32,7 @@ public class KCDriveFileDownloadRequest extends KCAccessRequest {
         KCDriveFileDownloadRequest req = new KCDriveFileDownloadRequest();
         req.setLocalFile(localFile);
         req.setRemoteId(remoteId);
+        Log.i("SIGNIN", "instance " + CurrentUserInfo.getUserInfo());
         req.setUserId(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().hashCode());
         req.setPassKey("dummy");
         req.setUserkey(CurrentUserInfo.getUserInfo().getUser().getAccountInfo().getEmail());

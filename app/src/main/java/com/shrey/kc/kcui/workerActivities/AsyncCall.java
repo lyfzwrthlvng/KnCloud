@@ -6,12 +6,16 @@ import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 
+import com.shrey.kc.kcui.LoggedInHomeOne;
 import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCBackupRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
+import com.shrey.kc.kcui.executors.DownloadDriveBackupExecutor;
+import com.shrey.kc.kcui.localdb.MetaEntity;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
+import com.shrey.kc.kcui.objects.LocalDBHolder;
 import com.shrey.kc.kcui.objects.RuntimeDynamicDataHolder;
 
 import java.io.IOException;
@@ -29,6 +33,8 @@ public class AsyncCall extends IntentService {
     public static final String ACTION_BACKUP = "com.shrey.kc.kcui.workerActivities.action.BACKUP";
     public static final String ACTION_FETCH_GRAPH = "com.shrey.kc.kcui.workerActivities.action.FETCH_GRAPH";
     public static final String ACTION_DELETE_KNOWLEDGE = "com.shrey.kc.kcui.workerActivities.action.DELETE_KNOWLEDGE";
+    public static final String VERIFY_DB = "com.shrey.kc.kcui.workerActivities.action.VERIFY_DB";
+
 
     public AsyncCall() {
         super("AsyncCall");
@@ -83,6 +89,13 @@ public class AsyncCall extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionVerifyDB(Context context, KCAccessRequest request) {
+        Intent intent = new Intent(context, AsyncCall.class);
+        intent.setAction(VERIFY_DB);
+        intent.putExtra("request", request);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         Object request = intent.getSerializableExtra("request");
@@ -109,6 +122,9 @@ public class AsyncCall extends IntentService {
                     break;
                 case ACTION_DELETE_KNOWLEDGE:
                     handleActionDeleteKnowledge((KCWriteRequest)request);
+                    break;
+                case VERIFY_DB:
+                    handleActionVerifyDB((KCAccessRequest) request);
                     break;
                 default:
                     break;
@@ -241,6 +257,33 @@ public class AsyncCall extends IntentService {
             e.printStackTrace();
         }
         broadcastResult(ACTION_BACKUP, result);
+    }
+
+    private void handleActionVerifyDB(KCAccessRequest request) {
+        Log.d(AsyncCall.class.getName(), "starting verification");
+        NodeResult result = null;
+        try {
+            new DownloadDriveBackupExecutor().executeRequest(request);
+            Log.d(LoggedInHomeOne.class.getName(), "initing db");
+            MetaEntity[] entities = LocalDBHolder.INSTANCE.getLocalDB().metaEntityDao().getLatest();
+
+            if(entities == null || entities.length==0) {
+                // we're here for the first time, havent backed up yet, check if there's an existing backup
+                // on user's drive and download if any
+                Log.d(AsyncCall.class.getName(), "Need to update db!");
+                result = new NodeResult();
+                result.setResult(new HashMap<>());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        broadcastResult(VERIFY_DB, result);
     }
 
     //--------

@@ -53,6 +53,8 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
         } else if(action == AsyncCall.ACTION_DELETE_KNOWLEDGE) {
             Log.d("ddd","received braodcast for deletion");
             activityRef.handleBroadcastResult((NodeResult)intent.getSerializableExtra("result"), AsyncCall.ACTION_DELETE_KNOWLEDGE);
+        } else if(action == AsyncCall.VERIFY_DB) {
+            activityRef.handleBroadcastResult((NodeResult)intent.getSerializableExtra("result"), AsyncCall.VERIFY_DB);
         }
 
     }

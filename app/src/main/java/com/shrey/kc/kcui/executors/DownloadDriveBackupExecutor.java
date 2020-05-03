@@ -43,11 +43,13 @@ public class DownloadDriveBackupExecutor implements GenericExecutor {
             if(Long.parseLong(rmi1.getSize()) > largestSize) {
                 largestSize = Long.parseLong(rmi1.getSize());
                 largestFile = rmi1;
-                Log.d("yoyo ", rmi1.getName());
+                Log.d("yoyo ", rmi1.getName() + " size " + rmi1.getSize());
             }
         }
 
-        backupAdaptor.overwriteLocally(largestFile.getId(), drequest.getLocalFile());
+        if(largestFile!=null) {
+            backupAdaptor.overwriteLocally(largestFile.getId(), drequest.getLocalFile());
+        }
         //Room.databaseBuilder()
         return null;
     }

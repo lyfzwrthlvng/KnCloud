@@ -35,9 +35,12 @@ import com.google.api.services.drive.DriveScopes;
 import com.shrey.kc.kcui.activities.KCUIActivity;
 import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCBackupRequest;
+import com.shrey.kc.kcui.entities.KCDriveFileDownloadRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
+import com.shrey.kc.kcui.executors.DownloadDriveBackupExecutor;
+import com.shrey.kc.kcui.localdb.MetaEntity;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
@@ -62,6 +65,8 @@ import de.blox.graphview.GraphView;
 import de.blox.graphview.ViewHolder;
 import de.blox.graphview.tree.BuchheimWalkerAlgorithm;
 import de.blox.graphview.tree.BuchheimWalkerConfiguration;
+
+import static com.shrey.kc.kcui.workerActivities.AsyncCall.startActionVerifyDB;
 
 public class LoggedInHomeOne extends KCUIActivity {
 
@@ -102,7 +107,7 @@ public class LoggedInHomeOne extends KCUIActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in_home_one);
 
-        LocalDBHolder.INSTANCE.getSetLocalDB(getApplicationContext());
+        LocalDBHolder.INSTANCE.getSetLocalDB(getApplicationContext(), false);
         LocalDBHolder.INSTANCE.setDatabasePath(getDatabasePath("local-kc-db"));
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -118,6 +123,12 @@ public class LoggedInHomeOne extends KCUIActivity {
         inflateLayout(addLayout, AsyncCall.ACTION_ADD);
         ViewConfigHolder.INSTANCE.setLayoutForMenu(R.id.navigation_view_all_tags, R.layout.activity_view_tags);
         ViewConfigHolder.INSTANCE.setActionForMenu(R.id.navigation_view_all_tags, AsyncCall.ACTION_FETCH_TAGS);
+
+        if(ensureSignIn()) {
+            Log.d(LoggedInHomeOne.class.getName(), "checking if user had previously backed up file on cloud");
+            KCDriveFileDownloadRequest req = KCDriveFileDownloadRequest.getDownloadRequest("dummy", getDatabasePath("local-kc-db"));
+            startActionVerifyDB(getApplicationContext(), req);
+        }
     }
 
     @Override
@@ -132,35 +143,42 @@ public class LoggedInHomeOne extends KCUIActivity {
         switch (item.getItemId()) {
             // action with ID action_refresh was selected
             case R.id.action_backup:
-                if(!GoogleSignIn.hasPermissions(CurrentUserInfo.INSTANCE.getUserInfo().getUser().getAccountInfo(),
-                        new Scope(DriveScopes.DRIVE_FILE))) {
-                    GoogleSignIn.requestPermissions(LoggedInHomeOne.this, RC_DRIVE_PERM,
-                            CurrentUserInfo.getUserInfo().getUser().getAccountInfo(),
-                            new Scope(DriveScopes.DRIVE_FILE));
-                    return false;
-                    /*
-                    GoogleAccountCredential credential =
-                            GoogleAccountCredential.usingOAuth2(
-                                    this, Collections.singleton(DriveScopes.DRIVE_FILE));
-                    CurrentUserInfo.INSTANCE.setAuthAccount(credential);
-                    */
+                if (ensureSignIn()) {
+                    // Execute
+                    KCBackupRequest request = KCBackupRequest.getBackupRequest(getDatabasePath("local-kc-db"));
+                    AsyncCall.startActionBackup(getApplicationContext(), request);
                 }
-                if(!GoogleSignIn.hasPermissions(CurrentUserInfo.INSTANCE.getUserInfo().getUser().getAccountInfo(),
-                        new Scope(DriveScopes.DRIVE_FILE))) {
-                    Log.e(LoggedInHomeOne.class.getName(),"Still don't have permission :(");
-                }
-                GoogleAccountCredential credential =
-                        GoogleAccountCredential.usingOAuth2(
-                                getApplicationContext(), Collections.singleton(DriveScopes.DRIVE_FILE));
-                CurrentUserInfo.INSTANCE.setAuthAccount(credential);
-                // Execute
-                KCBackupRequest request = KCBackupRequest.getBackupRequest(getDatabasePath("local-kc-db"));
-                AsyncCall.startActionBackup(getApplicationContext(), request);
                 break;
             default:
                 break;
         }
 
+        return true;
+    }
+
+    private boolean ensureSignIn() {
+        if(!GoogleSignIn.hasPermissions(CurrentUserInfo.INSTANCE.getUserInfo().getUser().getAccountInfo(),
+                new Scope(DriveScopes.DRIVE_FILE))) {
+            GoogleSignIn.requestPermissions(LoggedInHomeOne.this, RC_DRIVE_PERM,
+                    CurrentUserInfo.getUserInfo().getUser().getAccountInfo(),
+                    new Scope(DriveScopes.DRIVE_FILE));
+            //return true;
+            /*
+            GoogleAccountCredential credential =
+                    GoogleAccountCredential.usingOAuth2(
+                            this, Collections.singleton(DriveScopes.DRIVE_FILE));
+            CurrentUserInfo.INSTANCE.setAuthAccount(credential);
+            */
+        }
+        if(!GoogleSignIn.hasPermissions(CurrentUserInfo.INSTANCE.getUserInfo().getUser().getAccountInfo(),
+                new Scope(DriveScopes.DRIVE_FILE))) {
+            Log.e(LoggedInHomeOne.class.getName(),"Still don't have permission :(");
+            return false;
+        }
+        GoogleAccountCredential credential =
+                GoogleAccountCredential.usingOAuth2(
+                        getApplicationContext(), Collections.singleton(DriveScopes.DRIVE_FILE));
+        CurrentUserInfo.INSTANCE.setAuthAccount(credential);
         return true;
     }
 
@@ -243,6 +261,14 @@ public class LoggedInHomeOne extends KCUIActivity {
                 XmlResourceParser allTagsLayout = getResources().getLayout(ViewConfigHolder.INSTANCE.getLayoutForMenu(R.id.navigation_view_all_tags));
                 inflateLayout(allTagsLayout, action);
             }
+        } else if(action.equalsIgnoreCase(AsyncCall.VERIFY_DB)) {
+            if(result == null || result.getResult() == null) {
+            } else {
+                Log.d(LoggedInHomeOne.class.getName(), "downloaded, updating ref now");
+                LocalDBHolder.INSTANCE.getSetLocalDB(getApplicationContext(), true);
+                LocalDBHolder.INSTANCE.setDatabasePath(getDatabasePath("local-kc-db"));
+                makeToastOfSuccess("Yayy! downloaded previously backed up knowledge from your drive!");
+            }
         }
 
     }
@@ -256,6 +282,7 @@ public class LoggedInHomeOne extends KCUIActivity {
         intentFilter.addAction(AsyncCall.ACTION_FETCH_TAGS);
         intentFilter.addAction(AsyncCall.ACTION_SUGGEST);
         intentFilter.addAction(AsyncCall.ACTION_BACKUP);
+        intentFilter.addAction(AsyncCall.VERIFY_DB);
         registerReceiver(serviceBcastReceiver, intentFilter);
         super.onStart();
         Log.i("LOGGED_IN_HOME", getApplicationContext().getPackageName());
