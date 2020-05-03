@@ -122,30 +122,48 @@ public class OfflineDBAccessor {
         * delete the association of knowledge with the current tag only
         * delete the tags if no other knowleedge is associated with it
         * */
-
+        Log.d(OfflineDBAccessor.class.getName(), request.getValue() + " for " + request.getKeyword());
         String[] knowledges = {request.getValue()};
         long[] knowledgeIds = localDB.knowledgeDao().findKnowledgeIds(knowledges);
-        localDB.knowledgeDao().deleteById(knowledgeIds[0]);
 
-        long[] dependentTagIds = localDB.knowledgeTagMappingDao().findTagsForKnowledge(knowledgeIds);
-
-        String[] tags = {request.getKeyword()};
-        long depTagId = localDB.tagDao().findTagIds(tags)[0];
-        //for(long tagId: dependentTagIds) {
-            // delete mapping
-        Log.d(OfflineDBAccessor.class.getName(), "deleteing mapping for tag " + tags[0]);
-            long mappingId = localDB.knowledgeTagMappingDao().findMappingIdByTagKnowledge(knowledgeIds[0], depTagId);
-            localDB.knowledgeTagMappingDao().deleteById(mappingId);
-        //}
-
-        for(long tagId: dependentTagIds) {
-            // delete tag as well if no other mappings exist
-            long[] tagIds = {tagId};
-            if (localDB.knowledgeTagMappingDao().findKnowledgesForTag(tagIds).length == 0) {
-                localDB.tagDao().deleteById(tagId);
-            }
+        if(knowledgeIds.length>1) {
+            // we've multiple ids for this knowledge, lets do it for all
+            Log.e(OfflineDBAccessor.class.getName(), "multiple ids for knowledge " + request.getValue());
         }
 
+        for(long knowledgeId: knowledgeIds) {
+
+            String[] tags = {request.getKeyword()};
+            long depTagId = localDB.tagDao().findTagIds(tags)[0];
+            //for(long tagId: dependentTagIds) {
+            // delete mapping
+
+            long[] dependentTagIds = localDB.knowledgeTagMappingDao().findTagsForKnowledge(new long[]{knowledgeId});
+            Log.d(OfflineDBAccessor.class.getName(), "number of dependent tags: " + dependentTagIds.length);
+
+            Log.d(OfflineDBAccessor.class.getName(), "deleteing mapping for tag " + tags[0]);
+            long mappingId = localDB.knowledgeTagMappingDao().findMappingIdByTagKnowledge(knowledgeId, depTagId);
+            localDB.knowledgeTagMappingDao().deleteById(mappingId);
+            //}
+
+            for (long tagId : dependentTagIds) {
+                // delete tag as well if no other mappings exist
+                long[] tagIds = {tagId};
+                long[] taggedKnowledges = localDB.knowledgeTagMappingDao().findKnowledgesForTag(tagIds);
+                if(taggedKnowledges.length==0) {
+                    localDB.tagDao().deleteById(tagId);
+                    continue;
+                }
+            }
+
+            // delete knowledge if no other tags refer to it
+            dependentTagIds = localDB.knowledgeTagMappingDao().findTagsForKnowledge(new long[]{knowledgeId});
+            Log.d(OfflineDBAccessor.class.getName(), "number of dependent tags post deletion: " + dependentTagIds.length);
+            if (dependentTagIds.length == 0) {
+                localDB.knowledgeDao().deleteById(knowledgeId);
+            }
+
+        }
         // done
         return true;
     }

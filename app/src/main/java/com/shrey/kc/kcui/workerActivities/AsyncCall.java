@@ -246,6 +246,7 @@ public class AsyncCall extends IntentService {
     //--------
 
     private void broadcastResult(String action, NodeResult result) {
+        Log.d(AsyncCall.class.getName(), "received braodcast request for " + action);
         Intent intent = new Intent();
         intent.setAction(action);
         intent.putExtra("result", result);

@@ -1,6 +1,7 @@
 package com.shrey.kc.kcui;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -13,14 +14,21 @@ import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
 import com.shrey.kc.kcui.workerActivities.AsyncCall;
+import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
 
 public class KnowledgeDetails extends KCUIActivity {
+
+    ServiceBcastReceiver serviceBcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_knowledge_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        serviceBcastReceiver = new ServiceBcastReceiver(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(AsyncCall.ACTION_DELETE_KNOWLEDGE);
+        registerReceiver(serviceBcastReceiver, intentFilter);
         fillUpText();
     }
 
@@ -57,6 +65,18 @@ public class KnowledgeDetails extends KCUIActivity {
 
     @Override
     public void handleBroadcastResult(NodeResult result, String action) {
+        // go back to the home page?!
+        Log.d(KnowledgeDetails.class.getName(), "deletion done, going back!");
+        makeToastOfSuccess("Knowledge deleted!");
+        Intent homeIntent = new Intent(this, LoggedInHomeOne.class);
+        setResult(RuntimeConstants.INSTANCE.STARTED_ACTIVITY_RESULT_NOOP);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(homeIntent);
+    }
 
+    @Override
+    protected void onStop() {
+        unregisterReceiver(serviceBcastReceiver);
+        super.onStop();
     }
 }

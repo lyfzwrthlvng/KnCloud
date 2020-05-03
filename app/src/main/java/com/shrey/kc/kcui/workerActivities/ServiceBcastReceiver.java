@@ -51,6 +51,7 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
             NodeResult result = (NodeResult)intent.getSerializableExtra("result");
             activityRef.handleBroadcastResult(result, AsyncCall.ACTION_BACKUP);
         } else if(action == AsyncCall.ACTION_DELETE_KNOWLEDGE) {
+            Log.d("ddd","received braodcast for deletion");
             activityRef.handleBroadcastResult((NodeResult)intent.getSerializableExtra("result"), AsyncCall.ACTION_DELETE_KNOWLEDGE);
         }
 
