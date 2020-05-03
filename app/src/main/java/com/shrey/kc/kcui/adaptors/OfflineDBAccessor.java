@@ -1,5 +1,7 @@
 package com.shrey.kc.kcui.adaptors;
 
+import android.util.Log;
+
 import com.shrey.kc.kcui.algos.graph.TagGraphM;
 import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
@@ -63,6 +65,7 @@ public class OfflineDBAccessor {
         result.setResult(new HashMap<String, Object>());
 
         result.getResult().put("Knowledge", new ArrayList<Object>());
+        result.getResult().put("tag", tags);
 
         for(String knowledge: knowledges) {
 
@@ -114,17 +117,26 @@ public class OfflineDBAccessor {
     public static boolean deleteKnowledge(KCWriteRequest request) {
         ApplicationLocalDB localDB = LocalDBHolder.INSTANCE.getLocalDB();
 
+        /*
+        * one knowledge has multiple tags associated with it
+        * delete the association of knowledge with the current tag only
+        * delete the tags if no other knowleedge is associated with it
+        * */
+
         String[] knowledges = {request.getValue()};
         long[] knowledgeIds = localDB.knowledgeDao().findKnowledgeIds(knowledges);
         localDB.knowledgeDao().deleteById(knowledgeIds[0]);
 
         long[] dependentTagIds = localDB.knowledgeTagMappingDao().findTagsForKnowledge(knowledgeIds);
 
-        for(long tagId: dependentTagIds) {
+        String[] tags = {request.getKeyword()};
+        long depTagId = localDB.tagDao().findTagIds(tags)[0];
+        //for(long tagId: dependentTagIds) {
             // delete mapping
-            long mappingId = localDB.knowledgeTagMappingDao().findMappingIdByTagKnowledge(knowledgeIds[0], tagId);
+        Log.d(OfflineDBAccessor.class.getName(), "deleteing mapping for tag " + tags[0]);
+            long mappingId = localDB.knowledgeTagMappingDao().findMappingIdByTagKnowledge(knowledgeIds[0], depTagId);
             localDB.knowledgeTagMappingDao().deleteById(mappingId);
-        }
+        //}
 
         for(long tagId: dependentTagIds) {
             // delete tag as well if no other mappings exist

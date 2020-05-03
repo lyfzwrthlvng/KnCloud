@@ -20,6 +20,6 @@ public interface TagDao {
     @Insert
     public long[] insertAll(Tag... tags);
 
-    @Delete
+    @Query("delete from Tag where uid = :tagId")
     public void deleteById(long tagId);
 }

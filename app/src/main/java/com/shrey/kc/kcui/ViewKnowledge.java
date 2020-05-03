@@ -62,6 +62,8 @@ public class ViewKnowledge extends KCUIActivity {
     private void inflateCardsAndDisplay() {
         Intent cardDataIntent = getIntent();
         ArrayList<String> knows = cardDataIntent.getStringArrayListExtra("knowledges");
+        String currentTag = cardDataIntent.getStringExtra("tag");
+        Log.d(ViewKnowledge.class.getName(), "displaying knowledges for " + currentTag);
 
         LinearLayout ll = findViewById(R.id.root_vertical_container);
         ll.removeAllViews();
@@ -87,6 +89,8 @@ public class ViewKnowledge extends KCUIActivity {
                     TextView thisTv = (TextView)v;
                     Intent detailsOfKnowledge = new Intent(activityRef, KnowledgeDetails.class);
                     detailsOfKnowledge.putExtra("knowledge", thisTv.getText());
+                    // the tag that referrred to this knowledge
+                    detailsOfKnowledge.putExtra("tag", currentTag);
                     startActivity(detailsOfKnowledge);
                 }
             });

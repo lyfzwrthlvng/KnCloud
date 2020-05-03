@@ -19,6 +19,6 @@ public interface KnowledgeDao {
     @Insert
     public long[] insertAll(Knowledge... knowledges);
 
-    @Delete
+    @Query("delete from Knowledge where uid = :knowledgeId")
     public void deleteById(long knowledgeId);
 }

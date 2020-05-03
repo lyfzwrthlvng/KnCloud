@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 import de.blox.graphview.BaseGraphAdapter;
 import de.blox.graphview.Graph;
@@ -561,6 +562,7 @@ public class LoggedInHomeOne extends KCUIActivity {
         HashMap<String, Object> resp = result.getResult();
         Log.d("apicall", resp.toString());
         ArrayList<LinkedHashMap> knows = (ArrayList<LinkedHashMap>) resp.get("Knowledge");
+        String currentTag = ((String[]) resp.get("tag"))[0];
         int id = 999;
         ArrayList<String> knowledges = new ArrayList<>();
         for(LinkedHashMap param: knows) {
@@ -573,6 +575,8 @@ public class LoggedInHomeOne extends KCUIActivity {
         //inputManager.toggleSoftInput(0, 0);
         Intent showKnowledgeIntent = new Intent(LoggedInHomeOne.this, ViewKnowledge.class);
         showKnowledgeIntent.putStringArrayListExtra("knowledges", knowledges);
+        showKnowledgeIntent.putExtra("tag",currentTag);
+        Log.d("apicall", currentTag  + " << fetched knowledges for");
         startActivityForResult(showKnowledgeIntent, 0);
         return;
     }

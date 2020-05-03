@@ -37,6 +37,7 @@ public class KnowledgeDetails extends KCUIActivity {
     private void fillUpText() {
         Intent intent = getIntent();
         String knowledge = intent.getStringExtra("knowledge");
+        String tag = intent.getStringExtra("tag");
         TextView tv = findViewById(R.id.text_knowledge_details);
         tv.setText(knowledge);
 
@@ -48,6 +49,7 @@ public class KnowledgeDetails extends KCUIActivity {
                 KCWriteRequest deleteRequest = new KCWriteRequest();
                 // deleteRequest.setKeyword(); TODO, pass tag info as well to this page
                 deleteRequest.setValue(knowledge);
+                deleteRequest.setKeyword(tag);
                 AsyncCall.startActionDelete(getApplicationContext(), deleteRequest);
             }
         });

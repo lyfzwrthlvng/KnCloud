@@ -21,10 +21,6 @@ android {
         targetCompatibility = '1.8'
     }
 
-    // TODO get rid
-    packagingOptions {
-        exclude 'META-INF/proguard/androidx-annotations.pro'
-    }
 }
 
 dependencies {

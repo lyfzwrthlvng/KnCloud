@@ -27,7 +27,7 @@ public interface KnowledgeTagMappingDao {
     @Insert
     public long[] insertAll(KnowledgeTagMapping... mappings);
 
-    @Delete
+    @Query("delete from KnowledgeTagMapping where uid =:mapping")
     public void deleteById(long mapping);
 
 }

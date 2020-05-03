@@ -21,6 +21,7 @@ import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.entities.User;
 import com.shrey.kc.kcui.executors.AddKnowledgeExecutorLocal;
 import com.shrey.kc.kcui.executors.BackupDataExecutor;
+import com.shrey.kc.kcui.executors.DeleteKnowledgeExecutor;
 import com.shrey.kc.kcui.executors.GetAllTagsExecutorLocal;
 import com.shrey.kc.kcui.executors.GetAllTagsGraphExecutorLocal;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutorLocal;
@@ -92,6 +93,7 @@ public class Home extends KCUIActivity {
         CommunicationFactory.getInstance().register("USER_TAGS", new GetAllTagsExecutorLocal());
         CommunicationFactory.getInstance().register("BACKUP", new BackupDataExecutor());
         CommunicationFactory.getInstance().register("USER_TAGS_GRAPH", new GetAllTagsGraphExecutorLocal());
+        CommunicationFactory.getInstance().register("DELETE_KNOWLEDGE", new DeleteKnowledgeExecutor());
         /*
         CommunicationFactory.getInstance().register("FETCH_TAGS",
                 new FetchSuggestedTagsExecutor(new ServerCaller(),
