@@ -75,12 +75,11 @@ public class DriveBackup {
         return infos;
     }
 
-    public void overwriteLocally(String id) {
+    public void overwriteLocally(String id, java.io.File localFile) {
         try {
             InputStream stream = mDriveService.files().get(id).executeMediaAsInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            java.io.File localDbFile = LocalDBHolder.INSTANCE.getDatabasePath();
-            OutputStream os = new FileOutputStream(localDbFile);
+            OutputStream os = new FileOutputStream(localFile);
             OutputStreamWriter osw = new OutputStreamWriter(os);
             osw.write(reader.read());
         } catch (Exception e) {
