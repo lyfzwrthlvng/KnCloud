@@ -124,7 +124,7 @@ public class LoggedInHomeOne extends KCUIActivity {
         ViewConfigHolder.INSTANCE.setLayoutForMenu(R.id.navigation_view_all_tags, R.layout.activity_view_tags);
         ViewConfigHolder.INSTANCE.setActionForMenu(R.id.navigation_view_all_tags, AsyncCall.ACTION_FETCH_TAGS);
 
-        if(ensureSignIn()) {
+        if(CurrentUserInfo.getUserInfo().getAuthAccount()==null && ensureSignIn()) {
             Log.d(LoggedInHomeOne.class.getName(), "checking if user had previously backed up file on cloud");
             KCDriveFileDownloadRequest req = KCDriveFileDownloadRequest.getDownloadRequest("dummy", getDatabasePath("local-kc-db"));
             startActionVerifyDB(getApplicationContext(), req);
