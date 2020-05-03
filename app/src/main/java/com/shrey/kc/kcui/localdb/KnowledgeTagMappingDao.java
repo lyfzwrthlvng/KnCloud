@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.PrimaryKey;
@@ -20,7 +21,13 @@ public interface KnowledgeTagMappingDao {
     @Query("select tagId from KnowledgeTagMapping where knowledgeId in (:knowledgeIds)")
     public long[] findTagsForKnowledge(long[] knowledgeIds);
 
+    @Query("select uid from KnowledgeTagMapping where knowledgeId = :kid and tagId = :tagId")
+    public long findMappingIdByTagKnowledge(long kid, long tagId);
+
     @Insert
     public long[] insertAll(KnowledgeTagMapping... mappings);
+
+    @Delete
+    public void deleteById(long mapping);
 
 }

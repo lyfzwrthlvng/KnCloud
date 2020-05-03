@@ -9,8 +9,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.shrey.kc.kcui.activities.KCUIActivity;
+import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
+import com.shrey.kc.kcui.workerActivities.AsyncCall;
 
 public class KnowledgeDetails extends KCUIActivity {
 
@@ -43,6 +45,10 @@ public class KnowledgeDetails extends KCUIActivity {
             @Override
             public void onClick(View view) {
                 Log.d(KnowledgeDetails.class.getName(), "clicked on delete!");
+                KCWriteRequest deleteRequest = new KCWriteRequest();
+                // deleteRequest.setKeyword(); TODO, pass tag info as well to this page
+                deleteRequest.setValue(knowledge);
+                AsyncCall.startActionDelete(getApplicationContext(), deleteRequest);
             }
         });
     }

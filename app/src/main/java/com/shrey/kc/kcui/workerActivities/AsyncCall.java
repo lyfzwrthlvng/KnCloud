@@ -28,6 +28,7 @@ public class AsyncCall extends IntentService {
     public static final String ACTION_SUGGEST = "com.shrey.kc.kcui.workerActivities.action.SUGGEST";
     public static final String ACTION_BACKUP = "com.shrey.kc.kcui.workerActivities.action.BACKUP";
     public static final String ACTION_FETCH_GRAPH = "com.shrey.kc.kcui.workerActivities.action.FETCH_GRAPH";
+    public static final String ACTION_DELETE_KNOWLEDGE = "com.shrey.kc.kcui.workerActivities.action.DELETE_KNOWLEDGE";
 
     public AsyncCall() {
         super("AsyncCall");
@@ -75,6 +76,13 @@ public class AsyncCall extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionDelete(Context context, KCWriteRequest request) {
+        Intent intent = new Intent(context, AsyncCall.class);
+        intent.setAction(ACTION_DELETE_KNOWLEDGE);
+        intent.putExtra("request", request);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         Object request = intent.getSerializableExtra("request");
@@ -98,6 +106,9 @@ public class AsyncCall extends IntentService {
                     break;
                 case ACTION_FETCH_GRAPH:
                     handleActionFetchGraph((KCAccessRequest)request);
+                    break;
+                case ACTION_DELETE_KNOWLEDGE:
+                    handleActionDeleteKnowledge((KCWriteRequest)request);
                     break;
                 default:
                     break;
@@ -134,6 +145,17 @@ public class AsyncCall extends IntentService {
             e.printStackTrace();
         }
         broadcastResult(ACTION_ADD, result);
+    }
+
+    private void handleActionDeleteKnowledge(KCWriteRequest deleteRequest) {
+        NodeResult result = null;
+        try {
+            result = CommunicationFactory.getInstance().getExecutor("DELETE_KNOWLEDGE").executeRequest(deleteRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // broadcast?!
+        broadcastResult(ACTION_DELETE_KNOWLEDGE, result);
     }
 
     private void handleActionFetchTags(KCAccessRequest writeRequest) {

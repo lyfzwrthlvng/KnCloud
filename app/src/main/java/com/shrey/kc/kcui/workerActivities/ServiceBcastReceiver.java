@@ -50,6 +50,8 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
         } else if(action == AsyncCall.ACTION_BACKUP) {
             NodeResult result = (NodeResult)intent.getSerializableExtra("result");
             activityRef.handleBroadcastResult(result, AsyncCall.ACTION_BACKUP);
+        } else if(action == AsyncCall.ACTION_DELETE_KNOWLEDGE) {
+            activityRef.handleBroadcastResult((NodeResult)intent.getSerializableExtra("result"), AsyncCall.ACTION_DELETE_KNOWLEDGE);
         }
 
     }

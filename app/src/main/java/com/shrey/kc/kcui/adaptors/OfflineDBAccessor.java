@@ -110,4 +110,31 @@ public class OfflineDBAccessor {
         result.setResult(resultGraph);
         return result;
     }
+
+    public static boolean deleteKnowledge(KCWriteRequest request) {
+        ApplicationLocalDB localDB = LocalDBHolder.INSTANCE.getLocalDB();
+
+        String[] knowledges = {request.getValue()};
+        long[] knowledgeIds = localDB.knowledgeDao().findKnowledgeIds(knowledges);
+        localDB.knowledgeDao().deleteById(knowledgeIds[0]);
+
+        long[] dependentTagIds = localDB.knowledgeTagMappingDao().findTagsForKnowledge(knowledgeIds);
+
+        for(long tagId: dependentTagIds) {
+            // delete mapping
+            long mappingId = localDB.knowledgeTagMappingDao().findMappingIdByTagKnowledge(knowledgeIds[0], tagId);
+            localDB.knowledgeTagMappingDao().deleteById(mappingId);
+        }
+
+        for(long tagId: dependentTagIds) {
+            // delete tag as well if no other mappings exist
+            long[] tagIds = {tagId};
+            if (localDB.knowledgeTagMappingDao().findKnowledgesForTag(tagIds).length == 0) {
+                localDB.tagDao().deleteById(tagId);
+            }
+        }
+
+        // done
+        return true;
+    }
 }

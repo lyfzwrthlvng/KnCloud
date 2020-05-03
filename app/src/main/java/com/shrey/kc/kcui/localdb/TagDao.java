@@ -2,6 +2,7 @@ package com.shrey.kc.kcui.localdb;
 
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
@@ -18,4 +19,7 @@ public interface TagDao {
 
     @Insert
     public long[] insertAll(Tag... tags);
+
+    @Delete
+    public void deleteById(long tagId);
 }
