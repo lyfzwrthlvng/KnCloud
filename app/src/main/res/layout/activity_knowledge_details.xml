@@ -7,6 +7,22 @@
     tools:context=".KnowledgeDetails">
 
 
+    <Button
+        android:id="@+id/delete_knowledge_button"
+        android:layout_width="@dimen/round_button_radius"
+        android:layout_height="@dimen/round_button_radius"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/rounded_corners"
+        android:foreground="@android:drawable/ic_menu_delete"
+        android:foregroundGravity="center"
+        android:foregroundTint="@color/common_google_signin_btn_text_dark_pressed"
+        android:gravity="center_vertical|center_horizontal|center"
+        android:textSize="30sp"
+        android:typeface="monospace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_knowledge_details"
+        app:layout_constraintRight_toRightOf="@id/text_knowledge_details"/>
+
     <TextView
         android:id="@+id/text_knowledge_details"
         android:layout_width="match_parent"
@@ -21,4 +37,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
 </android.support.constraint.ConstraintLayout>

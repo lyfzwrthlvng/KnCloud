@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.shrey.kc.kcui.activities.KCUIActivity;
@@ -35,6 +37,14 @@ public class KnowledgeDetails extends KCUIActivity {
         String knowledge = intent.getStringExtra("knowledge");
         TextView tv = findViewById(R.id.text_knowledge_details);
         tv.setText(knowledge);
+
+        Button deleteButton = findViewById(R.id.delete_knowledge_button);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(KnowledgeDetails.class.getName(), "clicked on delete!");
+            }
+        });
     }
 
     @Override

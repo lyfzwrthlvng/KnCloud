@@ -3,10 +3,12 @@ package com.shrey.kc.kcui;
 import android.content.Intent;
 import android.graphics.drawable.ClipDrawable;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,6 +28,8 @@ public class ViewKnowledge extends KCUIActivity {
         Log.i(ViewKnowledge.class.getName(), "started activity");
         setContentView(R.layout.activity_view_knowledge);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //registerListeners();
+        //addListeners(layout1, action);
         inflateCardsAndDisplay();
     }
 
@@ -43,6 +47,16 @@ public class ViewKnowledge extends KCUIActivity {
         setResult(RuntimeConstants.INSTANCE.STARTED_ACTIVITY_RESULT_NOOP);
         finish();
         return true;
+    }
+
+    private void addListeners(ConstraintLayout root, String action) {
+        Button deleteButton = root.findViewById(R.id.delete_knowledge_button);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     private void inflateCardsAndDisplay() {
