@@ -8,11 +8,21 @@ import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import com.shrey.kc.kcui.entities.RemoteFileInfo;
+import com.shrey.kc.kcui.objects.LocalDBHolder;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class DriveBackup {
     private final Drive mDriveService;
@@ -44,6 +54,38 @@ public class DriveBackup {
         }
 
         return backedUp;
+    }
+
+    public List<RemoteFileInfo> downloadRemoteFileList(String remoteName) {
+        List<RemoteFileInfo> infos = new ArrayList<>();
+        try {
+            FileList checkFile = mDriveService.files().list()
+                    .setFields("files(id,name,modifiedTime)")
+                    .execute();
+
+            File remoteFile = null;
+            for (File dfile : checkFile.getFiles()) {
+                if(dfile.getName().equalsIgnoreCase(remoteName)) {
+                    infos.add(new RemoteFileInfo(dfile.getName(), dfile.getCreatedTime().toString(), dfile.getSize().toString(), dfile.getId()));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return infos;
+    }
+
+    public void overwriteLocally(String id) {
+        try {
+            InputStream stream = mDriveService.files().get(id).executeMediaAsInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            java.io.File localDbFile = LocalDBHolder.INSTANCE.getDatabasePath();
+            OutputStream os = new FileOutputStream(localDbFile);
+            OutputStreamWriter osw = new OutputStreamWriter(os);
+            osw.write(reader.read());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean uploadResumable(java.io.File localDb, String remoteName, long dataUpdateTime) {
