@@ -134,6 +134,9 @@ public class OfflineDBAccessor {
         for(long knowledgeId: knowledgeIds) {
 
             String[] tags = {request.getKeyword()};
+            if(tags.length==0){
+                continue;
+            }
             long depTagId = localDB.tagDao().findTagIds(tags)[0];
             //for(long tagId: dependentTagIds) {
             // delete mapping
