@@ -45,7 +45,7 @@ public class Home extends KCUIActivity {
                 //.requestIdToken(" 436356672313-2ckrm0rp57du8fh8il6ics8lq3rufqrf.apps.googleusercontent.com ")
                 .requestEmail()
                 // requesting to
-                .requestScopes(new Scope(DriveScopes.DRIVE))
+                .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
                 //.requestServerAuthCode("436356672313-eaohphn8igpjvo3trjab35ulto79n7q5.apps.googleusercontent.com")
                 .build();
         final GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
