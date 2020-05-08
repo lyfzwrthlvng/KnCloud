@@ -37,20 +37,29 @@ public class DownloadDriveBackupExecutor implements GenericExecutor {
         }
         String remoteName = "knowledgeCloud.sqlitedb";
         List<RemoteFileInfo> rmi = backupAdaptor.downloadRemoteFileList(remoteName);
-        RemoteFileInfo largestFile = null;
-        long largestSize = 0;
-        for(RemoteFileInfo rmi1: rmi) {
-            if(Long.parseLong(rmi1.getSize()) > largestSize) {
-                largestSize = Long.parseLong(rmi1.getSize());
-                largestFile = rmi1;
-                Log.d("yoyo ", rmi1.getName() + " size " + rmi1.getSize());
+        RemoteFileInfo validFile = pickMostEligibleFile(rmi);
+
+        if(validFile!=null) {
+            backupAdaptor.overwriteLocally(validFile.getId(), drequest.getLocalFile());
+        } else {
+            Log.d("yoyo", "No valid backup file found!");
+        }
+        return null;
+    }
+
+    private RemoteFileInfo pickMostEligibleFile(List<RemoteFileInfo> list) {
+        String latestCreatedTime = "0";
+        RemoteFileInfo latestValidFile = null; // valid => non zero size
+        for(RemoteFileInfo rf: list) {
+            Log.d("yoyo" , "this time " + rf.getCreatedTime());
+            if(rf.getCreatedTime().compareTo(latestCreatedTime) > 0) {
+                if(Long.parseLong(rf.getSize()) > 0) {
+                    latestCreatedTime = rf.getCreatedTime();
+                    latestValidFile = rf;
+                    Log.d("yoyo ", rf.getName() + " size " + rf.getSize());
+                }
             }
         }
-
-        if(largestFile!=null) {
-            backupAdaptor.overwriteLocally(largestFile.getId(), drequest.getLocalFile());
-        }
-        //Room.databaseBuilder()
-        return null;
+        return latestValidFile;
     }
 }
