@@ -3,10 +3,8 @@ package com.shrey.kc.kcui.workerActivities;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -44,9 +42,9 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
             //Log.i("SERVICE: ", intent.getSerializableExtra("result").toString());
             NodeResult result = (NodeResult)intent.getSerializableExtra("result");
             activityRef.handleBroadcastResult(result, AsyncCall.ACTION_FETCH_TAGS);
-        } else if(action == AsyncCall.ACTION_SUGGEST) {
+        } else if(action == AsyncCall.ACTION_SEARCH) {
             NodeResult result = (NodeResult)intent.getSerializableExtra("result");
-            activityRef.handleBroadcastResult(result, AsyncCall.ACTION_SUGGEST);
+            activityRef.handleBroadcastResult(result, AsyncCall.ACTION_SEARCH);
         } else if(action == AsyncCall.ACTION_BACKUP) {
             NodeResult result = (NodeResult)intent.getSerializableExtra("result");
             activityRef.handleBroadcastResult(result, AsyncCall.ACTION_BACKUP);

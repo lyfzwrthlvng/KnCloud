@@ -6,8 +6,8 @@ android {
         applicationId "com.shrey.kc.kcui"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 13
-        versionName "1.5-backup-google-auto-restore-delete"
+        versionCode 15
+        versionName "1.5-backup-google-little-things"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

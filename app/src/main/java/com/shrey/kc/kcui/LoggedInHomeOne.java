@@ -1,6 +1,5 @@
 package com.shrey.kc.kcui;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -9,11 +8,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,9 +23,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.common.api.Scope;
@@ -39,9 +38,6 @@ import com.shrey.kc.kcui.entities.KCDriveFileDownloadRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
-import com.shrey.kc.kcui.executors.DownloadDriveBackupExecutor;
-import com.shrey.kc.kcui.localdb.MetaEntity;
-import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
@@ -50,14 +46,10 @@ import com.shrey.kc.kcui.objects.ViewConfigHolder;
 import com.shrey.kc.kcui.workerActivities.AsyncCall;
 import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
 
 import de.blox.graphview.BaseGraphAdapter;
 import de.blox.graphview.Graph;
@@ -147,6 +139,7 @@ public class LoggedInHomeOne extends KCUIActivity {
                     // Execute
                     KCBackupRequest request = KCBackupRequest.getBackupRequest(getDatabasePath("local-kc-db"));
                     AsyncCall.startActionBackup(getApplicationContext(), request);
+                    item.setIcon(getDrawable(R.drawable.ic_action_backup_progress));
                 }
                 break;
             default:
@@ -241,11 +234,13 @@ public class LoggedInHomeOne extends KCUIActivity {
             } else {
                 makeToastOfSuccess("Note saved!");
             }
-        } else if(action.equalsIgnoreCase(AsyncCall.ACTION_SUGGEST) && result != null) {
+        } else if(action.equalsIgnoreCase(AsyncCall.ACTION_SEARCH) && result != null) {
 //            Log.d("suggestion","Suggested words: " + result.getResult().get("suggestions").toString());
             ArrayList<String> rtd = (ArrayList<String>)result.getResult().get("suggestions");
             fillViewsWithTagsSuggested(rtd);
         } else if(action.equalsIgnoreCase(AsyncCall.ACTION_BACKUP)) {
+            // invalidating menu, so we can change the color!
+            invalidateOptionsMenu();
             if(result == null || !result.getResult().get("backupResult").equals("true")) {
                 if(result.getResult().get("backupResult").equals("noop")) {
                     makeToastOfSuccess("Nothing to backup!");
@@ -280,7 +275,7 @@ public class LoggedInHomeOne extends KCUIActivity {
         intentFilter.addAction(AsyncCall.ACTION_ADD);
         intentFilter.addAction(AsyncCall.ACTION_READ);
         intentFilter.addAction(AsyncCall.ACTION_FETCH_TAGS);
-        intentFilter.addAction(AsyncCall.ACTION_SUGGEST);
+        intentFilter.addAction(AsyncCall.ACTION_SEARCH);
         intentFilter.addAction(AsyncCall.ACTION_BACKUP);
         intentFilter.addAction(AsyncCall.VERIFY_DB);
         registerReceiver(serviceBcastReceiver, intentFilter);
@@ -637,8 +632,12 @@ public class LoggedInHomeOne extends KCUIActivity {
         for(String cloudKey: cloudOfUse.keySet()) {
             ratios.put(cloudKey, (cloudOfUse.get(cloudKey)*1.0) / (totalCount*1.0));
         }
+    }
 
-
-
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_backup);
+        item.setIcon(getDrawable(R.drawable.ic_action_backup));
+        return super.onPrepareOptionsMenu(menu);
     }
 }

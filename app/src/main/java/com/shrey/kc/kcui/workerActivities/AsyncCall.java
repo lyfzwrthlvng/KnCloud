@@ -3,7 +3,6 @@ package com.shrey.kc.kcui.workerActivities;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 
 import com.shrey.kc.kcui.LoggedInHomeOne;
@@ -29,7 +28,7 @@ public class AsyncCall extends IntentService {
     public static final String ACTION_READ = "com.shrey.kc.kcui.workerActivities.action.READ";
     public static final String ACTION_ADD = "com.shrey.kc.kcui.workerActivities.action.ADD";
     public static final String ACTION_FETCH_TAGS = "com.shrey.kc.kcui.workerActivities.action.FETCH_TAGS";
-    public static final String ACTION_SUGGEST = "com.shrey.kc.kcui.workerActivities.action.SUGGEST";
+    public static final String ACTION_SEARCH = "com.shrey.kc.kcui.workerActivities.action.SUGGEST";
     public static final String ACTION_BACKUP = "com.shrey.kc.kcui.workerActivities.action.BACKUP";
     public static final String ACTION_FETCH_GRAPH = "com.shrey.kc.kcui.workerActivities.action.FETCH_GRAPH";
     public static final String ACTION_DELETE_KNOWLEDGE = "com.shrey.kc.kcui.workerActivities.action.DELETE_KNOWLEDGE";
@@ -63,7 +62,7 @@ public class AsyncCall extends IntentService {
 
     public static void startActionSuggest(Context context, String partial) {
         Intent intent = new Intent(context, AsyncCall.class);
-        intent.setAction(ACTION_SUGGEST);
+        intent.setAction(ACTION_SEARCH);
         intent.putExtra("request", partial);
         context.startService(intent);
     }
@@ -111,7 +110,7 @@ public class AsyncCall extends IntentService {
                 case ACTION_FETCH_TAGS:
                     handleActionFetchTags((KCAccessRequest)request);
                     break;
-                case ACTION_SUGGEST:
+                case ACTION_SEARCH:
                     handleActionSuggest((String)request);
                     break;
                 case ACTION_BACKUP:
@@ -239,7 +238,7 @@ public class AsyncCall extends IntentService {
         ir.put("suggestions", acw);
         //Log.d(this.getClass().getName(), acw.toString());
         result.setResult(ir);
-        broadcastResult(ACTION_SUGGEST, result);
+        broadcastResult(ACTION_SEARCH, result);
     }
 
     private void handleActionBackup(KCBackupRequest request) {
