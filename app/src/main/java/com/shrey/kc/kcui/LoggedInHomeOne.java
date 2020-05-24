@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v7.view.menu.ActionMenuItemView;
-import android.support.v7.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,20 +23,22 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.services.drive.DriveScopes;
 import com.shrey.kc.kcui.activities.KCUIActivity;
+import com.shrey.kc.kcui.adaptors.KnowledgeCardAdapter;
 import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCBackupRequest;
 import com.shrey.kc.kcui.entities.KCDriveFileDownloadRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
+import com.shrey.kc.kcui.entities.KnowledgeOrTag;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
@@ -50,6 +52,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import de.blox.graphview.BaseGraphAdapter;
 import de.blox.graphview.Graph;
@@ -96,19 +100,23 @@ public class LoggedInHomeOne extends KCUIActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        boolean justSignedIn = getIntent().getBooleanExtra("justSignedIn", false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in_home_one);
 
         LocalDBHolder.INSTANCE.getSetLocalDB(getApplicationContext(), false);
         LocalDBHolder.INSTANCE.setDatabasePath(getDatabasePath("local-kc-db"));
+        if(justSignedIn) {
+            Log.d(LoggedInHomeOne.class.getName(), "First time sign in, will check for backup file");
+            LocalDBHolder.INSTANCE.setInitWell(false);
+        }else{
+            LocalDBHolder.INSTANCE.setInitWell(true);
+        }
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.getMenu().getItem(1).setChecked(true);
-
-        //getSupportActionBar()
-
-
 
         // by default
         XmlResourceParser addLayout = getResources().getLayout(R.layout.activity_logged_in_add_knowledge);
@@ -262,6 +270,7 @@ public class LoggedInHomeOne extends KCUIActivity {
                 Log.d(LoggedInHomeOne.class.getName(), "downloaded, updating ref now");
                 LocalDBHolder.INSTANCE.getSetLocalDB(getApplicationContext(), true);
                 LocalDBHolder.INSTANCE.setDatabasePath(getDatabasePath("local-kc-db"));
+                LocalDBHolder.INSTANCE.setInitWell(true);
                 makeToastOfSuccess("Yayy! downloaded previously backed up knowledge from your drive!");
             }
         }
@@ -393,8 +402,20 @@ public class LoggedInHomeOne extends KCUIActivity {
             // perhaps fillup a default card saying no result
             return;
         }
-        ScrollView sv = findViewById(R.id.root_vertical_container_for_tags);
-        LinearLayout lv = sv.findViewById(R.id.root_vertical_container);
+        LinearLayout lv = findViewById(R.id.root_vertical_container_for_tags);
+
+        List<KnowledgeOrTag> knowledgeOrTagsList = allTheTags.stream()
+                .map(know -> new KnowledgeOrTag(know, "", true))
+                .collect(Collectors.toList());
+
+        KnowledgeCardAdapter cardAdapter = new KnowledgeCardAdapter(knowledgeOrTagsList);
+        RecyclerView recyclerView = findViewById(R.id.scroll_knowledge_all);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setAdapter(cardAdapter);
+        cardAdapter.notifyDataSetChanged();
+
+        /*
+        //LinearLayout lv = sv.findViewById(R.id.root_vertical_container);
         if(lv.getChildCount() == allTheTags.size()) {
             // had already done that
             return;
@@ -423,6 +444,7 @@ public class LoggedInHomeOne extends KCUIActivity {
             // populate it in the container
             lv.addView(cv);
         }
+         */
     }
 
     // add listeners to layouts inflated

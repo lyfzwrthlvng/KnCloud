@@ -1,7 +1,7 @@
 package com.shrey.kc.kcui.objects;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
 
 import com.shrey.kc.kcui.localdb.Knowledge;
 import com.shrey.kc.kcui.localdb.KnowledgeDao;

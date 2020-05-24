@@ -1,10 +1,11 @@
 package com.shrey.kc.kcui.objects;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.migration.Migration;
+import androidx.room.Room;
+import androidx.room.migration.Migration;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+
 import android.util.Log;
 
 import com.shrey.kc.kcui.adaptors.DriveBackup;
@@ -18,6 +19,7 @@ public enum LocalDBHolder {
 
     ApplicationLocalDB localDB;
     File databasePath;
+    boolean initWell;
 
     public ApplicationLocalDB getSetLocalDB(Context applicationContext, boolean update) {
         if(localDB == null || update==true) {
@@ -78,6 +80,14 @@ public enum LocalDBHolder {
 
     public ApplicationLocalDB getLocalDB() {
         return localDB;
+    }
+
+    public void setInitWell(boolean initWell) {
+        this.initWell = initWell;
+    }
+
+    public boolean getInitWell() {
+        return this.initWell;
     }
 
     public File getDatabasePath() {

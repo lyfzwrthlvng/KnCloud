@@ -1,6 +1,6 @@
 package com.shrey.kc.kcui.localdb;
 
-import android.arch.persistence.room.ColumnInfo;
+import androidx.room.ColumnInfo;
 
 public class DbEntity {
 

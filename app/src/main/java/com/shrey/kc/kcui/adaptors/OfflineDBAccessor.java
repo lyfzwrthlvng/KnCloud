@@ -5,6 +5,7 @@ import android.util.Log;
 import com.shrey.kc.kcui.algos.graph.TagGraphM;
 import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
+import com.shrey.kc.kcui.entities.KCUpdateRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.localdb.Knowledge;
@@ -168,6 +169,26 @@ public class OfflineDBAccessor {
 
         }
         // done
+        return true;
+    }
+
+    public static boolean updateKnowledge(KCUpdateRequest request) {
+        ApplicationLocalDB localDB = LocalDBHolder.INSTANCE.getLocalDB();
+        Log.d(OfflineDBAccessor.class.getName(), request.getValue() + " for " + request.getKeyword());
+
+        String[] knowledges = {request.getValue()};
+        long[] knowledgeIds = localDB.knowledgeDao().findKnowledgeIds(knowledges);
+
+        if(knowledgeIds.length>1) {
+            // we've multiple ids for this knowledge, lets do it for all
+            Log.e(OfflineDBAccessor.class.getName(),
+                    "multiple ids (" + knowledgeIds.length + ") for knowledge " + request.getValue());
+        }
+
+        for(long knowledgeId: knowledgeIds) {
+            localDB.knowledgeDao().updateKnowledgeString(knowledgeId, request.getNewValue());
+        }
+
         return true;
     }
 }

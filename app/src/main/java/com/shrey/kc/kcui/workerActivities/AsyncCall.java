@@ -9,6 +9,7 @@ import com.shrey.kc.kcui.LoggedInHomeOne;
 import com.shrey.kc.kcui.entities.KCAccessRequest;
 import com.shrey.kc.kcui.entities.KCBackupRequest;
 import com.shrey.kc.kcui.entities.KCReadRequest;
+import com.shrey.kc.kcui.entities.KCUpdateRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.executors.DownloadDriveBackupExecutor;
@@ -33,7 +34,7 @@ public class AsyncCall extends IntentService {
     public static final String ACTION_FETCH_GRAPH = "com.shrey.kc.kcui.workerActivities.action.FETCH_GRAPH";
     public static final String ACTION_DELETE_KNOWLEDGE = "com.shrey.kc.kcui.workerActivities.action.DELETE_KNOWLEDGE";
     public static final String VERIFY_DB = "com.shrey.kc.kcui.workerActivities.action.VERIFY_DB";
-
+    public static final String ACTION_UPDATE_KNOWLEDGE = "com.shrey.kc.kcui.workerActivities.action.UPDATE_KNOWLEDGE";
 
     public AsyncCall() {
         super("AsyncCall");
@@ -95,6 +96,13 @@ public class AsyncCall extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionUpdateKnowledge(Context context, KCUpdateRequest request) {
+        Intent intent = new Intent(context, AsyncCall.class);
+        intent.setAction(ACTION_UPDATE_KNOWLEDGE);
+        intent.putExtra("request", request);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         Object request = intent.getSerializableExtra("request");
@@ -124,6 +132,9 @@ public class AsyncCall extends IntentService {
                     break;
                 case VERIFY_DB:
                     handleActionVerifyDB((KCAccessRequest) request);
+                    break;
+                case ACTION_UPDATE_KNOWLEDGE:
+                    handleActionUpdateKnowledge((KCUpdateRequest) request);
                     break;
                 default:
                     break;
@@ -171,6 +182,17 @@ public class AsyncCall extends IntentService {
         }
         // broadcast?!
         broadcastResult(ACTION_DELETE_KNOWLEDGE, result);
+    }
+
+    private void handleActionUpdateKnowledge(KCUpdateRequest updateRequest) {
+        NodeResult result = null;
+        try {
+            result = CommunicationFactory.getInstance().getExecutor("UPDATE_KNOWLEDGE").executeRequest(updateRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // broadcast?!
+        broadcastResult(ACTION_UPDATE_KNOWLEDGE, result);
     }
 
     private void handleActionFetchTags(KCAccessRequest writeRequest) {
@@ -266,7 +288,7 @@ public class AsyncCall extends IntentService {
             Log.d(LoggedInHomeOne.class.getName(), "initing db");
             MetaEntity[] entities = LocalDBHolder.INSTANCE.getLocalDB().metaEntityDao().getLatest();
 
-            if(entities == null || entities.length==0) {
+            if(entities == null || entities.length==0 || !LocalDBHolder.INSTANCE.getInitWell()) {
                 // we're here for the first time, havent backed up yet, check if there's an existing backup
                 // on user's drive and download if any
                 Log.d(AsyncCall.class.getName(), "Need to update db!");

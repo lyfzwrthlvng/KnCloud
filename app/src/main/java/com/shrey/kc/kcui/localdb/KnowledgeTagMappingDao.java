@@ -2,13 +2,13 @@ package com.shrey.kc.kcui.localdb;
 
 import java.util.ArrayList;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.Query;
+import androidx.room.ColumnInfo;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Entity;
+import androidx.room.Insert;
+import androidx.room.PrimaryKey;
+import androidx.room.Query;
 
 @Dao
 public interface KnowledgeTagMappingDao {

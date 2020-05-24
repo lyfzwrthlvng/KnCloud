@@ -3,8 +3,10 @@ package com.shrey.kc.kcui;
 import android.content.Intent;
 import android.graphics.drawable.ClipDrawable;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,14 +15,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shrey.kc.kcui.activities.KCUIActivity;
+import com.shrey.kc.kcui.adaptors.KnowledgeCardAdapter;
+import com.shrey.kc.kcui.entities.KnowledgeOrTag;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ViewKnowledge extends KCUIActivity {
 
     public static boolean isActive = false;
+    private KnowledgeCardAdapter cardAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,43 +69,17 @@ public class ViewKnowledge extends KCUIActivity {
     private void inflateCardsAndDisplay() {
         Intent cardDataIntent = getIntent();
         ArrayList<String> knows = cardDataIntent.getStringArrayListExtra("knowledges");
+        String tag = cardDataIntent.getStringExtra("tag");
+        List<KnowledgeOrTag> kot = knows.stream().map(know -> new KnowledgeOrTag(tag, know, false)).collect(Collectors.toList());
         String currentTag = cardDataIntent.getStringExtra("tag");
         Log.d(ViewKnowledge.class.getName(), "displaying knowledges for " + currentTag);
 
-        LinearLayout ll = findViewById(R.id.root_vertical_container);
-        ll.removeAllViews();
-        // TODO? can we ever cross this? will it create issues?
-        int id = 99;
-        for(String param: knows) {
-            Log.d(ViewKnowledge.class.getName(), param);
-            CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.knowledge_card,null);
-            id += 1;
-            cardView.setId(id);
-            TextView tv = cardView.findViewById(R.id.text_view_in_card);
-            TextView tvp = cardView.findViewById(R.id.text_view_in_card_placeholder);
-            String text = param;
-            if(text.length() > 20) {
-                tv.setCompoundDrawables(null, null, new ClipDrawable(getDrawable(android.R.drawable.status_bar_item_app_background),0,0),null);
-            }
-            tv.setText(text);
-            ll.addView(cardView);
-            final ViewKnowledge activityRef = this;
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TextView thisTv = (TextView)v;
-                    Intent detailsOfKnowledge = new Intent(activityRef, KnowledgeDetails.class);
-                    detailsOfKnowledge.putExtra("knowledge", thisTv.getText());
-                    // the tag that referrred to this knowledge
-                    detailsOfKnowledge.putExtra("tag", currentTag);
-                    startActivity(detailsOfKnowledge);
-                }
-            });
-
-        }
-        ll.setFocusable(true);
-        ll.requestFocus();
-
+        //LinearLayout ll = findViewById(R.id.root_vertical_container);
+        cardAdapter = new KnowledgeCardAdapter(kot);
+        RecyclerView recyclerView = findViewById(R.id.scroll_knowledge_all);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setAdapter(cardAdapter);
+        cardAdapter.notifyDataSetChanged();
     }
 
     @Override

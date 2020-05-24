@@ -1,5 +1,6 @@
 package com.shrey.kc.kcui;
 
+import androidx.room.Update;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,7 @@ import com.shrey.kc.kcui.executors.DeleteKnowledgeExecutor;
 import com.shrey.kc.kcui.executors.GetAllTagsExecutorLocal;
 import com.shrey.kc.kcui.executors.GetAllTagsGraphExecutorLocal;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutorLocal;
+import com.shrey.kc.kcui.executors.UpdateKnowledgeExecutor;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
@@ -94,6 +96,7 @@ public class Home extends KCUIActivity {
         CommunicationFactory.getInstance().register("BACKUP", new BackupDataExecutor());
         CommunicationFactory.getInstance().register("USER_TAGS_GRAPH", new GetAllTagsGraphExecutorLocal());
         CommunicationFactory.getInstance().register("DELETE_KNOWLEDGE", new DeleteKnowledgeExecutor());
+        CommunicationFactory.getInstance().register("UPDATE_KNOWLEDGE", new UpdateKnowledgeExecutor());
         /*
         CommunicationFactory.getInstance().register("FETCH_TAGS",
                 new FetchSuggestedTagsExecutor(new ServerCaller(),
@@ -113,7 +116,7 @@ public class Home extends KCUIActivity {
         } else {
             // below works!!!
             //GoogleSignIn.requestPermissions(Home.this, RC_DRIVE_PERM, account, new Scope(DriveScopes.DRIVE_FILE));
-            startLoggedInActivity(account);
+            startLoggedInActivity(account, false);
 
         }
     }
@@ -136,7 +139,7 @@ public class Home extends KCUIActivity {
         // task contains info about signed in user
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            startLoggedInActivity(account);
+            startLoggedInActivity(account, true);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -145,7 +148,7 @@ public class Home extends KCUIActivity {
         }
     }
 
-    private void startLoggedInActivity(GoogleSignInAccount account) {
+    private void startLoggedInActivity(GoogleSignInAccount account, boolean justSignedIn) {
         // Signed in successfully, show authenticated UI.
         //updateUI(account);
         Log.i("SIGNIN", "sign in done for: " + account.getEmail());
@@ -153,6 +156,7 @@ public class Home extends KCUIActivity {
         CurrentUserInfo.getUserInfo().setUser(new User(account.getId(), account));
         //loadRealUI();
         Intent loggedIntent = new Intent(this, LoggedInHomeOne.class);
+        loggedIntent.putExtra("justSignedIn", justSignedIn);
         startActivity(loggedIntent);
     }
 

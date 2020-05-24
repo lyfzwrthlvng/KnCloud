@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.widget.RemoteViews;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -15,6 +14,8 @@ import com.shrey.kc.kcui.entities.User;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Implementation of App Widget functionality.

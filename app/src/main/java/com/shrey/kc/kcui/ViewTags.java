@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shrey.kc.kcui.activities.KCUIActivity;
+import com.shrey.kc.kcui.adaptors.KnowledgeCardAdapter;
 import com.shrey.kc.kcui.entities.KCReadRequest;
+import com.shrey.kc.kcui.entities.KnowledgeOrTag;
 import com.shrey.kc.kcui.entities.NodeResult;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
 import com.shrey.kc.kcui.workerActivities.AsyncCall;
@@ -25,12 +30,15 @@ import com.shrey.kc.kcui.workerActivities.ServiceBcastReceiver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ViewTags extends KCUIActivity {
 
     // we sometimes get duplicate broadcasts, this to avoid starting the activity multiple times
     public static boolean isActive = false;
     ServiceBcastReceiver serviceBcastReceiver;
+    private KnowledgeCardAdapter cardAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,29 +67,16 @@ public class ViewTags extends KCUIActivity {
         }
         ScrollView sv = findViewById(R.id.root_vertical_container_for_tags);
         LinearLayout lv = sv.findViewById(R.id.root_vertical_container);
-        for (String tag : tags) {
-            CardView cv = (CardView) getLayoutInflater().inflate(getResources().getLayout(R.layout.knowledge_card), null);
-            TextView tv = cv.findViewById(R.id.text_view_in_card);
-            tv.setText(tag);
 
-            // add on click listener for the cardView
-            cv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CardView cv = (CardView) v;
-                    TextView tvIn = cv.findViewById(R.id.text_view_in_card);
-                    // search knowledge for this tag
-                    ArrayList<String> al = new ArrayList<String>();
-                    al.add(tvIn.getText().toString());
-                    KCReadRequest readRequest = KCReadRequest.constructRequest(al);
-                    AsyncCall.startActionRead(getApplicationContext(), readRequest);
-                }
-            });
-            // populate it in the container
-            lv.addView(cv);
-        }
+        List<KnowledgeOrTag> knowledgeOrTagsList = tags.stream()
+                .map(know -> new KnowledgeOrTag(know, "", true))
+                .collect(Collectors.toList());
 
-
+        cardAdapter = new KnowledgeCardAdapter(knowledgeOrTagsList);
+        RecyclerView recyclerView = findViewById(R.id.scroll_knowledge_all);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setAdapter(cardAdapter);
+        cardAdapter.notifyDataSetChanged();
     }
 
     // we sometimes get duplicate broadcasts, this to avoid starting the activity multiple times
