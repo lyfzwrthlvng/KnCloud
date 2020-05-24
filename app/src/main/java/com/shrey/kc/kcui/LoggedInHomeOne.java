@@ -360,37 +360,18 @@ public class LoggedInHomeOne extends KCUIActivity {
         // Keep the tags somewhere in memory, for now, we might wanna load in parts later TODO
 
         Log.i(LoggedInHomeOne.class.getName(), "filling up with tags");
-        ScrollView sv = findViewById(R.id.root_vertical_container_for_tags);
+        LinearLayout sv = findViewById(R.id.root_vertical_container_for_tags);
         LinearLayout lv = sv.findViewById(R.id.root_vertical_container);
-        if (tags == null) {
-            // perhaps fillup a default card saying no result
-            lv.removeAllViews();
-            return;
-        }
-        // remove all for now and add again
-        // TODO: make it better
-        lv.removeAllViews();
-        for (String tag : tags) {
-            CardView cv = (CardView) getLayoutInflater().inflate(getResources().getLayout(R.layout.knowledge_card), null);
-            TextView tv = cv.findViewById(R.id.text_view_in_card);
-            tv.setText(tag);
 
-            // add on click listener for the cardView
-            cv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CardView cv = (CardView) v;
-                    TextView tvIn = cv.findViewById(R.id.text_view_in_card);
-                    // search knowledge for this tag
-                    ArrayList<String> al = new ArrayList<String>();
-                    al.add(tvIn.getText().toString());
-                    KCReadRequest readRequest = KCReadRequest.constructRequest(al);
-                    AsyncCall.startActionRead(getApplicationContext(), readRequest);
-                }
-            });
-            // populate it in the container
-            lv.addView(cv);
-        }
+        List<KnowledgeOrTag> knowledgeOrTagsList = tags.stream()
+                .map(know -> new KnowledgeOrTag(know, "", true))
+                .collect(Collectors.toList());
+
+        KnowledgeCardAdapter cardAdapter = new KnowledgeCardAdapter(knowledgeOrTagsList);
+        RecyclerView recyclerView = findViewById(R.id.scroll_knowledge_all);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setAdapter(cardAdapter);
+        cardAdapter.notifyDataSetChanged();
     }
 
     private void fillViewsWithTags() {
