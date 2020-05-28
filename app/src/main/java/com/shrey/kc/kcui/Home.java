@@ -23,6 +23,7 @@ import com.shrey.kc.kcui.entities.User;
 import com.shrey.kc.kcui.executors.AddKnowledgeExecutorLocal;
 import com.shrey.kc.kcui.executors.BackupDataExecutor;
 import com.shrey.kc.kcui.executors.DeleteKnowledgeExecutor;
+import com.shrey.kc.kcui.executors.FetchRelatedTagsExecutorLocal;
 import com.shrey.kc.kcui.executors.GetAllTagsExecutorLocal;
 import com.shrey.kc.kcui.executors.GetAllTagsGraphExecutorLocal;
 import com.shrey.kc.kcui.executors.GetKnowledgeExecutorLocal;
@@ -30,6 +31,7 @@ import com.shrey.kc.kcui.executors.UpdateKnowledgeExecutor;
 import com.shrey.kc.kcui.objects.CommunicationFactory;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
+import com.shrey.kc.kcui.workerActivities.AsyncCall;
 
 import java.util.Collections;
 
@@ -51,6 +53,7 @@ public class Home extends KCUIActivity {
                 //.requestServerAuthCode("436356672313-eaohphn8igpjvo3trjab35ulto79n7q5.apps.googleusercontent.com")
                 .build();
         final GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        CurrentUserInfo.INSTANCE.setSignInClient(mGoogleSignInClient);
 
         // register listeners
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
@@ -97,6 +100,7 @@ public class Home extends KCUIActivity {
         CommunicationFactory.getInstance().register("USER_TAGS_GRAPH", new GetAllTagsGraphExecutorLocal());
         CommunicationFactory.getInstance().register("DELETE_KNOWLEDGE", new DeleteKnowledgeExecutor());
         CommunicationFactory.getInstance().register("UPDATE_KNOWLEDGE", new UpdateKnowledgeExecutor());
+        CommunicationFactory.getInstance().register(AsyncCall.ACTION_FETCH_RELATED_TAGS, new FetchRelatedTagsExecutorLocal());
         /*
         CommunicationFactory.getInstance().register("FETCH_TAGS",
                 new FetchSuggestedTagsExecutor(new ServerCaller(),

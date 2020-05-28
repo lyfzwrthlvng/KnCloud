@@ -75,7 +75,8 @@ public class ViewKnowledge extends KCUIActivity {
         Log.d(ViewKnowledge.class.getName(), "displaying knowledges for " + currentTag);
 
         //LinearLayout ll = findViewById(R.id.root_vertical_container);
-        cardAdapter = new KnowledgeCardAdapter(kot);
+        cardAdapter = new KnowledgeCardAdapter(kot, RuntimeConstants.INSTANCE.LARGE_HEIGHT,
+                false);
         RecyclerView recyclerView = findViewById(R.id.scroll_knowledge_all);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(cardAdapter);

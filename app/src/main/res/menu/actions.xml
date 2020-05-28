@@ -11,4 +11,13 @@
         android:tooltipText="Backup your tags to google drive"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_logout"
+        android:icon="@drawable/ic_action_logout"
+        android:iconTint="@color/textWhite"
+        android:iconTintMode="add"
+        android:title="backup"
+        android:tooltipText="Logout of the app"
+        app:showAsAction="ifRoom" />
+
 </menu>

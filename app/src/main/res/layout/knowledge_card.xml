@@ -1,59 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="fill"
     android:layout_marginStart="0dp"
-    android:layout_marginEnd="0dp"
-    android:background="@color/colorPrimaryGradient"
+    android:layout_marginBottom="1dp"
+    android:background="@color/color2g3"
     android:clipChildren="true"
-    android:elevation="2dp"
     android:focusable="true"
-    app:cardCornerRadius="4dp">
+    android:id="@+id/card_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_marginStart="0dp"
+        android:layout_marginStart="2sp"
         android:layout_marginTop="2dp"
-        android:layout_marginEnd="0dp"
-        android:background="@drawable/not_so_rounded_corners">
+        android:layout_marginEnd="2sp">
 
-        <TextView
-            android:id="@+id/text_view_in_card"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginTop="0dp"
-            android:background="@color/transparent"
-            android:drawableTint="@color/colorAccent"
-            android:maxHeight="100dp"
-            android:paddingLeft="@dimen/activity_horizontal_marginby2"
-            android:text="TextView"
-            android:textAlignment="gravity"
-            android:textColor="@color/textWhite"
-            android:textSize="34sp"
-            tools:text="@tools:sample/full_names" />
+            android:id="@+id/linear_tags"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_hash"
+                android:text="#"
+                android:paddingTop="@dimen/activity_horizontal_marginby8"
+                android:textColor="@color/color1v3"
+                android:textSize="34sp"
+                android:layout_marginStart="@dimen/activity_horizontal_marginby2"/>
+            <TextView
+                android:id="@+id/text_view_in_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginTop="0dp"
+                android:background="@color/transparent"
+                android:drawableTint="@color/colorAccent"
+                android:maxHeight="100dp"
+                android:text="TextView"
+                android:textAlignment="gravity"
+                android:textColor="@color/color1v3"
+                android:textSize="34sp"
+                tools:text="@tools:sample/first_names" />
 
-        <TextView
-            android:id="@+id/text_view_in_card_placeholder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginTop="0dp"
-            android:background="@color/transparent"
-            android:drawableEnd="@android:drawable/status_bar_item_app_background"
-            android:drawableTint="@color/colorAccent"
-            android:maxHeight="100dp"
-            android:paddingLeft="@dimen/activity_horizontal_marginby2"
-            android:text="TextView"
-            android:textAlignment="gravity"
-            android:textColor="@color/textWhite"
-            android:textSize="38sp"
-            android:visibility="gone"
-            tools:text="@tools:sample/full_names" />
+        </LinearLayout>
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

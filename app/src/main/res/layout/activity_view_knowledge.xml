@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ViewKnowledge">
 
-
     <include
         android:id="@+id/root_vertical_container_in_dashboard"
         layout="@layout/vertical_scroll_for_knowledge"

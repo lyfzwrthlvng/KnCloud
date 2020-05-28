@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".KnowledgeDetails">
-
+    tools:context=".KnowledgeDetails"
+    android:layout_marginStart="@dimen/activity_horizontal_marginby2"
+    android:layout_marginEnd="@dimen/activity_horizontal_marginby2">
 
     <Button
         android:id="@+id/delete_knowledge_button"
@@ -29,11 +30,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="TextView"
-        android:textSize="40sp"
+        android:textSize="30sp"
         android:textAlignment="gravity"
         android:gravity="center"
-        android:background="@drawable/not_rounded_corners"
-        android:textColor="@color/textWhite"
+        android:background="@color/textWhite"
+        android:textColor="@color/color1v3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -56,5 +57,12 @@
         app:layout_constraintBottom_toBottomOf="@id/text_knowledge_details"
         app:layout_constraintRight_toRightOf="@id/text_knowledge_details"
         android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_other_tags"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"></LinearLayout>>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

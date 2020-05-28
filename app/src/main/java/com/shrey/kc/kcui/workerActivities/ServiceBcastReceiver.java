@@ -56,6 +56,8 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
         } else if(action == AsyncCall.ACTION_UPDATE_KNOWLEDGE) {
             Log.d("ddd","received braodcast for updation");
             activityRef.handleBroadcastResult((NodeResult)intent.getSerializableExtra("result"), AsyncCall.ACTION_UPDATE_KNOWLEDGE);
+        } else if(action == AsyncCall.ACTION_FETCH_RELATED_TAGS) {
+            activityRef.handleBroadcastResult((NodeResult)intent.getSerializableExtra("result"), AsyncCall.ACTION_FETCH_RELATED_TAGS);
         }
 
     }

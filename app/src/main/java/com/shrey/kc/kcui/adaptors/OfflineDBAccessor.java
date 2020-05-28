@@ -86,6 +86,18 @@ public class OfflineDBAccessor {
         return result;
     }
 
+    public static NodeResult getAllRelatedTags(KCWriteRequest readRequest) {
+        ApplicationLocalDB localDB = LocalDBHolder.INSTANCE.getLocalDB();
+        long[] knowledgeIds = localDB.knowledgeDao().findKnowledgeIds(new String[]{readRequest.getValue()});
+        long[] tagIds = localDB.knowledgeTagMappingDao().findTagsForKnowledge(knowledgeIds);
+
+        String[] tags = localDB.tagDao().findTagsForIds(tagIds);
+        NodeResult result = new NodeResult();
+        result.setResult(new HashMap<String, Object>());
+        result.getResult().put("Tags", tags);
+        return result;
+    }
+
     public static NodeResult getAllTagsGraph(KCAccessRequest readRequest) {
         ApplicationLocalDB localDB = LocalDBHolder.INSTANCE.getLocalDB();
         String[] tags = localDB.tagDao().findTags();

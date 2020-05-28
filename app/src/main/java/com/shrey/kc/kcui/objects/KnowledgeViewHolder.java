@@ -20,25 +20,33 @@ import java.util.ArrayList;
 public class KnowledgeViewHolder extends RecyclerView.ViewHolder {
 
     private TextView text;
+    private TextView textHash;
     private Context context;
     private CardView cardView;
 
     public KnowledgeViewHolder(@NonNull View itemView) {
         super(itemView);
         this.text = itemView.findViewById(R.id.text_view_in_card);
+        this.textHash = itemView.findViewById(R.id.text_hash);
         this.cardView = (CardView) itemView;
         this.context = itemView.getContext();
     }
 
-    public void bind(KnowledgeOrTag kot) throws IOException {
+    public void bind(KnowledgeOrTag kot, boolean hash) throws IOException {
         this.text.setText(kot.isPrintTag() ? kot.getTag() : kot.getKnowledge());
-        if(this.text.getText().length() > 20) {
-            //this.text.setCompoundDrawables(null, null, new ClipDrawable((android.R.drawable.status_bar_item_app_background),0,0),null);
+        if(this.text.getText().length() > 50) {
+            this.text.setText(this.text.getText().toString().substring(0, 50) + " ...");
         }
         if(!kot.isPrintTag()) {
             setKnowledgeClick(kot);
         } else {
             setTagClick(kot);
+        }
+
+        if(hash) {
+            textHash.setVisibility(View.VISIBLE);
+        }else{
+            textHash.setVisibility(View.GONE);
         }
     }
 

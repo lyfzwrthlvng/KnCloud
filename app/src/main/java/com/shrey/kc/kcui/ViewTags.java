@@ -72,7 +72,8 @@ public class ViewTags extends KCUIActivity {
                 .map(know -> new KnowledgeOrTag(know, "", true))
                 .collect(Collectors.toList());
 
-        cardAdapter = new KnowledgeCardAdapter(knowledgeOrTagsList);
+        cardAdapter = new KnowledgeCardAdapter(knowledgeOrTagsList,
+                RuntimeConstants.INSTANCE.SMALL_HEIGHT, true);
         RecyclerView recyclerView = findViewById(R.id.scroll_knowledge_all);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(cardAdapter);

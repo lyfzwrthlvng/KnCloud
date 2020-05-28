@@ -1,5 +1,6 @@
 package com.shrey.kc.kcui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -25,9 +26,15 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.signin.SignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.services.drive.DriveScopes;
@@ -40,6 +47,7 @@ import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.KnowledgeOrTag;
 import com.shrey.kc.kcui.entities.NodeResult;
+import com.shrey.kc.kcui.entities.User;
 import com.shrey.kc.kcui.objects.CurrentUserInfo;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
 import com.shrey.kc.kcui.objects.RuntimeConstants;
@@ -68,6 +76,7 @@ public class LoggedInHomeOne extends KCUIActivity {
 
     ServiceBcastReceiver serviceBcastReceiver;
     HashMap<String, View> inflatedRoots = new HashMap<>();
+    ProgressDialog dialog;
 
     private final int RC_DRIVE_PERM = 9002;
 
@@ -124,9 +133,11 @@ public class LoggedInHomeOne extends KCUIActivity {
         ViewConfigHolder.INSTANCE.setLayoutForMenu(R.id.navigation_view_all_tags, R.layout.activity_view_tags);
         ViewConfigHolder.INSTANCE.setActionForMenu(R.id.navigation_view_all_tags, AsyncCall.ACTION_FETCH_TAGS);
 
-        if(CurrentUserInfo.getUserInfo().getAuthAccount()==null && ensureSignIn()) {
+        if(CurrentUserInfo.getUserInfo().getAuthAccount()==null && !ensureSignIn()) {
             Log.d(LoggedInHomeOne.class.getName(), "checking if user had previously backed up file on cloud");
             KCDriveFileDownloadRequest req = KCDriveFileDownloadRequest.getDownloadRequest("dummy", getDatabasePath("local-kc-db"));
+            dialog = ProgressDialog.show(LoggedInHomeOne.this, "",
+                    "Please wait while we look for your old notes", true);
             startActionVerifyDB(getApplicationContext(), req);
         }
     }
@@ -150,6 +161,13 @@ public class LoggedInHomeOne extends KCUIActivity {
                     item.setIcon(getDrawable(R.drawable.ic_action_backup_progress));
                 }
                 break;
+            case R.id.action_logout:
+                if(GoogleSignIn.hasPermissions(CurrentUserInfo.INSTANCE.getUserInfo().getUser().getAccountInfo(),
+                        new Scope(DriveScopes.DRIVE_FILE))) {
+                    signOut();
+                } else {
+                    ensureSignIn();
+                }
             default:
                 break;
         }
@@ -163,13 +181,6 @@ public class LoggedInHomeOne extends KCUIActivity {
             GoogleSignIn.requestPermissions(LoggedInHomeOne.this, RC_DRIVE_PERM,
                     CurrentUserInfo.getUserInfo().getUser().getAccountInfo(),
                     new Scope(DriveScopes.DRIVE_FILE));
-            //return true;
-            /*
-            GoogleAccountCredential credential =
-                    GoogleAccountCredential.usingOAuth2(
-                            this, Collections.singleton(DriveScopes.DRIVE_FILE));
-            CurrentUserInfo.INSTANCE.setAuthAccount(credential);
-            */
         }
         if(!GoogleSignIn.hasPermissions(CurrentUserInfo.INSTANCE.getUserInfo().getUser().getAccountInfo(),
                 new Scope(DriveScopes.DRIVE_FILE))) {
@@ -181,6 +192,22 @@ public class LoggedInHomeOne extends KCUIActivity {
                         getApplicationContext(), Collections.singleton(DriveScopes.DRIVE_FILE));
         CurrentUserInfo.INSTANCE.setAuthAccount(credential);
         return true;
+    }
+
+    private void signOut() {
+        Log.d(LoggedInHomeOne.class.getName(), "starting sign out");
+        CurrentUserInfo.INSTANCE.getSignInClient().signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        //CurrentUserInfo.INSTANCE.setUser(null);
+                        //CurrentUserInfo.INSTANCE.setAuthAccount(null);
+                        Toast
+                                .makeText(getApplicationContext(), "You will be signed out when you restart the app, you can log back in anytime to see your content", Toast.LENGTH_LONG)
+                                .show();
+                        //((MenuItem)findViewById(R.id.action_logout)).setIcon(R.drawable.ic_action_logout);
+                    }
+                });
     }
 
     private boolean inflateLayout(XmlResourceParser layout, String action) {
@@ -265,6 +292,7 @@ public class LoggedInHomeOne extends KCUIActivity {
                 inflateLayout(allTagsLayout, action);
             }
         } else if(action.equalsIgnoreCase(AsyncCall.VERIFY_DB)) {
+            dialog.dismiss();            //findViewById(R.id.progress_bar).setVisibility(View.GONE);
             if(result == null || result.getResult() == null) {
             } else {
                 Log.d(LoggedInHomeOne.class.getName(), "downloaded, updating ref now");
@@ -363,11 +391,16 @@ public class LoggedInHomeOne extends KCUIActivity {
         LinearLayout sv = findViewById(R.id.root_vertical_container_for_tags);
         LinearLayout lv = sv.findViewById(R.id.root_vertical_container);
 
+        if(tags == null) {
+            tags = new ArrayList<>();
+        }
+
         List<KnowledgeOrTag> knowledgeOrTagsList = tags.stream()
                 .map(know -> new KnowledgeOrTag(know, "", true))
                 .collect(Collectors.toList());
 
-        KnowledgeCardAdapter cardAdapter = new KnowledgeCardAdapter(knowledgeOrTagsList);
+        KnowledgeCardAdapter cardAdapter = new KnowledgeCardAdapter(knowledgeOrTagsList,
+                RuntimeConstants.INSTANCE.SMALL_HEIGHT, true);
         RecyclerView recyclerView = findViewById(R.id.scroll_knowledge_all);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(cardAdapter);
@@ -389,7 +422,8 @@ public class LoggedInHomeOne extends KCUIActivity {
                 .map(know -> new KnowledgeOrTag(know, "", true))
                 .collect(Collectors.toList());
 
-        KnowledgeCardAdapter cardAdapter = new KnowledgeCardAdapter(knowledgeOrTagsList);
+        KnowledgeCardAdapter cardAdapter = new KnowledgeCardAdapter(knowledgeOrTagsList,
+                RuntimeConstants.INSTANCE.SMALL_HEIGHT, true);
         RecyclerView recyclerView = findViewById(R.id.scroll_knowledge_all);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(cardAdapter);

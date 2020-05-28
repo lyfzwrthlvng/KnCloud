@@ -35,6 +35,7 @@ public class AsyncCall extends IntentService {
     public static final String ACTION_DELETE_KNOWLEDGE = "com.shrey.kc.kcui.workerActivities.action.DELETE_KNOWLEDGE";
     public static final String VERIFY_DB = "com.shrey.kc.kcui.workerActivities.action.VERIFY_DB";
     public static final String ACTION_UPDATE_KNOWLEDGE = "com.shrey.kc.kcui.workerActivities.action.UPDATE_KNOWLEDGE";
+    public static final String ACTION_FETCH_RELATED_TAGS = "com.shrey.kc.kcui.workerActivities.action.ACTION_FETCH_RELATED_TAGS";
 
     public AsyncCall() {
         super("AsyncCall");
@@ -103,6 +104,13 @@ public class AsyncCall extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionFetchRelatedTags(Context context, KCWriteRequest writeRequest) {
+        Intent intent = new Intent(context, AsyncCall.class);
+        intent.setAction(ACTION_FETCH_RELATED_TAGS);
+        intent.putExtra("request", writeRequest);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         Object request = intent.getSerializableExtra("request");
@@ -136,6 +144,8 @@ public class AsyncCall extends IntentService {
                 case ACTION_UPDATE_KNOWLEDGE:
                     handleActionUpdateKnowledge((KCUpdateRequest) request);
                     break;
+                case ACTION_FETCH_RELATED_TAGS:
+                    handleActionFetchRelatedTags((KCWriteRequest)request);
                 default:
                     break;
             }
@@ -305,6 +315,24 @@ public class AsyncCall extends IntentService {
             e.printStackTrace();
         }
         broadcastResult(VERIFY_DB, result);
+    }
+
+    public void handleActionFetchRelatedTags(KCWriteRequest writeRequest) {
+        Log.d(AsyncCall.class.getName(), "starting backup...");
+        NodeResult result = null;
+        try {
+            result = CommunicationFactory.INSTANCE
+                    .getExecutor(ACTION_FETCH_RELATED_TAGS).executeRequest(writeRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        broadcastResult(ACTION_FETCH_RELATED_TAGS, result);
     }
 
     //--------

@@ -35,7 +35,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/file/ic_cloud_upload_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_power_settings_new_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -57,7 +57,7 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_action_backup_progress" />
+                                      <entry key="outputName" value="ic_action_logout" />
                                       <entry key="theme" value="CUSTOM" />
                                       <entry key="themeColor" value="3e93e5" />
                                     </map>
