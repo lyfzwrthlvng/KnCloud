@@ -38,7 +38,7 @@ public class AlphaTrie {
         //for(searchNode.branch.keySet()) {
         //    String
         //}
-        return getWordsAtLevel(3, searchNode);
+        return getWordsAtLevel(10, searchNode);
     }
 
     private ArrayList<String> getWordsAtLevel(int max, AlphaTrieNode theNode) {

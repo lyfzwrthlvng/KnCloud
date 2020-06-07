@@ -8,7 +8,7 @@
 
     <EditText
         android:id="@+id/add_tag_text"
-        android:layout_width="360dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="40dp"
         android:layout_marginStart="16dp"
@@ -18,7 +18,7 @@
         android:textAlignment="center"
         android:inputType="textPersonName"
         android:text="enter text here"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

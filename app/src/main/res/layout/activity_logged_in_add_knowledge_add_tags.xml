@@ -10,9 +10,15 @@
     android:id="@+id/text_view_suggestions_heading"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="@id/layout_for_tag_suggestions"
+    app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent" />
+    app:layout_constraintEnd_toEndOf="parent"
+    android:backgroundTint="@color/colorAccent"
+    android:inputType="textPersonName"
+    android:text="Enter at least one tag and press enter"
+    android:textSize="20dp"
+    android:textAlignment="center"
+    android:textColor="@color/colorAccent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,12 +39,14 @@
         android:layout_marginTop="@dimen/activity_vertical_marginx2"
         android:ems="10"
         android:textAlignment="center"
+        android:backgroundTint="@color/colorAccent"
         android:inputType="textPersonName"
         android:text="@string/tags_here_space_separated_will_do"
         android:textSize="@dimen/text_size_1to5_2"
-        android:textColor="@color/colorActivityBg"
-        app:layout_constraintTop_toBottomOf="@id/layout_for_tag_suggestions"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
 

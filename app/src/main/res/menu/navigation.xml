@@ -9,8 +9,7 @@
     <item
         android:id="@+id/navigation_add_knowledge"
         android:icon="@android:drawable/ic_input_add"
-        android:title="@string/title_add_knowledge"
-        android:iconTint="@color/textWhite"/>
+        android:title="@string/title_add_knowledge" />
 
     <item
         android:id="@+id/navigation_search_tags"

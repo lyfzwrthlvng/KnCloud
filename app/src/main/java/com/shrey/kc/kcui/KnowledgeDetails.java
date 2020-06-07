@@ -57,7 +57,6 @@ public class KnowledgeDetails extends KCUIActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        Log.d(LoggedInAddKnowledge.class.getName(), "back");
         // finish without anything
         //Intent knowledgeResultIntent = new Intent();
         setResult(RuntimeConstants.INSTANCE.STARTED_ACTIVITY_RESULT_NOOP);

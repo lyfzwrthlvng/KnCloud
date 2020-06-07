@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -70,6 +71,7 @@ import de.blox.graphview.ViewHolder;
 import de.blox.graphview.tree.BuchheimWalkerAlgorithm;
 import de.blox.graphview.tree.BuchheimWalkerConfiguration;
 
+import static android.view.View.GONE;
 import static com.shrey.kc.kcui.workerActivities.AsyncCall.startActionVerifyDB;
 
 public class LoggedInHomeOne extends KCUIActivity {
@@ -133,7 +135,7 @@ public class LoggedInHomeOne extends KCUIActivity {
         ViewConfigHolder.INSTANCE.setLayoutForMenu(R.id.navigation_view_all_tags, R.layout.activity_view_tags);
         ViewConfigHolder.INSTANCE.setActionForMenu(R.id.navigation_view_all_tags, AsyncCall.ACTION_FETCH_TAGS);
 
-        if(CurrentUserInfo.getUserInfo().getAuthAccount()==null && !ensureSignIn()) {
+        if(CurrentUserInfo.getUserInfo().getAuthAccount()==null && ensureSignIn()) {
             Log.d(LoggedInHomeOne.class.getName(), "checking if user had previously backed up file on cloud");
             KCDriveFileDownloadRequest req = KCDriveFileDownloadRequest.getDownloadRequest("dummy", getDatabasePath("local-kc-db"));
             dialog = ProgressDialog.show(LoggedInHomeOne.this, "",
@@ -485,13 +487,32 @@ public class LoggedInHomeOne extends KCUIActivity {
                     startActivityForResult(collectTagsIntent, RuntimeConstants.INSTANCE.START_ACTIVITY_FOR_TAGS);
                 }
             });
-
             kt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if(hasFocus) {
                         kt.setText(null);
                     }
+                }
+            });
+            kt.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if(s.toString().trim().length()==0) {
+                        atb.setVisibility(GONE);
+                    }else{
+                        atb.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
                 }
             });
         } else if(action.equalsIgnoreCase(AsyncCall.ACTION_READ)) {

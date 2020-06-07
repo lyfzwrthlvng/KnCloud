@@ -21,9 +21,6 @@
             android:label="@string/app_name"
             android:theme="@style/SplashTheme" />
         <activity
-            android:name=".LoggedInAddKnowledge"
-            android:label="@string/title_add_knowledge" />
-        <activity
             android:name=".LoggedInAddKnowledgeAddTags"
             android:label="@string/title_assign_tags" />
 

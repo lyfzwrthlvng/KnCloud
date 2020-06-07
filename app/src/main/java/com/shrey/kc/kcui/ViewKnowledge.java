@@ -45,7 +45,6 @@ public class ViewKnowledge extends KCUIActivity {
         if(getParent() == null) {
             // err, maybe goto home
             //startActivity(new Intent(null, LoggedInHome.class));
-            Log.w(LoggedInAddKnowledge.class.getName(), "parent is not there@");
 
         }
         //Log.d(LoggedInAddKnowledge.class.getName(), "back to:" + getParent().getLocalClassName());
