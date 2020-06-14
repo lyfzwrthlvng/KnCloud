@@ -6,6 +6,7 @@ public class RemoteFileInfo implements Serializable {
 
     String name;
     String createdTime;
+    String modifiedTime;
     String size;
 
     public String getId() {
@@ -18,9 +19,10 @@ public class RemoteFileInfo implements Serializable {
 
     String id;
 
-    public RemoteFileInfo(String name, String createdTime, String size, String id) {
+    public RemoteFileInfo(String name, String createdTime, String modifiedTime, String size, String id) {
         this.name=name;
         this.createdTime=createdTime;
+        this.modifiedTime = modifiedTime;
         this.size=size;
         this.id = id;
     }
@@ -35,6 +37,10 @@ public class RemoteFileInfo implements Serializable {
 
     public String getCreatedTime() {
         return createdTime;
+    }
+
+    public String getModifiedTime() {
+        return modifiedTime;
     }
 
     public void setCreatedTime(String createdTime) {

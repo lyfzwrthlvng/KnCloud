@@ -51,7 +51,7 @@ public class DownloadDriveBackupExecutor implements GenericExecutor {
         String latestCreatedTime = "0";
         RemoteFileInfo latestValidFile = null; // valid => non zero size
         for(RemoteFileInfo rf: list) {
-            Log.d("yoyo" , "this time " + rf.getCreatedTime());
+            Log.d("yoyo" , "this time " + rf.getModifiedTime());
             if(rf.getCreatedTime().compareTo(latestCreatedTime) > 0) {
                 if(Long.parseLong(rf.getSize()) > 0) {
                     latestCreatedTime = rf.getCreatedTime();

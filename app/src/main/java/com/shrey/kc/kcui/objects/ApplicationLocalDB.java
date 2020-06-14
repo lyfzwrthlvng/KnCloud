@@ -11,11 +11,13 @@ import com.shrey.kc.kcui.localdb.MetaEntity;
 import com.shrey.kc.kcui.localdb.MetaEntityDao;
 import com.shrey.kc.kcui.localdb.Tag;
 import com.shrey.kc.kcui.localdb.TagDao;
+import com.shrey.kc.kcui.localdb.UpdateTrack;
+import com.shrey.kc.kcui.localdb.UpdateTrackDao;
 
 
 @Database(
-        entities = {Tag.class, Knowledge.class, KnowledgeTagMapping.class, MetaEntity.class},
-        version = 3
+        entities = {Tag.class, Knowledge.class, KnowledgeTagMapping.class, MetaEntity.class, UpdateTrack.class},
+        version = 4
 )
 public abstract class ApplicationLocalDB extends RoomDatabase {
 
@@ -23,4 +25,5 @@ public abstract class ApplicationLocalDB extends RoomDatabase {
     public abstract KnowledgeDao knowledgeDao();
     public abstract KnowledgeTagMappingDao knowledgeTagMappingDao();
     public abstract MetaEntityDao metaEntityDao();
+    public abstract UpdateTrackDao updateTrackDao();
 }

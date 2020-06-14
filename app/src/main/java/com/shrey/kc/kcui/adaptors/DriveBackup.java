@@ -68,7 +68,10 @@ public class DriveBackup {
             }
             for (File dfile : checkFile.getFiles()) {
                 if(dfile.getName().equalsIgnoreCase(remoteName)) {
-                    infos.add(new RemoteFileInfo(dfile.getName(), dfile.getCreatedTime().toString(), dfile.getSize().toString(), dfile.getId()));
+                    Log.d(DriveBackup.class.getName(), "file found " + dfile.getName());
+                    infos.add(new RemoteFileInfo(dfile.getName(), dfile.getCreatedTime().toString(),
+                            dfile.getModifiedTime().toString(), dfile.getSize().toString(),
+                            dfile.getId()));
                 }
             }
         } catch (Exception e) {
@@ -81,7 +84,6 @@ public class DriveBackup {
         try {
             InputStream stream = mDriveService.files().get(id).executeMediaAsInputStream();
             OutputStream os = new FileOutputStream(localFile);
-
             int inputRead;
             while((inputRead = stream.read()) != -1) {
                 os.write(inputRead);
@@ -140,15 +142,22 @@ public class DriveBackup {
 
             } else if(remoteFile.getModifiedTime().getValue() < dataUpdateTime /*upload is older than data*/) {
                 Log.i(DriveBackup.class.getName(), "Uploading file umpteenth time....");
-                File dummy = new File();
-                //dummy.setId(remoteFile.getId());
-                Drive.Files.Update request = mDriveService.files().update(remoteFile.getId(), dummy, fc);
+                File theHolyBackup = new File()
+                        .setParents(Collections.singletonList("root"))
+                        .setName(remoteName)
+                        .setMimeType("application/octet-stream"); // in bytes
+                Drive.Files.Create request = mDriveService.files().create(theHolyBackup, fc);
+                // not working, so we delete and create a new file
+                //Drive.Files.Update request = mDriveService.files().update(remoteFile.getId(), remoteFile, fc);
+
+                File finalRemoteFile = remoteFile;
                 request.getMediaHttpUploader().setProgressListener(new MediaHttpUploaderProgressListener() {
                     @Override
                     public void progressChanged(MediaHttpUploader uploader) throws IOException {
                         switch (uploader.getUploadState()) {
                             case MEDIA_COMPLETE:
                                 uploadStatus.add(true);
+                                mDriveService.files().delete(finalRemoteFile.getId()).execute();
                                 break;
                             case NOT_STARTED:
                                 break;

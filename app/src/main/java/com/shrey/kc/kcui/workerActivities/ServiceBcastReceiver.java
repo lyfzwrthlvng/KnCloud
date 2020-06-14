@@ -64,7 +64,7 @@ public class ServiceBcastReceiver extends BroadcastReceiver {
 
     private void makeToastOfFailure() {
         Toast toast = Toast.makeText(activityRef.getApplicationContext(),
-                "Com breakdown with server :( \nTry in a little while maybe?",
+                "Couldn't upload file at the moment, try again in a while.",
                 Toast.LENGTH_SHORT);
         toast.show();
         Log.e("ServiceBroadcastListener", "FAILED COM WITH SERVER!");

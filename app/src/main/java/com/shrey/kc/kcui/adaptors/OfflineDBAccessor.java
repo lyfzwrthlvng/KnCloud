@@ -8,9 +8,11 @@ import com.shrey.kc.kcui.entities.KCReadRequest;
 import com.shrey.kc.kcui.entities.KCUpdateRequest;
 import com.shrey.kc.kcui.entities.KCWriteRequest;
 import com.shrey.kc.kcui.entities.NodeResult;
+import com.shrey.kc.kcui.localdb.DbEntity;
 import com.shrey.kc.kcui.localdb.Knowledge;
 import com.shrey.kc.kcui.localdb.KnowledgeTagMapping;
 import com.shrey.kc.kcui.localdb.Tag;
+import com.shrey.kc.kcui.localdb.UpdateTrack;
 import com.shrey.kc.kcui.objects.ApplicationLocalDB;
 import com.shrey.kc.kcui.objects.LocalDBHolder;
 
@@ -51,6 +53,11 @@ public class OfflineDBAccessor {
         knowledgeTagMapping.setKnowledgeId(knowledgeIds[0]);
 
         localDB.knowledgeTagMappingDao().insertAll(knowledgeTagMapping);
+        // fot now, manually triggering insert into the updateTrack as well
+        // TODO this should be handled via triggers or some such
+        UpdateTrack dbEntity = new UpdateTrack();
+        localDB.updateTrackDao().insertAll(new UpdateTrack[]{dbEntity});
+
         return true;
     }
 
@@ -160,7 +167,11 @@ public class OfflineDBAccessor {
             Log.d(OfflineDBAccessor.class.getName(), "deleteing mapping for tag " + tags[0]);
             long mappingId = localDB.knowledgeTagMappingDao().findMappingIdByTagKnowledge(knowledgeId, depTagId);
             localDB.knowledgeTagMappingDao().deleteById(mappingId);
-            //}
+
+            // fot now, manually triggering insert into the updateTrack as well
+            // TODO this should be handled via triggers or some such
+            UpdateTrack dbEntity = new UpdateTrack();
+            localDB.updateTrackDao().insertAll(new UpdateTrack[]{dbEntity});
 
             for (long tagId : dependentTagIds) {
                 // delete tag as well if no other mappings exist

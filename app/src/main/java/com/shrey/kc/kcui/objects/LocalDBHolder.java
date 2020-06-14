@@ -1,6 +1,7 @@
 package com.shrey.kc.kcui.objects;
 
 import androidx.room.Room;
+import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -23,10 +24,6 @@ public enum LocalDBHolder {
 
     public ApplicationLocalDB getSetLocalDB(Context applicationContext, boolean update) {
         if(localDB == null || update==true) {
-            /*
-            localDB = Room.databaseBuilder(applicationContext, ApplicationLocalDB.class,
-                    "local-kc-db").build();
-                    */
             Migration roomMigration = new Migration(1,2) {
                 @Override
                 public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -45,17 +42,6 @@ public enum LocalDBHolder {
             Migration roomMigration23 = new Migration(2,3) {
                 @Override
                 public void migrate(@NonNull SupportSQLiteDatabase database) {
-                   /*
-                    database.execSQL("create index created_index on Knowledge (created)");
-                    database.execSQL("create index updated_index on Knowledge (updated)");
-
-                    database.execSQL("create index created_index on KnowledgeTagMapping (created)");
-                    database.execSQL("create index updated_index on KnowledgeTagMapping (updated)");
-
-                    database.execSQL("create index created_index on Tag (created)");
-                    database.execSQL("create index updated_index on Tag (updated)");
-                    */
-                   // room takes care of the above, below, creating a new table
                     database.execSQL("CREATE TABLE IF NOT EXISTS MetaEntity(uid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                             "created INTEGER default 1561314899," +
                             "updated INTEGER default 1561314899," +
@@ -63,13 +49,24 @@ public enum LocalDBHolder {
                 }
             };
 
+            Migration roomMigration34 = new Migration(3,4) {
+                @Override
+                public void migrate(@NonNull SupportSQLiteDatabase database) {
+                    database.execSQL("CREATE TABLE IF NOT EXISTS UpdateTrack(uid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                            "updated INTEGER default 1561314899," +
+                            "created INTEGER default 1561314899)");
+                }
+            };
+
             if(update==true) {
                 Log.d(LocalDBHolder.class.getName(), "updating...");
                 localDB.close();
             }
-            localDB = Room.databaseBuilder(applicationContext,ApplicationLocalDB.class,"local-kc-db").addMigrations(roomMigration, roomMigration23).build();
-
-            //new DownloadDriveBackupExecutor().executeRequest();
+            localDB = Room.databaseBuilder(applicationContext,
+                    ApplicationLocalDB.class,"local-kc-db")
+                    .addMigrations(roomMigration, roomMigration23, roomMigration34)
+                    .setJournalMode(RoomDatabase.JournalMode.TRUNCATE) // for backup!
+                    .build();
         }
         return localDB;
     }

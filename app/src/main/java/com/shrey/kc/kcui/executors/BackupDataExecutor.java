@@ -1,5 +1,7 @@
 package com.shrey.kc.kcui.executors;
 
+import android.util.Log;
+
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
@@ -25,11 +27,6 @@ public class BackupDataExecutor implements GenericExecutor {
     public NodeResult executeRequest(KCAccessRequest request) throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
         if(backupAdaptor == null) {
-            /*
-            GoogleAccountCredential credential =
-                    GoogleAccountCredential.usingOAuth2(
-                            this, Collections.singleton(DriveScopes.DRIVE_FILE));
-                            */
             Drive googleDriveService = new Drive.Builder(AndroidHttp.newCompatibleTransport(),
                     JacksonFactory.getDefaultInstance(),CurrentUserInfo.INSTANCE.getAuthAccount()).setApplicationName("knowledgeCloud").build();
             backupAdaptor = new DriveBackup(googleDriveService);
@@ -37,7 +34,7 @@ public class BackupDataExecutor implements GenericExecutor {
         //just before we start upload, let's get time of update
         //inside upload, we check if uploaded time was greated than this for idempotency
 
-        long[] updates = LocalDBHolder.INSTANCE.getLocalDB().knowledgeTagMappingDao().findLatestUpdate();
+        long[] updates = LocalDBHolder.INSTANCE.getLocalDB().updateTrackDao().getLatest();
         if(updates == null || updates.length == 0) {
             NodeResult nr = new NodeResult();
             nr.setResult(new HashMap<String, Object>());
@@ -48,8 +45,11 @@ public class BackupDataExecutor implements GenericExecutor {
         // expecting it to be set init
         java.io.File localDb = LocalDBHolder.INSTANCE.getDatabasePath();
         String remoteName = "knowledgeCloud.sqlitedb";
+        Log.d(BackupDataExecutor.class.getName(),
+                "uploading file with backupTime = " + backupDataTime);
         KCBackupRequest kcBackupRequest = (KCBackupRequest) request;
-        boolean backupResult = backupAdaptor.uploadResumable(kcBackupRequest.getTheHolyBackup(), remoteName, backupDataTime);
+        boolean backupResult = backupAdaptor.uploadResumable(kcBackupRequest.getTheHolyBackup(),
+                remoteName, backupDataTime);
         NodeResult result = new NodeResult();
         HashMap<String, Object> bingo = null;
         bingo = new HashMap<>();

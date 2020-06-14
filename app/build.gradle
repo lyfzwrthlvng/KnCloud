@@ -6,8 +6,8 @@ android {
         applicationId "com.shrey.kc.kcui"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 22
-        versionName "2.2-updates-bugfixes"
+        versionCode 23
+        versionName "2.3-updates-bugfixes"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
