@@ -1,2 +1,2 @@
-# KCUI
-A UI for the knowledgeCloud app
+# KC
+An android notes keeping app with drive backup capabilities.
